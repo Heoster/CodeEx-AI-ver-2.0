@@ -1,16 +1,10 @@
 'use client';
 
 import {useState, useEffect} from 'react';
-import {Bot, User, Volume2} from 'lucide-react';
+import {Bot, User} from 'lucide-react';
 import {cn} from '@/lib/utils';
-import {Button} from '@/components/ui/button';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import {Avatar, AvatarFallback} from '@/components/ui/avatar';
 import {type Message} from '@/lib/types';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 
 interface ChatMessageProps {
   message: Message;
@@ -22,13 +16,6 @@ export function ChatMessage({message}: ChatMessageProps) {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  const handleSpeak = () => {
-    if ('speechSynthesis' in window && message.role === 'assistant') {
-      const utterance = new SpeechSynthesisUtterance(message.content);
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   const isAssistant = message.role === 'assistant';
 
@@ -67,21 +54,6 @@ export function ChatMessage({message}: ChatMessageProps) {
         )}
       >
         <p className="whitespace-pre-wrap text-sm">{message.content}</p>
-        {isAssistant && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute -right-10 top-0 h-7 w-7 opacity-0 transition-opacity group-hover:opacity-100"
-                onClick={handleSpeak}
-              >
-                <Volume2 size={16} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Speak</TooltipContent>
-          </Tooltip>
-        )}
       </div>
     </div>
   );

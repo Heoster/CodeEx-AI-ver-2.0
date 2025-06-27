@@ -36,6 +36,10 @@ export function ChatPanel({chat, updateChat, model}: ChatPanelProps) {
     } else {
       const assistantMessage = {id: crypto.randomUUID(), ...result};
       updateChat(chat.id, [...updatedMessages, assistantMessage]);
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(assistantMessage.content);
+        window.speechSynthesis.speak(utterance);
+      }
     }
 
     setIsLoading(false);
