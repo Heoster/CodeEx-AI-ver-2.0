@@ -36,6 +36,33 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
 
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const playSound = () => {
+    if (typeof window !== 'undefined' && !audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+    }
+    if (!audioContextRef.current) return;
+
+    const audioContext = audioContextRef.current;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.0001,
+      audioContext.currentTime + 0.2
+    );
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.2);
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('webkitSpeechRecognition' in window)) {
@@ -49,7 +76,10 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
     recognition.interimResults = false;
     recognition.lang = 'en-US';
 
-    recognition.onstart = () => setIsListening(true);
+    recognition.onstart = () => {
+      playSound();
+      setIsListening(true);
+    };
 
     recognition.onresult = event => {
       const transcript = event.results[0][0].transcript;
@@ -70,6 +100,9 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
 
     return () => {
       recognitionRef.current?.stop();
+      if (audioContextRef.current?.state !== 'closed') {
+        audioContextRef.current?.close();
+      }
     };
   }, [onSendMessage]);
 
