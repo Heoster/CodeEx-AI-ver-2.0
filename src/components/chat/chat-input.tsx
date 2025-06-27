@@ -65,12 +65,17 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
   };
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !('webkitSpeechRecognition' in window)) {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const SpeechRecognition =
+      window.webkitSpeechRecognition || (window as any).SpeechRecognition;
+
+    if (!SpeechRecognition) {
       console.warn('Web Speech API is not supported by this browser.');
       return;
     }
 
-    const SpeechRecognition = window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;

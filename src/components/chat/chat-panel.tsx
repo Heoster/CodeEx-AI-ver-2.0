@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {type Chat} from '@/lib/types';
 import {ChatMessages} from './chat-messages';
 import {ChatInput} from './chat-input';
@@ -16,34 +16,46 @@ interface ChatPanelProps {
 export function ChatPanel({chat, updateChat, model}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {toast} = useToast();
+  const chatRef = useRef(chat);
+  chatRef.current = chat;
 
-  const handleSendMessage = async (content: string) => {
-    const newMessage = {id: crypto.randomUUID(), role: 'user', content};
-    const updatedMessages = [...chat.messages, newMessage];
-    updateChat(chat.id, updatedMessages);
-    setIsLoading(true);
+  const handleSendMessage = useCallback(
+    async (content: string) => {
+      const currentChat = chatRef.current;
+      const newMessage = {
+        id: crypto.randomUUID(),
+        role: 'user' as const,
+        content,
+      };
+      const updatedMessages = [...currentChat.messages, newMessage];
+      updateChat(currentChat.id, updatedMessages);
+      setIsLoading(true);
 
-    const result = await generateResponse(updatedMessages, model);
+      const result = await generateResponse(updatedMessages, model);
 
-    if ('error' in result) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: result.error,
-      });
-      const updatedMessagesWithError = updatedMessages.slice(0, -1);
-      updateChat(chat.id, updatedMessagesWithError);
-    } else {
-      const assistantMessage = {id: crypto.randomUUID(), ...result};
-      updateChat(chat.id, [...updatedMessages, assistantMessage]);
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(assistantMessage.content);
-        window.speechSynthesis.speak(utterance);
+      if ('error' in result) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: result.error,
+        });
+        const updatedMessagesWithError = updatedMessages.slice(0, -1);
+        updateChat(currentChat.id, updatedMessagesWithError);
+      } else {
+        const assistantMessage = {id: crypto.randomUUID(), ...result};
+        updateChat(currentChat.id, [...updatedMessages, assistantMessage]);
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(
+            assistantMessage.content
+          );
+          window.speechSynthesis.speak(utterance);
+        }
       }
-    }
 
-    setIsLoading(false);
-  };
+      setIsLoading(false);
+    },
+    [model, toast, updateChat]
+  );
 
   return (
     <div className="flex h-[calc(100svh-3.5rem)] flex-col">
