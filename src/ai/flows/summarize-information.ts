@@ -9,19 +9,27 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 
 const SummarizeInformationInputSchema = z.object({
   text: z.string().describe('The text to summarize.'),
+  model: z.string().optional(),
 });
-export type SummarizeInformationInput = z.infer<typeof SummarizeInformationInputSchema>;
+export type SummarizeInformationInput = z.infer<
+  typeof SummarizeInformationInputSchema
+>;
 
 const SummarizeInformationOutputSchema = z.object({
   summary: z.string().describe('A concise summary of the input text.'),
 });
-export type SummarizeInformationOutput = z.infer<typeof SummarizeInformationOutputSchema>;
+export type SummarizeInformationOutput = z.infer<
+  typeof SummarizeInformationOutputSchema
+>;
 
-export async function summarizeInformation(input: SummarizeInformationInput): Promise<SummarizeInformationOutput> {
+export async function summarizeInformation(
+  input: SummarizeInformationInput
+): Promise<SummarizeInformationOutput> {
   return summarizeInformationFlow(input);
 }
 
@@ -39,7 +47,9 @@ const summarizeInformationFlow = ai.defineFlow(
     outputSchema: SummarizeInformationOutputSchema,
   },
   async input => {
-    const {output} = await summarizeInformationPrompt(input);
+    const {output} = await summarizeInformationPrompt(input, {
+      model: input.model ? googleAI.model(input.model) : undefined,
+    });
     return output!;
   }
 );

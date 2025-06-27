@@ -10,9 +10,10 @@ import {useToast} from '@/hooks/use-toast';
 interface ChatPanelProps {
   chat: Chat;
   updateChat: (chatId: string, messages: Chat['messages']) => void;
+  model: string;
 }
 
-export function ChatPanel({chat, updateChat}: ChatPanelProps) {
+export function ChatPanel({chat, updateChat, model}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {toast} = useToast();
 
@@ -22,7 +23,7 @@ export function ChatPanel({chat, updateChat}: ChatPanelProps) {
     updateChat(chat.id, updatedMessages);
     setIsLoading(true);
 
-    const result = await generateResponse(updatedMessages);
+    const result = await generateResponse(updatedMessages, model);
 
     if ('error' in result) {
       toast({

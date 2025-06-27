@@ -9,19 +9,25 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 
 const SolveQuizInputSchema = z.object({
   quiz: z.string().describe('The quiz question or calculation to solve.'),
+  model: z.string().optional(),
 });
 export type SolveQuizInput = z.infer<typeof SolveQuizInputSchema>;
 
 const SolveQuizOutputSchema = z.object({
-  solution: z.string().describe('The solution to the quiz question or calculation.'),
+  solution: z
+    .string()
+    .describe('The solution to the quiz question or calculation.'),
 });
 export type SolveQuizOutput = z.infer<typeof SolveQuizOutputSchema>;
 
-export async function solveQuiz(input: SolveQuizInput): Promise<SolveQuizOutput> {
+export async function solveQuiz(
+  input: SolveQuizInput
+): Promise<SolveQuizOutput> {
   return solveQuizFlow(input);
 }
 
@@ -43,7 +49,9 @@ const solveQuizFlow = ai.defineFlow(
     outputSchema: SolveQuizOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await prompt(input, {
+      model: input.model ? googleAI.model(input.model) : undefined,
+    });
     return output!;
   }
 );

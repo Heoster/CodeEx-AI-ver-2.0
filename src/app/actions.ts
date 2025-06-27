@@ -5,7 +5,8 @@ import {solveQuiz} from '@/ai/flows/solve-quizzes';
 import {Message} from '@/lib/types';
 
 export async function generateResponse(
-  messages: Message[]
+  messages: Message[],
+  model: string
 ): Promise<{role: 'assistant'; content: string} | {error: string}> {
   const latestMessage = messages[messages.length - 1];
   const question = latestMessage.content;
@@ -14,10 +15,10 @@ export async function generateResponse(
     let response;
     if (question.toLowerCase().startsWith('/solve')) {
       const quiz = question.substring(6).trim();
-      response = await solveQuiz({quiz});
+      response = await solveQuiz({quiz, model});
       return {role: 'assistant', content: response.solution};
     } else {
-      response = await generateAnswerFromContext({question});
+      response = await generateAnswerFromContext({question, model});
       return {role: 'assistant', content: response.answer};
     }
   } catch (error) {

@@ -14,10 +14,10 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import {useLocalStorage} from '@/hooks/use-local-storage';
-import {type Chat} from '@/lib/types';
+import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
 import {Button} from '@/components/ui/button';
-import {Bot, MessageSquarePlus, Settings} from 'lucide-react';
+import {Bot, MessageSquarePlus, Settings as SettingsIcon} from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
 
@@ -36,10 +36,18 @@ const defaultChats: Chat[] = [
   },
 ];
 
+const defaultSettings: Settings = {
+  model: 'gemini-2.0-flash',
+};
+
 export function ChatLayout() {
   const [chats, setChats] = useLocalStorage<Chat[]>('chats', defaultChats);
   const [activeChatId, setActiveChatId] = useState<string>(
     () => chats[0]?.id || '1'
+  );
+  const [settings, setSettings] = useLocalStorage<Settings>(
+    'settings',
+    defaultSettings
   );
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
@@ -111,9 +119,9 @@ export function ChatLayout() {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          <SettingsDialog>
+          <SettingsDialog settings={settings} onSettingsChange={setSettings}>
             <Button variant="ghost" className="w-full justify-start">
-              <Settings className="mr-2" />
+              <SettingsIcon className="mr-2" />
               Settings
             </Button>
           </SettingsDialog>
@@ -126,7 +134,11 @@ export function ChatLayout() {
           <h1 className="text-lg font-semibold">{activeChat?.title}</h1>
         </header>
         {activeChat ? (
-          <ChatPanel chat={activeChat} updateChat={updateChat} />
+          <ChatPanel
+            chat={activeChat}
+            updateChat={updateChat}
+            model={settings.model}
+          />
         ) : (
           <div className="flex h-full items-center justify-center">
             <p>No active chat. Create a new one to start.</p>

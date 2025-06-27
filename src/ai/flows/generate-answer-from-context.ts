@@ -10,6 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 
 const WebSearchToolInputSchema = z.object({
@@ -37,13 +38,18 @@ const webSearch = ai.defineTool(
 
 const GenerateAnswerFromContextInputSchema = z.object({
   question: z.string().describe('The user question to answer.'),
+  model: z.string().optional(),
 });
-export type GenerateAnswerFromContextInput = z.infer<typeof GenerateAnswerFromContextInputSchema>;
+export type GenerateAnswerFromContextInput = z.infer<
+  typeof GenerateAnswerFromContextInputSchema
+>;
 
 const GenerateAnswerFromContextOutputSchema = z.object({
   answer: z.string().describe('The answer to the user question.'),
 });
-export type GenerateAnswerFromContextOutput = z.infer<typeof GenerateAnswerFromContextOutputSchema>;
+export type GenerateAnswerFromContextOutput = z.infer<
+  typeof GenerateAnswerFromContextOutputSchema
+>;
 
 export async function generateAnswerFromContext(
   input: GenerateAnswerFromContextInput
@@ -72,7 +78,9 @@ const generateAnswerFromContextFlow = ai.defineFlow(
     outputSchema: GenerateAnswerFromContextOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await prompt(input, {
+      model: input.model ? googleAI.model(input.model) : undefined,
+    });
     return output!;
   }
 );

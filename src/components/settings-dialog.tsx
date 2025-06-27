@@ -18,12 +18,19 @@ import {
 } from '@/components/ui/select';
 import {Label} from '@/components/ui/label';
 import type {ReactNode} from 'react';
+import type {Settings, Model} from '@/lib/types';
 
 interface SettingsDialogProps {
   children: ReactNode;
+  settings: Settings;
+  onSettingsChange: (settings: Settings) => void;
 }
 
-export function SettingsDialog({children}: SettingsDialogProps) {
+export function SettingsDialog({
+  children,
+  settings,
+  onSettingsChange,
+}: SettingsDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -35,6 +42,30 @@ export function SettingsDialog({children}: SettingsDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="model" className="text-right">
+              Model
+            </Label>
+            <Select
+              value={settings.model}
+              onValueChange={(value: Model) =>
+                onSettingsChange({...settings, model: value})
+              }
+            >
+              <SelectTrigger id="model" className="col-span-3">
+                <SelectValue placeholder="Select model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="gemini-2.0-flash">
+                  Gemini 2.0 Flash
+                </SelectItem>
+                <SelectItem value="gemini-1.5-flash">
+                  Gemini 1.5 Flash
+                </SelectItem>
+                <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="tone" className="text-right">
               Tone
