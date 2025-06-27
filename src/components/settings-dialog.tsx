@@ -60,6 +60,8 @@ export function SettingsDialog({
                   Gemini 1.5 Flash
                 </SelectItem>
                 <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
+                <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -10,7 +10,11 @@ export type Chat = {
   messages: Message[];
 };
 
-export type Model = 'gemini-1.5-flash' | 'gemini-1.5-pro';
+export type Model =
+  | 'gemini-1.5-flash'
+  | 'gemini-1.5-pro'
+  | 'gemini-pro'
+  | 'gemini-1.0-pro';
 
 export type Settings = {
   model: Model;
