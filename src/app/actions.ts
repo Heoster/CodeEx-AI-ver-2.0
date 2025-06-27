@@ -12,16 +12,23 @@ export async function generateResponse(
   const question = latestMessage.content;
   const {model, tone, technicalLevel} = settings;
 
+  const modelIdentifier = `googleai/${model}`;
+
   try {
     let response;
     if (question.toLowerCase().startsWith('/solve')) {
       const quiz = question.substring(6).trim();
-      response = await solveQuiz({quiz, model, tone, technicalLevel});
+      response = await solveQuiz({
+        quiz,
+        model: modelIdentifier,
+        tone,
+        technicalLevel,
+      });
       return {role: 'assistant', content: response.solution};
     } else {
       response = await generateAnswerFromContext({
         question,
-        model,
+        model: modelIdentifier,
         tone,
         technicalLevel,
       });

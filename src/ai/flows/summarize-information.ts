@@ -48,7 +48,7 @@ const summarizeInformationFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await summarizeInformationPrompt(input, {
-      model: input.model ? googleAI.model(input.model) : undefined,
+      model: input.model,
     });
     return output!;
   }

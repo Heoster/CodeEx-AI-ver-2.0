@@ -12,7 +12,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -56,21 +58,28 @@ export function SettingsDialog({
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gemini-1.5-flash">
-                  Gemini 1.5 Flash
-                </SelectItem>
-                <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
-                <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
-                <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro</SelectItem>
-                <SelectItem value="gemini-1.5-flash-latest">
-                  Gemini 1.5 Flash (Latest)
-                </SelectItem>
-                <SelectItem value="gemini-1.5-pro-latest">
-                  Gemini 1.5 Pro (Latest)
-                </SelectItem>
-                <SelectItem value="gemini-pro-vision">
-                  Gemini Pro Vision
-                </SelectItem>
+                <SelectGroup>
+                  <SelectLabel>Google</SelectLabel>
+                  <SelectItem value="gemini-1.5-flash">
+                    Gemini 1.5 Flash
+                  </SelectItem>
+                  <SelectItem value="gemini-1.5-pro">
+                    Gemini 1.5 Pro
+                  </SelectItem>
+                  <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                  <SelectItem value="gemini-1.0-pro">
+                    Gemini 1.0 Pro
+                  </SelectItem>
+                  <SelectItem value="gemini-1.5-flash-latest">
+                    Gemini 1.5 Flash (Latest)
+                  </SelectItem>
+                  <SelectItem value="gemini-1.5-pro-latest">
+                    Gemini 1.5 Pro (Latest)
+                  </SelectItem>
+                  <SelectItem value="gemini-pro-vision">
+                    Gemini Pro Vision
+                  </SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
           </div>

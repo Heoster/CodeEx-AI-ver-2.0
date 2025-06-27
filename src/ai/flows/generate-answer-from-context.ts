@@ -84,7 +84,7 @@ const generateAnswerFromContextFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input, {
-      model: input.model ? googleAI.model(input.model) : undefined,
+      model: input.model,
     });
     return output!;
   }
