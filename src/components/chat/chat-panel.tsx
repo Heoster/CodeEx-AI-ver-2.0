@@ -1,7 +1,7 @@
 'use client';
 
 import {useCallback, useRef, useState} from 'react';
-import {type Chat} from '@/lib/types';
+import {type Chat, type Settings} from '@/lib/types';
 import {ChatMessages} from './chat-messages';
 import {ChatInput} from './chat-input';
 import {generateResponse} from '@/app/actions';
@@ -10,10 +10,10 @@ import {useToast} from '@/hooks/use-toast';
 interface ChatPanelProps {
   chat: Chat;
   updateChat: (chatId: string, messages: Chat['messages']) => void;
-  model: string;
+  settings: Settings;
 }
 
-export function ChatPanel({chat, updateChat, model}: ChatPanelProps) {
+export function ChatPanel({chat, updateChat, settings}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {toast} = useToast();
   const chatRef = useRef(chat);
@@ -31,7 +31,7 @@ export function ChatPanel({chat, updateChat, model}: ChatPanelProps) {
       updateChat(currentChat.id, updatedMessages);
       setIsLoading(true);
 
-      const result = await generateResponse(updatedMessages, model);
+      const result = await generateResponse(updatedMessages, settings);
 
       if ('error' in result) {
         toast({
@@ -54,7 +54,7 @@ export function ChatPanel({chat, updateChat, model}: ChatPanelProps) {
 
       setIsLoading(false);
     },
-    [model, toast, updateChat]
+    [settings, toast, updateChat]
   );
 
   return (

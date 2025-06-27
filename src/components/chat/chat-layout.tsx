@@ -37,7 +37,9 @@ const defaultChats: Chat[] = [
 ];
 
 const defaultSettings: Settings = {
-  model: 'gemini-2.0-flash',
+  model: 'gemini-1.5-flash',
+  tone: 'helpful',
+  technicalLevel: 'intermediate',
 };
 
 export function ChatLayout() {
@@ -137,7 +139,7 @@ export function ChatLayout() {
           <ChatPanel
             chat={activeChat}
             updateChat={updateChat}
-            model={settings.model}
+            settings={settings}
           />
         ) : (
           <div className="flex h-full items-center justify-center">

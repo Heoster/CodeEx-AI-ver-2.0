@@ -15,6 +15,8 @@ import {z} from 'genkit';
 const SolveQuizInputSchema = z.object({
   quiz: z.string().describe('The quiz question or calculation to solve.'),
   model: z.string().optional(),
+  tone: z.enum(['helpful', 'formal', 'casual']).optional(),
+  technicalLevel: z.enum(['beginner', 'intermediate', 'expert']).optional(),
 });
 export type SolveQuizInput = z.infer<typeof SolveQuizInputSchema>;
 
@@ -36,6 +38,9 @@ const prompt = ai.definePrompt({
   input: {schema: SolveQuizInputSchema},
   output: {schema: SolveQuizOutputSchema},
   prompt: `You are an expert in solving quizzes and calculations from intermediate to advanced levels.
+
+  Your response should have a {{#if tone}}{{tone}}{{else}}helpful{{/if}} tone.
+  Your response should be at a {{#if technicalLevel}}{{technicalLevel}}{{else}}intermediate{{/if}} technical level.
 
   Solve the following quiz question or calculation and provide the solution.
 

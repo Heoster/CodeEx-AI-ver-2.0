@@ -39,6 +39,8 @@ const webSearch = ai.defineTool(
 const GenerateAnswerFromContextInputSchema = z.object({
   question: z.string().describe('The user question to answer.'),
   model: z.string().optional(),
+  tone: z.enum(['helpful', 'formal', 'casual']).optional(),
+  technicalLevel: z.enum(['beginner', 'intermediate', 'expert']).optional(),
 });
 export type GenerateAnswerFromContextInput = z.infer<
   typeof GenerateAnswerFromContextInputSchema
@@ -63,6 +65,9 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateAnswerFromContextOutputSchema},
   tools: [webSearch],
   prompt: `You are an AI assistant that answers questions based on information found on the internet.
+
+  Your response should have a {{#if tone}}{{tone}}{{else}}helpful{{/if}} tone.
+  Your response should be at a {{#if technicalLevel}}{{technicalLevel}}{{else}}intermediate{{/if}} technical level.
 
   The user will ask a question, and you will use the webSearch tool to find relevant information.
   Then, you will use the information to answer the question in a concise and helpful manner.

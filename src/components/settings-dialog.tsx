@@ -56,9 +56,6 @@ export function SettingsDialog({
                 <SelectValue placeholder="Select model" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gemini-2.0-flash">
-                  Gemini 2.0 Flash
-                </SelectItem>
                 <SelectItem value="gemini-1.5-flash">
                   Gemini 1.5 Flash
                 </SelectItem>
@@ -70,7 +67,12 @@ export function SettingsDialog({
             <Label htmlFor="tone" className="text-right">
               Tone
             </Label>
-            <Select defaultValue="helpful">
+            <Select
+              value={settings.tone}
+              onValueChange={(value: Settings['tone']) =>
+                onSettingsChange({...settings, tone: value})
+              }
+            >
               <SelectTrigger id="tone" className="col-span-3">
                 <SelectValue placeholder="Select tone" />
               </SelectTrigger>
@@ -82,24 +84,18 @@ export function SettingsDialog({
             </Select>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="profanity" className="text-right">
-              Profanity
-            </Label>
-            <Select defaultValue="filter">
-              <SelectTrigger id="profanity" className="col-span-3">
-                <SelectValue placeholder="Select filter" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="filter">Filter</SelectItem>
-                <SelectItem value="allow">Allow</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="technical" className="text-right">
               Technical Level
             </Label>
-            <Select defaultValue="intermediate">
+            <Select
+              value={settings.technicalLevel}
+              onValueChange={(value: Settings['technicalLevel']) =>
+                onSettingsChange({
+                  ...settings,
+                  technicalLevel: value,
+                })
+              }
+            >
               <SelectTrigger id="technical" className="col-span-3">
                 <SelectValue placeholder="Select level" />
               </SelectTrigger>
