@@ -13,11 +13,9 @@ export type Chat = {
 export type Model =
   | 'gemini-1.5-flash'
   | 'gemini-1.5-pro'
-  | 'gemini-pro'
-  | 'gemini-1.0-pro'
-  | 'gemini-1.5-flash-latest'
-  | 'gemini-1.5-pro-latest'
-  | 'gemini-pro-vision';
+  | 'gpt-4'
+  | 'gpt-4-turbo'
+  | 'gpt-3.5-turbo';
 
 export type Settings = {
   model: Model;

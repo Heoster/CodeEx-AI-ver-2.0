@@ -12,7 +12,9 @@ export async function generateResponse(
   const question = latestMessage.content;
   const {model, tone, technicalLevel} = settings;
 
-  const modelIdentifier = `googleai/${model}`;
+  const modelIdentifier = model.startsWith('gpt-')
+    ? `openai/${model}`
+    : `googleai/${model}`;
 
   try {
     let response;

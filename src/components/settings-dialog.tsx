@@ -68,18 +68,13 @@ export function SettingsDialog({
                   <SelectItem value="gemini-1.5-pro">
                     Gemini 1.5 Pro
                   </SelectItem>
-                  <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
-                  <SelectItem value="gemini-1.0-pro">
-                    Gemini 1.0 Pro
-                  </SelectItem>
-                  <SelectItem value="gemini-1.5-flash-latest">
-                    Gemini 1.5 Flash (Latest)
-                  </SelectItem>
-                  <SelectItem value="gemini-1.5-pro-latest">
-                    Gemini 1.5 Pro (Latest)
-                  </SelectItem>
-                  <SelectItem value="gemini-pro-vision">
-                    Gemini Pro Vision
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>OpenAI</SelectLabel>
+                  <SelectItem value="gpt-4">GPT-4</SelectItem>
+                  <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                  <SelectItem value="gpt-3.5-turbo">
+                    GPT-3.5 Turbo
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
