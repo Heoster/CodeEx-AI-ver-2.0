@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {
   SidebarProvider,
   Sidebar,
@@ -37,24 +37,20 @@ const defaultChats: Chat[] = [
 ];
 
 const defaultSettings: Settings = {
-  model: 'gemini-1.5-flash',
+  model: 'gpt-4-turbo',
   tone: 'helpful',
   technicalLevel: 'intermediate',
 };
 
 export function ChatLayout() {
   const [chats, setChats] = useLocalStorage<Chat[]>('chats', defaultChats);
-  const [activeChatId, setActiveChatId] = useState<string>(
-    () => chats[0]?.id || '1'
-  );
+  const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useLocalStorage<Settings>(
     'settings',
     defaultSettings
   );
 
-  const activeChat = chats.find(chat => chat.id === activeChatId);
-
-  const createNewChat = () => {
+  const createNewChat = useCallback(() => {
     const newChatId = crypto.randomUUID();
     const newChat: Chat = {
       id: newChatId,
@@ -69,7 +65,17 @@ export function ChatLayout() {
     };
     setChats(prev => [...prev, newChat]);
     setActiveChatId(newChatId);
-  };
+  }, [setChats]);
+
+  useEffect(() => {
+    if (chats && chats.length === 0) {
+      createNewChat();
+    } else if (chats && chats.length > 0 && !activeChatId) {
+      setActiveChatId(chats[0].id);
+    }
+  }, [chats, activeChatId, createNewChat]);
+
+  const activeChat = chats.find(chat => chat.id === activeChatId);
 
   const updateChat = (chatId: string, messages: Chat['messages']) => {
     setChats(prev =>
@@ -152,7 +158,7 @@ export function ChatLayout() {
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <p>No active chat. Create a new one to start.</p>
+            <p>Loading chat...</p>
           </div>
         )}
       </SidebarInset>
