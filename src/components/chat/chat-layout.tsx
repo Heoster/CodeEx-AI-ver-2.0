@@ -88,6 +88,11 @@ export function ChatLayout() {
     );
   };
 
+  const clearChatHistory = () => {
+    setChats([]);
+    setActiveChatId(''); // Clear active chat id as well
+  };
+
   return (
     <SidebarProvider defaultOpen>
       <Sidebar>
@@ -121,7 +126,11 @@ export function ChatLayout() {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          <SettingsDialog settings={settings} onSettingsChange={setSettings}>
+          <SettingsDialog
+            settings={settings}
+            onSettingsChange={setSettings}
+            onClearChatHistory={clearChatHistory}
+          >
             <Button variant="ghost" className="w-full justify-start">
               <SettingsIcon className="mr-2" />
               Settings

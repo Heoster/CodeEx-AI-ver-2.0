@@ -26,12 +26,14 @@ interface SettingsDialogProps {
   children: ReactNode;
   settings: Settings;
   onSettingsChange: (settings: Settings) => void;
+  onClearChatHistory: () => void; // New prop for clearing chat history
 }
 
 export function SettingsDialog({
   children,
   settings,
   onSettingsChange,
+  onClearChatHistory,
 }: SettingsDialogProps) {
   return (
     <Dialog>
@@ -126,6 +128,12 @@ export function SettingsDialog({
               </SelectContent>
             </Select>
           </div>
+        </div>
+        {/* Add clear chat history button */}
+        <div className="flex justify-end pt-4">
+          <Button variant="destructive" onClick={onClearChatHistory}>
+            Clear All Chat History
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
