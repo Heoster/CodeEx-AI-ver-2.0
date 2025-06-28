@@ -13,6 +13,14 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import {useLocalStorage} from '@/hooks/use-local-storage';
 import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
