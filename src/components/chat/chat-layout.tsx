@@ -105,6 +105,7 @@ export function ChatLayout() {
   const clearChatHistory = () => {
     setChats([]);
     setActiveChatId('');
+    createNewChat();
   };
 
   return (
@@ -201,7 +202,7 @@ export function ChatLayout() {
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <p>Loading chat...</p>
+            <Button onClick={createNewChat}>Start New Chat</Button>
           </div>
         )}
       </SidebarInset>
