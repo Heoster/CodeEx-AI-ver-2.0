@@ -1,68 +1,55 @@
 'use client';
 
-import {useCallback, useRef, useState} from 'react';
-import {type Chat, type Settings} from '@/lib/types';
-import {ChatMessages} from './chat-messages';
+import {type Chat, type Settings, type Message} from '@/lib/types';
 import {ChatInput} from './chat-input';
-import {generateResponse} from '@/app/actions';
-import {useToast} from '@/hooks/use-toast';
+import {ChatMessages} from './chat-messages';
 import {ExamplePrompts} from './example-prompts';
+import {useState} from 'react';
+import {generateResponse} from '@/app/actions';
 
 interface ChatPanelProps {
   chat: Chat;
-  updateChat: (chatId: string, messages: Chat['messages']) => void;
   settings: Settings;
+  updateChat: (chatId: string, messages: Message[]) => void;
 }
 
-export function ChatPanel({chat, updateChat, settings}: ChatPanelProps) {
+export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const {toast} = useToast();
-  const chatRef = useRef(chat);
-  chatRef.current = chat;
+
+  const handleSendMessage = async (messageContent: string) => {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    const newUserMessage: Message = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: messageContent,
+    };
+
+    const newMessages = [...chat.messages, newUserMessage];
+    updateChat(chat.id, newMessages);
+
+    const response = await generateResponse(newMessages, settings);
+
+    if ('error' in response) {
+      const assistantErrorMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: response.error,
+      };
+      updateChat(chat.id, [...newMessages, assistantErrorMessage]);
+    } else {
+      const assistantMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: response.content,
+      };
+      updateChat(chat.id, [...newMessages, assistantMessage]);
+    }
+    setIsLoading(false);
+  };
 
   const isNewChat = chat.messages.length <= 1;
-
-  const handleSendMessage = useCallback(
-    async (content: string) => {
-      const currentChat = chatRef.current;
-      const newMessage = {
-        id: crypto.randomUUID(),
-        role: 'user' as const,
-        content,
-      };
-      const updatedMessages = [...currentChat.messages, newMessage];
-      updateChat(currentChat.id, updatedMessages);
-      setIsLoading(true);
-
-      const result = await generateResponse(updatedMessages, settings);
-
-      if ('error' in result) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        const updatedMessagesWithError = updatedMessages.slice(0, -1);
-        updateChat(currentChat.id, updatedMessagesWithError);
-      } else {
-        const assistantMessage = {id: crypto.randomUUID(), ...result};
-        updateChat(currentChat.id, [...updatedMessages, assistantMessage]);
-        if (
-          settings.enableSpeech &&
-          typeof window !== 'undefined' &&
-          'speechSynthesis' in window
-        ) {
-          const utterance = new SpeechSynthesisUtterance(
-            assistantMessage.content
-          );
-          window.speechSynthesis.speak(utterance);
-        }
-      }
-
-      setIsLoading(false);
-    },
-    [settings, toast, updateChat]
-  );
 
   return (
     <div className="flex h-[calc(100svh-3.5rem)] flex-col">
