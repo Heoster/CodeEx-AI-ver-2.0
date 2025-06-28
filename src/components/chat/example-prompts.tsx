@@ -1,4 +1,4 @@
-import {Button} from '@/components/ui/button';
+import {Card, CardContent} from '@/components/ui/card';
 import {Code, Calculator, Lightbulb, FileText} from 'lucide-react';
 
 interface ExamplePromptsProps {
@@ -29,15 +29,16 @@ export function ExamplePrompts({onSendMessage}: ExamplePromptsProps) {
     <div className="mx-auto max-w-2xl px-4">
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {prompts.map((prompt, index) => (
-          <Button
+          <Card
             key={index}
-            variant="outline"
-            className="h-auto justify-start gap-3 whitespace-normal py-3 text-left"
+            className="cursor-pointer transition-colors hover:bg-accent"
             onClick={() => onSendMessage(prompt.text)}
           >
-            <div className="flex-shrink-0">{prompt.icon}</div>
-            <div className="flex-1">{prompt.text}</div>
-          </Button>
+            <CardContent className="flex items-center gap-3 p-4">
+              <div className="flex-shrink-0">{prompt.icon}</div>
+              <div className="flex-1 text-sm">{prompt.text}</div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
