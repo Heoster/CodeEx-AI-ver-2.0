@@ -8,11 +8,11 @@ interface ExamplePromptsProps {
 const prompts = [
   {
     icon: <BrainCircuit size={18} />,
-    text: 'Explain recursion in simple terms',
+    text: 'Explain coding.',
   },
   {
     icon: <Code size={18} />,
-    text: 'Write a Python function to find prime numbers',
+    text: 'Write a paragraph on INDIAN Culture.',
   },
   {
     icon: <Calculator size={18} />,
@@ -20,7 +20,7 @@ const prompts = [
   },
   {
     icon: <Lightbulb size={18} />,
-    text: 'What is the difference between let, const, and var in JavaScript?',
+    text: 'What is the difference between integration and differentiation in Physics?',
   },
 ];
 
