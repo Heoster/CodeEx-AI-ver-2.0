@@ -1,6 +1,7 @@
 'use client';
 
 import {useState, useEffect, useCallback} from 'react';
+import Image from 'next/image';
 import {
   SidebarProvider,
   Sidebar,
@@ -21,11 +22,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import {useLocalStorage} from '@/hooks/use-local-storage';
 import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
 import {Button} from '@/components/ui/button';
-import {Bot, MessageSquarePlus, Settings as SettingsIcon} from 'lucide-react';
+import {MessageSquarePlus, Settings as SettingsIcon} from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
 
@@ -38,10 +38,7 @@ const defaultSettings: Settings = {
 export function ChatLayout() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
-  const [settings, setSettings] = useLocalStorage<Settings>(
-    'settings',
-    defaultSettings
-  );
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
 
   const createNewChat = useCallback(() => {
     const newChatId = crypto.randomUUID();
@@ -58,13 +55,13 @@ export function ChatLayout() {
     };
     setChats(prev => [...prev, newChat]);
     setActiveChatId(newChatId);
-  }, [setChats]);
+  }, []);
 
+  // This hook will run only once when the component mounts.
   useEffect(() => {
-    if (chats.length === 0) {
-      createNewChat();
-    }
-  }, [chats.length, createNewChat]);
+    createNewChat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
 
@@ -87,6 +84,8 @@ export function ChatLayout() {
 
   const clearChatHistory = () => {
     setChats([]);
+    // After clearing, create a new chat to avoid an empty state
+    createNewChat();
   };
 
   return (
@@ -94,7 +93,12 @@ export function ChatLayout() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2">
-            <Bot size={24} />
+            <Image
+              src="/favicon.ico"
+              alt="CodeEx AI icon"
+              width={24}
+              height={24}
+            />
             <h1 className="text-lg font-semibold">CodeEx AI</h1>
           </div>
           <Button
