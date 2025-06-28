@@ -2,6 +2,7 @@
 
 import {generateAnswerFromContext} from '@/ai/flows/generate-answer-from-context';
 import {solveQuiz} from '@/ai/flows/solve-quizzes';
+import {summarizeInformation} from '@/ai/flows/summarize-information';
 import {type Message, type Settings, type Model} from '@/lib/types';
 
 export async function generateResponse(
@@ -11,14 +12,17 @@ export async function generateResponse(
   const {model, tone, technicalLevel} = settings;
   let chosenModel: Model;
 
-  const isSolveRequest = messages[messages.length - 1].content
-    .toLowerCase()
-    .startsWith('/solve');
+  const lastUserMessage = messages[messages.length - 1].content.toLowerCase();
+  const isSolveRequest = lastUserMessage.startsWith('/solve');
+  const isSummarizeRequest = lastUserMessage.startsWith('/summarize');
 
   if (model === 'auto') {
-    // For complex tasks like solving quizzes, use the more powerful model.
+    // For complex tasks like solving quizzes or summarizing, use the more powerful model.
     // For general chat, use the faster, more cost-effective model.
-    chosenModel = isSolveRequest ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+    chosenModel =
+      isSolveRequest || isSummarizeRequest
+        ? 'gemini-1.5-pro'
+        : 'gemini-1.5-flash';
   } else {
     chosenModel = model;
   }
@@ -35,6 +39,20 @@ export async function generateResponse(
         technicalLevel,
       });
       return {role: 'assistant', content: response.solution};
+    } else if (isSummarizeRequest) {
+      const text = messages[messages.length - 1].content.substring(10).trim();
+      if (!text) {
+        return {
+          role: 'assistant',
+          content:
+            'Please provide some text to summarize after the `/summarize` command.',
+        };
+      }
+      const response = await summarizeInformation({
+        text,
+        model: modelIdentifier,
+      });
+      return {role: 'assistant', content: response.summary};
     } else {
       const response = await generateAnswerFromContext({
         messages: messages.map(m => ({role: m.role, content: m.content})),

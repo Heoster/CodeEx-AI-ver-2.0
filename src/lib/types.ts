@@ -20,4 +20,5 @@ export type Settings = {
   model: 'auto' | Model;
   tone: 'helpful' | 'formal' | 'casual';
   technicalLevel: 'beginner' | 'intermediate' | 'expert';
+  enableSpeech: boolean;
 };

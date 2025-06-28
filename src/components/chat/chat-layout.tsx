@@ -33,6 +33,7 @@ const defaultSettings: Settings = {
   model: 'auto',
   tone: 'helpful',
   technicalLevel: 'intermediate',
+  enableSpeech: true,
 };
 
 export function ChatLayout() {

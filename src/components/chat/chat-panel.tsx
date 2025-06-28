@@ -47,7 +47,11 @@ export function ChatPanel({chat, updateChat, settings}: ChatPanelProps) {
       } else {
         const assistantMessage = {id: crypto.randomUUID(), ...result};
         updateChat(currentChat.id, [...updatedMessages, assistantMessage]);
-        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        if (
+          settings.enableSpeech &&
+          typeof window !== 'undefined' &&
+          'speechSynthesis' in window
+        ) {
           const utterance = new SpeechSynthesisUtterance(
             assistantMessage.content
           );
@@ -73,11 +77,15 @@ export function ChatPanel({chat, updateChat, settings}: ChatPanelProps) {
       <div className="border-t bg-background px-4 py-2 md:py-4">
         <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         <p className="px-2 pt-2 text-center text-xs text-muted-foreground">
-          For quizzes or calculations, start your message with{' '}
+          Use{' '}
           <code className="rounded bg-muted px-1 py-0.5 font-semibold">
             /solve
-          </code>
-          .
+          </code>{' '}
+          for calculations or{' '}
+          <code className="rounded bg-muted px-1 py-0.5 font-semibold">
+            /summarize
+          </code>{' '}
+          to summarize text.
         </p>
       </div>
     </div>

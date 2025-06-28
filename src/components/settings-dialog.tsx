@@ -21,13 +21,7 @@ import {
 import {Label} from '@/components/ui/label';
 import type {ReactNode} from 'react';
 import type {Settings, Model} from '@/lib/types';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from './ui/sheet';
+import {Switch} from '@/components/ui/switch';
 
 interface SettingsDialogProps {
   children: ReactNode;
@@ -124,6 +118,19 @@ export function SettingsDialog({
                 <SelectItem value="expert">Expert</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="speech" className="text-right">
+              Speech Output
+            </Label>
+            <Switch
+              id="speech"
+              checked={settings.enableSpeech}
+              onCheckedChange={checked =>
+                onSettingsChange({...settings, enableSpeech: checked})
+              }
+              className="col-span-3"
+            />
           </div>
         </div>
         <div className="flex justify-end pt-4">

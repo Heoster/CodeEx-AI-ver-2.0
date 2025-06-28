@@ -1,5 +1,5 @@
 import {Button} from '@/components/ui/button';
-import {Code, BrainCircuit, Calculator, Lightbulb} from 'lucide-react';
+import {Code, Calculator, Lightbulb, FileText} from 'lucide-react';
 
 interface ExamplePromptsProps {
   onSendMessage: (message: string) => void;
@@ -7,20 +7,20 @@ interface ExamplePromptsProps {
 
 const prompts = [
   {
-    icon: <BrainCircuit size={18} />,
-    text: 'Explain coding.',
+    icon: <Lightbulb size={18} />,
+    text: 'Suggest some names for a new coffee shop',
   },
   {
     icon: <Code size={18} />,
-    text: 'Write a paragraph on INDIAN Culture.',
+    text: 'Write a python script to sort a list of numbers',
   },
   {
     icon: <Calculator size={18} />,
     text: '/solve 15 * (4 + 2)',
   },
   {
-    icon: <Lightbulb size={18} />,
-    text: 'What is the difference between integration and differentiation in Physics?',
+    icon: <FileText size={18} />,
+    text: '/summarize The history of the internet began with the development...',
   },
 ];
 
