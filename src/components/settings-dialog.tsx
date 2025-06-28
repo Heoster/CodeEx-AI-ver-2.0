@@ -22,6 +22,7 @@ import {Label} from '@/components/ui/label';
 import type {ReactNode} from 'react';
 import type {Settings, Model} from '@/lib/types';
 import {Switch} from '@/components/ui/switch';
+import {Separator} from '@/components/ui/separator';
 
 interface SettingsDialogProps {
   children: ReactNode;
@@ -133,10 +134,25 @@ export function SettingsDialog({
             />
           </div>
         </div>
-        <div className="flex justify-end pt-4">
-          <Button variant="destructive" onClick={onClearChatHistory}>
-            Clear All Chat History
-          </Button>
+        <Separator />
+        <div className="space-y-4 pt-4">
+          <div className="space-y-1 text-center">
+            <p className="text-sm text-muted-foreground">
+              For support or inquiries, please email us at{' '}
+              <a
+                href="mailto:support@alpha-ai.com"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                support@alpha-ai.com
+              </a>
+              .
+            </p>
+          </div>
+          <div className="flex justify-end">
+            <Button variant="destructive" onClick={onClearChatHistory}>
+              Clear All Chat History
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
