@@ -1,6 +1,6 @@
 export type Message = {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'context';
   content: string;
 };
 
@@ -13,6 +13,7 @@ export type Chat = {
 export type Model =
   | 'gemini-1.5-flash'
   | 'gemini-1.5-pro'
+  | 'gpt-4o'
   | 'gpt-4'
   | 'gpt-4-turbo'
   | 'gpt-3.5-turbo';

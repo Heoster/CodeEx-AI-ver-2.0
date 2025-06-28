@@ -26,7 +26,7 @@ interface SettingsDialogProps {
   children: ReactNode;
   settings: Settings;
   onSettingsChange: (settings: Settings) => void;
-  onClearChatHistory: () => void; // New prop for clearing chat history
+  onClearChatHistory: () => void;
 }
 
 export function SettingsDialog({
@@ -71,6 +71,7 @@ export function SettingsDialog({
                 </SelectGroup>
                 <SelectGroup>
                   <SelectLabel>OpenAI</SelectLabel>
+                  <SelectItem value="gpt-4o">GPT-4o (Omni)</SelectItem>
                   <SelectItem value="gpt-4">GPT-4</SelectItem>
                   <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
                   <SelectItem value="gpt-3.5-turbo">
@@ -124,7 +125,6 @@ export function SettingsDialog({
             </Select>
           </div>
         </div>
-        {/* Add clear chat history button */}
         <div className="flex justify-end pt-4">
           <Button variant="destructive" onClick={onClearChatHistory}>
             Clear All Chat History
