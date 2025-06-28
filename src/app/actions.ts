@@ -8,19 +8,15 @@ export async function generateResponse(
   messages: Message[],
   settings: Settings
 ): Promise<{role: 'assistant'; content: string} | {error: string}> {
-  const latestMessage = messages[messages.length - 1];
-  const question = latestMessage.content;
   const {model, tone, technicalLevel} = settings;
 
-  const modelIdentifier = model.startsWith('gpt-')
-    ? `openai/${model}`
-    : `googleai/${model}`;
+  const modelIdentifier = `googleai/${model}`;
 
   try {
-    let response;
-    if (question.toLowerCase().startsWith('/solve')) {
-      const quiz = question.substring(6).trim();
-      response = await solveQuiz({
+    const questionMessage = messages[messages.length - 1];
+    if (questionMessage.content.toLowerCase().startsWith('/solve')) {
+      const quiz = questionMessage.content.substring(6).trim();
+      const response = await solveQuiz({
         quiz,
         model: modelIdentifier,
         tone,
@@ -28,8 +24,8 @@ export async function generateResponse(
       });
       return {role: 'assistant', content: response.solution};
     } else {
-      response = await generateAnswerFromContext({
-        question,
+      const response = await generateAnswerFromContext({
+        messages: messages.map(m => ({role: m.role, content: m.content})),
         model: modelIdentifier,
         tone,
         technicalLevel,

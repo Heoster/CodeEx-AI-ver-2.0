@@ -37,7 +37,7 @@ const defaultChats: Chat[] = [
 ];
 
 const defaultSettings: Settings = {
-  model: 'gpt-4-turbo',
+  model: 'gemini-1.5-flash',
   tone: 'helpful',
   technicalLevel: 'intermediate',
 };
@@ -147,7 +147,42 @@ export function ChatLayout() {
       </Sidebar>
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
-          <SidebarTrigger className="md:hidden" />
+          <Sheet>
+            <SheetTrigger asChild>
+              <SidebarTrigger className="md:hidden" />
+            </SheetTrigger>
+            <SheetContent side="left" className="sm:max-w-xs">
+              <SheetHeader>
+                <SheetTitle>CodeEx AI</SheetTitle>
+                <SheetDescription>
+                  Your intelligent assistant for development.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="py-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={createNewChat}
+                >
+                  <MessageSquarePlus className="mr-2" />
+                  New Chat
+                </Button>
+                <nav className="mt-4 grid gap-1">
+                  {chats.map(chat => (
+                    <SidebarMenuButton
+                      key={chat.id}
+                      isActive={chat.id === activeChatId}
+                      onClick={() => setActiveChatId(chat.id)}
+                      className="justify-start"
+                    >
+                      <span>{chat.title}</span>
+                    </SidebarMenuButton>
+                  ))}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
           <h1 className="text-lg font-semibold">{activeChat?.title}</h1>
         </header>
         {activeChat ? (

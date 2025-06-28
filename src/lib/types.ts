@@ -10,13 +10,7 @@ export type Chat = {
   messages: Message[];
 };
 
-export type Model =
-  | 'gemini-1.5-flash'
-  | 'gemini-1.5-pro'
-  | 'gpt-4o'
-  | 'gpt-4'
-  | 'gpt-4-turbo'
-  | 'gpt-3.5-turbo';
+export type Model = 'gemini-1.5-flash' | 'gemini-1.5-pro';
 
 export type Settings = {
   model: Model;

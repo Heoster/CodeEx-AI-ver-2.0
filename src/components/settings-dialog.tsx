@@ -21,6 +21,13 @@ import {
 import {Label} from '@/components/ui/label';
 import type {ReactNode} from 'react';
 import type {Settings, Model} from '@/lib/types';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from './ui/sheet';
 
 interface SettingsDialogProps {
   children: ReactNode;
@@ -67,15 +74,6 @@ export function SettingsDialog({
                   </SelectItem>
                   <SelectItem value="gemini-1.5-pro">
                     Gemini 1.5 Pro
-                  </SelectItem>
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>OpenAI</SelectLabel>
-                  <SelectItem value="gpt-4o">GPT-4o (Omni)</SelectItem>
-                  <SelectItem value="gpt-4">GPT-4</SelectItem>
-                  <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
-                  <SelectItem value="gpt-3.5-turbo">
-                    GPT-3.5 Turbo
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
