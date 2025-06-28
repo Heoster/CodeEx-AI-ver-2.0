@@ -6,6 +6,7 @@ import {ChatMessages} from './chat-messages';
 import {ChatInput} from './chat-input';
 import {generateResponse} from '@/app/actions';
 import {useToast} from '@/hooks/use-toast';
+import {ExamplePrompts} from './example-prompts';
 
 interface ChatPanelProps {
   chat: Chat;
@@ -18,6 +19,8 @@ export function ChatPanel({chat, updateChat, settings}: ChatPanelProps) {
   const {toast} = useToast();
   const chatRef = useRef(chat);
   chatRef.current = chat;
+
+  const isNewChat = chat.messages.length <= 1;
 
   const handleSendMessage = useCallback(
     async (content: string) => {
@@ -64,11 +67,17 @@ export function ChatPanel({chat, updateChat, settings}: ChatPanelProps) {
         isLoading={isLoading}
         className="flex-1"
       />
+
+      {isNewChat && <ExamplePrompts onSendMessage={handleSendMessage} />}
+
       <div className="border-t bg-background px-4 py-2 md:py-4">
         <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         <p className="px-2 pt-2 text-center text-xs text-muted-foreground">
-          For quiz/calculation, start your message with{' '}
-          <code className="font-mono">/solve</code>.
+          For quizzes or calculations, start your message with{' '}
+          <code className="rounded bg-muted px-1 py-0.5 font-semibold">
+            /solve
+          </code>
+          .
         </p>
       </div>
     </div>

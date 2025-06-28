@@ -30,7 +30,7 @@ const defaultChats: Chat[] = [
         id: '1',
         role: 'assistant',
         content:
-          "Hello! I'm CodeEx AI. I can help you with programming questions, solve quizzes, and much more. How can I assist you today?",
+          "Hello! I'm CodeEx AI, your intelligent assistant. I can help you with programming questions, solve complex calculations, and more. Try one of the examples below or ask me anything!",
       },
     ],
   },
@@ -90,7 +90,7 @@ export function ChatLayout() {
 
   const clearChatHistory = () => {
     setChats([]);
-    setActiveChatId(''); // Clear active chat id as well
+    setActiveChatId('');
   };
 
   return (
