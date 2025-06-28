@@ -2,20 +2,32 @@
 
 import {generateAnswerFromContext} from '@/ai/flows/generate-answer-from-context';
 import {solveQuiz} from '@/ai/flows/solve-quizzes';
-import {type Message, type Settings} from '@/lib/types';
+import {type Message, type Settings, type Model} from '@/lib/types';
 
 export async function generateResponse(
   messages: Message[],
   settings: Settings
 ): Promise<{role: 'assistant'; content: string} | {error: string}> {
   const {model, tone, technicalLevel} = settings;
+  let chosenModel: Model;
 
-  const modelIdentifier = `googleai/${model}`;
+  const isSolveRequest = messages[messages.length - 1].content
+    .toLowerCase()
+    .startsWith('/solve');
+
+  if (model === 'auto') {
+    // For complex tasks like solving quizzes, use the more powerful model.
+    // For general chat, use the faster, more cost-effective model.
+    chosenModel = isSolveRequest ? 'gemini-1.5-pro' : 'gemini-1.5-flash';
+  } else {
+    chosenModel = model;
+  }
+
+  const modelIdentifier = `googleai/${chosenModel}`;
 
   try {
-    const questionMessage = messages[messages.length - 1];
-    if (questionMessage.content.toLowerCase().startsWith('/solve')) {
-      const quiz = questionMessage.content.substring(6).trim();
+    if (isSolveRequest) {
+      const quiz = messages[messages.length - 1].content.substring(6).trim();
       const response = await solveQuiz({
         quiz,
         model: modelIdentifier,

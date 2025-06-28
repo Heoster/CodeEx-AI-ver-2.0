@@ -45,7 +45,7 @@ const defaultChats: Chat[] = [
 ];
 
 const defaultSettings: Settings = {
-  model: 'gemini-1.5-flash',
+  model: 'auto',
   tone: 'helpful',
   technicalLevel: 'intermediate',
 };

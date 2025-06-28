@@ -59,7 +59,7 @@ export function SettingsDialog({
             </Label>
             <Select
               value={settings.model}
-              onValueChange={(value: Model) =>
+              onValueChange={(value: 'auto' | Model) =>
                 onSettingsChange({...settings, model: value})
               }
             >
@@ -69,12 +69,12 @@ export function SettingsDialog({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Google</SelectLabel>
+                  <SelectItem value="auto">Auto (Default)</SelectItem>
+                  <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
                   <SelectItem value="gemini-1.5-flash">
                     Gemini 1.5 Flash
                   </SelectItem>
-                  <SelectItem value="gemini-1.5-pro">
-                    Gemini 1.5 Pro
-                  </SelectItem>
+                  <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
