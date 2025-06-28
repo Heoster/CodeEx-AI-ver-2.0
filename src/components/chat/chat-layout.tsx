@@ -29,21 +29,6 @@ import {Bot, MessageSquarePlus, Settings as SettingsIcon} from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
 
-const defaultChats: Chat[] = [
-  {
-    id: '1',
-    title: 'Welcome Chat',
-    messages: [
-      {
-        id: '1',
-        role: 'assistant',
-        content:
-          "Hello! I'm CodeEx AI, your intelligent assistant. I can help you with programming questions, solve complex calculations, and more. Try one of the examples below or ask me anything!",
-      },
-    ],
-  },
-];
-
 const defaultSettings: Settings = {
   model: 'auto',
   tone: 'helpful',
@@ -51,7 +36,7 @@ const defaultSettings: Settings = {
 };
 
 export function ChatLayout() {
-  const [chats, setChats] = useLocalStorage<Chat[]>('chats', defaultChats);
+  const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useLocalStorage<Settings>(
     'settings',
@@ -76,12 +61,10 @@ export function ChatLayout() {
   }, [setChats]);
 
   useEffect(() => {
-    if (chats && chats.length === 0) {
+    if (chats.length === 0) {
       createNewChat();
-    } else if (chats && chats.length > 0 && !activeChatId) {
-      setActiveChatId(chats[0].id);
     }
-  }, [chats, activeChatId, createNewChat]);
+  }, [chats.length, createNewChat]);
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
 
@@ -104,8 +87,6 @@ export function ChatLayout() {
 
   const clearChatHistory = () => {
     setChats([]);
-    setActiveChatId('');
-    createNewChat();
   };
 
   return (
