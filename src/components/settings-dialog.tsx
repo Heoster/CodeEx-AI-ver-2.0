@@ -75,6 +75,9 @@ export function SettingsDialog({
                     Gemini 1.5 Flash
                   </SelectItem>
                   <SelectItem value="gemini-pro">Gemini Pro</SelectItem>
+                  <SelectItem value="gemini-pro-vision">
+                    Gemini Pro Vision
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
