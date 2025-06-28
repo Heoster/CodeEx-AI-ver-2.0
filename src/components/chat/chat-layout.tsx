@@ -95,11 +95,11 @@ export function ChatLayout() {
           <div className="flex items-center gap-2">
             <Image
               src="/favicon.ico"
-              alt="CodeEx AI icon"
+              alt="ALPHA AI icon"
               width={24}
               height={24}
             />
-            <h1 className="text-lg font-semibold">CodeEx AI</h1>
+            <h1 className="text-lg font-semibold">ALPHA AI</h1>
           </div>
           <Button
             variant="outline"
@@ -147,9 +147,9 @@ export function ChatLayout() {
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-xs">
               <SheetHeader>
-                <SheetTitle>CodeEx AI</SheetTitle>
+                <SheetTitle>ALPHA AI</SheetTitle>
                 <SheetDescription>
-                  Your intelligent assistant for development.
+                  Your intelligent AI assistant.
                 </SheetDescription>
               </SheetHeader>
               <div className="py-4">

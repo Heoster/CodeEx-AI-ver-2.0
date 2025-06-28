@@ -4,8 +4,8 @@ import {ThemeProvider} from '@/components/theme-provider';
 import {Toaster} from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'CodeEx AI',
-  description: 'An intelligent chat assistant for developers.',
+  title: 'ALPHA AI',
+  description: 'An intelligent AI assistant.',
 };
 
 export default function RootLayout({
