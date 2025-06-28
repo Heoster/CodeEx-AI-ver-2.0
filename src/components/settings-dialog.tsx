@@ -140,10 +140,10 @@ export function SettingsDialog({
             <p className="text-sm text-muted-foreground">
               For support or inquiries, please email us at{' '}
               <a
-                href="mailto:support@alpha-ai.com"
+                href="mailto:the.heoster@mail.com"
                 className="font-medium text-primary underline-offset-4 hover:underline"
               >
-                support@alpha-ai.com
+                the.heoster@mail.com
               </a>
               .
             </p>
