@@ -64,8 +64,14 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
       return 'Please enter a valid email address.';
     case 'auth/operation-not-allowed':
       return 'Email/password accounts are not enabled. Please contact support.';
+    case 'auth/popup-closed-by-user':
+      return 'Sign-in cancelled. The sign-in window was closed.';
+    case 'auth/popup-blocked':
+      return 'Sign-in failed. Please allow pop-ups for this site and try again.';
+    case 'auth/unauthorized-domain':
+      return 'This domain is not authorized for authentication. Please contact the developer.';
     default:
-      return 'An authentication error occurred. Please try again later.';
+      return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
 };
 
