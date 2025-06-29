@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback } from 'react';
 
 // Define the shape of a command

@@ -20,14 +20,21 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet';
 import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
 import {Button} from '@/components/ui/button';
-import {MessageSquarePlus, Settings as SettingsIcon} from 'lucide-react';
+import {
+  MessageSquarePlus,
+  Settings as SettingsIcon,
+  LogOut,
+} from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
+import {useAuth} from '@/hooks/use-auth';
+import {auth} from '@/lib/firebase';
+import {signOut} from 'firebase/auth';
+import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 
 const defaultSettings: Settings = {
   model: 'auto',
@@ -37,6 +44,7 @@ const defaultSettings: Settings = {
 };
 
 export function ChatLayout() {
+  const {user} = useAuth();
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
@@ -58,11 +66,20 @@ export function ChatLayout() {
     setActiveChatId(newChatId);
   }, []);
 
-  // This hook will run only once when the component mounts.
   useEffect(() => {
-    createNewChat();
+    if (user && chats.length === 0) {
+      createNewChat();
+    }
+    if (!user) {
+      setChats([]);
+      setActiveChatId('');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+  };
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
 
@@ -85,9 +102,24 @@ export function ChatLayout() {
 
   const clearChatHistory = () => {
     setChats([]);
-    // After clearing, create a new chat to avoid an empty state
     createNewChat();
   };
+
+  const sidebarFooterContent = (
+    <>
+      <SettingsDialog
+        settings={settings}
+        onSettingsChange={setSettings}
+        onClearChatHistory={clearChatHistory}
+      >
+        <Button variant="ghost" className="w-full justify-start">
+          <SettingsIcon className="mr-2" />
+          Settings
+        </Button>
+      </SettingsDialog>
+      <ThemeToggle />
+    </>
+  );
 
   return (
     <SidebarProvider defaultOpen>
@@ -127,17 +159,32 @@ export function ChatLayout() {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-          <SettingsDialog
-            settings={settings}
-            onSettingsChange={setSettings}
-            onClearChatHistory={clearChatHistory}
-          >
-            <Button variant="ghost" className="w-full justify-start">
-              <SettingsIcon className="mr-2" />
-              Settings
-            </Button>
-          </SettingsDialog>
-          <ThemeToggle />
+          {user && (
+            <div className="border-t -mx-2 flex items-center gap-2 px-2 pt-2">
+              <Avatar className="h-8 w-8">
+                <AvatarImage
+                  src={user.photoURL ?? ''}
+                  alt={user.displayName ?? 'User'}
+                />
+                <AvatarFallback>
+                  {user.displayName?.charAt(0) ?? 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <span className="truncate text-sm font-medium">
+                {user.displayName}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-auto"
+                onClick={handleSignOut}
+              >
+                <LogOut />
+                <span className="sr-only">Sign Out</span>
+              </Button>
+            </div>
+          )}
+          {sidebarFooterContent}
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
@@ -146,35 +193,65 @@ export function ChatLayout() {
             <SheetTrigger asChild>
               <SidebarTrigger className="md:hidden" />
             </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs">
-              <SheetHeader>
-                <SheetTitle>ALPHA AI</SheetTitle>
-                <SheetDescription>
-                  Your intelligent AI assistant.
-                </SheetDescription>
-              </SheetHeader>
-              <div className="py-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={createNewChat}
-                >
-                  <MessageSquarePlus className="mr-2" />
-                  New Chat
-                </Button>
-                <nav className="mt-4 grid gap-1">
-                  {chats.map(chat => (
-                    <SidebarMenuButton
-                      key={chat.id}
-                      isActive={chat.id === activeChatId}
-                      onClick={() => setActiveChatId(chat.id)}
-                      className="justify-start"
+            <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
+              <div className="flex-1 overflow-y-auto p-4">
+                <SheetHeader>
+                  <SheetTitle>ALPHA AI</SheetTitle>
+                  <SheetDescription>
+                    Your intelligent AI assistant.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="py-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={createNewChat}
+                  >
+                    <MessageSquarePlus className="mr-2" />
+                    New Chat
+                  </Button>
+                  <nav className="mt-4 grid gap-1">
+                    {chats.map(chat => (
+                      <SidebarMenuButton
+                        key={chat.id}
+                        isActive={chat.id === activeChatId}
+                        onClick={() => setActiveChatId(chat.id)}
+                        className="justify-start"
+                      >
+                        <span>{chat.title}</span>
+                      </SidebarMenuButton>
+                    ))}
+                  </nav>
+                </div>
+              </div>
+              <div className="mt-auto shrink-0 border-t p-2">
+                {user && (
+                  <div className="mb-2 flex items-center gap-2 border-b pb-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src={user.photoURL ?? ''}
+                        alt={user.displayName ?? 'User'}
+                      />
+                      <AvatarFallback>
+                        {user.displayName?.charAt(0) ?? 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="truncate text-sm font-medium">
+                      {user.displayName}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-auto"
+                      onClick={handleSignOut}
                     >
-                      <span>{chat.title}</span>
-                    </SidebarMenuButton>
-                  ))}
-                </nav>
+                      <LogOut />
+                      <span className="sr-only">Sign Out</span>
+                    </Button>
+                  </div>
+                )}
+                {sidebarFooterContent}
               </div>
             </SheetContent>
           </Sheet>
@@ -188,7 +265,7 @@ export function ChatLayout() {
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <Button onClick={createNewChat}>Start New Chat</Button>
+            <p>Create a new chat to get started.</p>
           </div>
         )}
       </SidebarInset>

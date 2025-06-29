@@ -3,14 +3,16 @@
 import {useState, useEffect} from 'react';
 import {Bot, User} from 'lucide-react';
 import {cn} from '@/lib/utils';
-import {Avatar, AvatarFallback} from '@/components/ui/avatar';
+import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {type Message} from '@/lib/types';
+import {useAuth} from '@/hooks/use-auth';
 
 interface ChatMessageProps {
   message: Message;
 }
 
 export function ChatMessage({message}: ChatMessageProps) {
+  const {user} = useAuth();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -33,17 +35,28 @@ export function ChatMessage({message}: ChatMessageProps) {
       <Avatar
         className={cn(
           'h-8 w-8 shrink-0',
-          isAssistant ? 'bg-primary' : 'bg-accent'
+          isAssistant ? 'bg-primary' : 'bg-transparent'
         )}
       >
-        <AvatarFallback
-          className={cn(
-            'text-primary-foreground',
-            isAssistant ? 'bg-primary' : 'bg-accent'
-          )}
-        >
-          {isAssistant ? <Bot size={20} /> : <User size={20} />}
-        </AvatarFallback>
+        {isAssistant ? (
+          <AvatarFallback className="bg-primary text-primary-foreground">
+            <Bot size={20} />
+          </AvatarFallback>
+        ) : (
+          <>
+            <AvatarImage
+              src={user?.photoURL ?? ''}
+              alt={user?.displayName ?? 'User'}
+            />
+            <AvatarFallback className="bg-accent text-accent-foreground">
+              {user?.displayName ? (
+                user.displayName.charAt(0).toUpperCase()
+              ) : (
+                <User size={20} />
+              )}
+            </AvatarFallback>
+          </>
+        )}
       </Avatar>
       <div
         className={cn(

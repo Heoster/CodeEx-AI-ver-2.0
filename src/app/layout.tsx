@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import {ThemeProvider} from '@/components/theme-provider';
 import {Toaster} from '@/components/ui/toaster';
+import {AuthProvider} from '@/hooks/use-auth';
 
 export const metadata: Metadata = {
   title: 'ALPHA AI',
@@ -28,10 +29,12 @@ export default function RootLayout({
         ></link>
       </head>
       <body className="font-body antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

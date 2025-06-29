@@ -1,7 +1,12 @@
 'use client';
 
 import {ChatLayout} from '@/components/chat/chat-layout';
+import {ProtectedRoute} from '@/hooks/use-auth';
 
 export default function Home() {
-  return <ChatLayout />;
+  return (
+    <ProtectedRoute>
+      <ChatLayout />
+    </ProtectedRoute>
+  );
 }
