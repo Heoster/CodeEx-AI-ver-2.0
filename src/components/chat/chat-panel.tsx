@@ -6,21 +6,21 @@ import {ChatMessages} from './chat-messages';
 import {ExamplePrompts} from './example-prompts';
 import {useState} from 'react';
 import {generateResponse} from '@/app/actions';
+import {useAuth} from '@/hooks/use-auth';
 
 interface ChatPanelProps {
   chat: Chat;
   settings: Settings;
   updateChat: (chatId: string, messages: Message[]) => void;
-  setShowGreeting: (show: boolean) => void;
 }
 
-export function ChatPanel({chat, settings, updateChat, setShowGreeting}: ChatPanelProps) {
+export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const {user} = useAuth();
 
   const handleSendMessage = async (messageContent: string) => {
     if (isLoading) return;
     setIsLoading(true);
-    setShowGreeting(false);
 
     const newUserMessage: Message = {
       id: crypto.randomUUID(),
@@ -56,12 +56,20 @@ export function ChatPanel({chat, settings, updateChat, setShowGreeting}: ChatPan
 
   const isNewChat = chat.messages.length <= 1;
 
+  const greetingHeader =
+    isNewChat && user ? (
+      <div className="mb-8 flex flex-col items-center justify-center gap-2 text-center">
+        <h1 className="text-3xl font-bold">Hello, {user.displayName}!</h1>
+      </div>
+    ) : null;
+
   return (
     <div className="flex h-[calc(100svh-3.5rem)] flex-col">
       <ChatMessages
         messages={chat.messages}
         isLoading={isLoading}
         className="flex-1"
+        header={greetingHeader}
       />
 
       {isNewChat && <ExamplePrompts onSendMessage={handleSendMessage} />}

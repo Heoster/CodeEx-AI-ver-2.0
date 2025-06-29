@@ -12,12 +12,14 @@ import {Bot} from 'lucide-react';
 interface ChatMessagesProps extends React.HTMLAttributes<HTMLDivElement> {
   messages: Message[];
   isLoading?: boolean;
+  header?: React.ReactNode;
 }
 
 export function ChatMessages({
   messages,
   isLoading,
   className,
+  header,
 }: ChatMessagesProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -31,6 +33,7 @@ export function ChatMessages({
   return (
     <ScrollArea className={cn('w-full', className)} ref={scrollAreaRef}>
       <div className="p-4 md:p-6" ref={viewportRef}>
+        {header}
         <div className="space-y-6">
           {messages.map(message => (
             <ChatMessage key={message.id} message={message} />

@@ -48,7 +48,6 @@ export function ChatLayout() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [showGreeting, setShowGreeting] = useState(true);
 
   const createNewChat = useCallback(() => {
     const newChatId = crypto.randomUUID();
@@ -66,7 +65,6 @@ export function ChatLayout() {
     };
     setChats(prev => [...prev, newChat]);
     setActiveChatId(newChatId);
-    setShowGreeting(true);
   }, []);
 
   useEffect(() => {
@@ -154,7 +152,6 @@ export function ChatLayout() {
                   isActive={chat.id === activeChatId}
                   onClick={() => {
                     setActiveChatId(chat.id);
-                    setShowGreeting(chat.messages.length <= 1);
                   }}
                 >
                   <span>{chat.title}</span>
@@ -261,19 +258,11 @@ export function ChatLayout() {
           <h1 className="text-lg font-semibold">{activeChat?.title}</h1>
         </header>
 
-        {showGreeting && user ? (
-          <div className="flex h-full flex-col items-center justify-center gap-2">
-            <h1 className="text-3xl font-bold">Hello, {user.displayName}!</h1>
-            <p className="text-muted-foreground">
-              How can I help you today?
-            </p>
-          </div>
-        ) : activeChat ? (
+        {activeChat ? (
           <ChatPanel
             chat={activeChat}
             updateChat={updateChat}
             settings={settings}
-            setShowGreeting={setShowGreeting}
           />
         ) : (
           <div className="flex h-full items-center justify-center">
