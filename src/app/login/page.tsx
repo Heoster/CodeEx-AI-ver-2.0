@@ -47,6 +47,28 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const getFirebaseAuthErrorMessage = (error: any): string => {
+  if (!error.code) {
+    return 'An unknown error occurred. Please try again.';
+  }
+  switch (error.code) {
+    case 'auth/invalid-credential':
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+      return 'Invalid credentials. Please check your email and password.';
+    case 'auth/email-already-in-use':
+      return 'This email is already registered. Please sign in or use a different email.';
+    case 'auth/weak-password':
+      return 'Your password is too weak. It must be at least 6 characters long.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/operation-not-allowed':
+      return 'Email/password accounts are not enabled. Please contact support.';
+    default:
+      return 'An authentication error occurred. Please try again later.';
+  }
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const {user, loading} = useAuth();
@@ -59,9 +81,9 @@ export default function LoginPage() {
     setError(null);
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing in with Google: ', error);
-      setError('Failed to sign in with Google.');
+      setError(getFirebaseAuthErrorMessage(error));
     }
   };
 
@@ -76,7 +98,7 @@ export default function LoginPage() {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       console.error('Error signing up with email: ', error);
-      setError(error.message);
+      setError(getFirebaseAuthErrorMessage(error));
     }
   };
 
@@ -87,7 +109,7 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       console.error('Error signing in with email: ', error);
-      setError(error.message);
+      setError(getFirebaseAuthErrorMessage(error));
     }
   };
 
