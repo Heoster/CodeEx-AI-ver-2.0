@@ -23,6 +23,7 @@ import type {ReactNode} from 'react';
 import type {Settings, Model} from '@/lib/types';
 import {Switch} from '@/components/ui/switch';
 import {Separator} from '@/components/ui/separator';
+import {useTheme} from '@/hooks/use-theme';
 
 interface SettingsDialogProps {
   children: ReactNode;
@@ -37,17 +38,19 @@ export function SettingsDialog({
   onSettingsChange,
   onClearChatHistory,
 }: SettingsDialogProps) {
+  const {theme, setTheme, themes} = useTheme();
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Content Settings</DialogTitle>
+          <DialogTitle>Settings</DialogTitle>
           <DialogDescription>
-            Customize the AI's output to your preference.
+            Customize the AI's output and appearance.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
+          <h3 className="text-sm font-medium">Content</h3>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="model" className="text-right">
               Model
@@ -117,6 +120,25 @@ export function SettingsDialog({
                 <SelectItem value="beginner">Beginner</SelectItem>
                 <SelectItem value="intermediate">Intermediate</SelectItem>
                 <SelectItem value="expert">Expert</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Separator />
+          <h3 className="text-sm font-medium">Appearance & Accessibility</h3>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="theme" className="text-right">
+              Theme
+            </Label>
+            <Select value={theme} onValueChange={setTheme}>
+              <SelectTrigger id="theme" className="col-span-3">
+                <SelectValue placeholder="Select theme" />
+              </SelectTrigger>
+              <SelectContent>
+                {themes.map(t => (
+                  <SelectItem key={t} value={t}>
+                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

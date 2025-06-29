@@ -3,6 +3,7 @@ import './globals.css';
 import {ThemeProvider} from '@/components/theme-provider';
 import {Toaster} from '@/components/ui/toaster';
 import {AuthProvider} from '@/hooks/use-auth';
+import {CustomThemeProvider} from '@/hooks/use-theme';
 
 export const metadata: Metadata = {
   title: 'ALPHA AI',
@@ -31,7 +32,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
+            <CustomThemeProvider>{children}</CustomThemeProvider>
             <Toaster />
           </ThemeProvider>
         </AuthProvider>

@@ -11,19 +11,22 @@ interface ChatPanelProps {
   chat: Chat;
   settings: Settings;
   updateChat: (chatId: string, messages: Message[]) => void;
+  setShowGreeting: (show: boolean) => void;
 }
 
-export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
+export function ChatPanel({chat, settings, updateChat, setShowGreeting}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSendMessage = async (messageContent: string) => {
     if (isLoading) return;
     setIsLoading(true);
+    setShowGreeting(false);
 
     const newUserMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
       content: messageContent,
+      createdAt: new Date().toISOString(),
     };
 
     const newMessages = [...chat.messages, newUserMessage];
@@ -36,6 +39,7 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: response.error,
+        createdAt: new Date().toISOString(),
       };
       updateChat(chat.id, [...newMessages, assistantErrorMessage]);
     } else {
@@ -43,6 +47,7 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: response.content,
+        createdAt: new Date().toISOString(),
       };
       updateChat(chat.id, [...newMessages, assistantMessage]);
     }
@@ -64,7 +69,7 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
       <div className="border-t bg-background px-4 py-2 md:py-4">
         <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         <p className="px-2 pt-2 text-center text-xs text-muted-foreground">
-          Try commands like{' '}
+          CodeEx powered by Heoster. Try commands like{' '}
           <code className="rounded bg-muted px-1 py-0.5 font-semibold">
             /solve
           </code>{' '}

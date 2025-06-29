@@ -13,6 +13,17 @@ import {useRouter} from 'next/navigation';
 import {useAuth} from '@/hooks/use-auth';
 import {useEffect, useState} from 'react';
 import {Skeleton} from '@/components/ui/skeleton';
+import {Eye, EyeOff} from 'lucide-react';
+import {Checkbox} from '@/components/ui/checkbox';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import Image from 'next/image';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" {...props}>
@@ -42,6 +53,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleGoogleSignIn = async () => {
     setError(null);
@@ -88,80 +100,117 @@ export default function LoginPage() {
   if (loading || user) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <Skeleton className="h-64 w-full max-w-sm" />
+        <Skeleton className="h-64 w-full max-w-md" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <div className="mx-auto flex w-full max-w-sm flex-col items-center justify-center space-y-6 rounded-lg border bg-card p-8 shadow-sm">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Welcome to ALPHA AI</h1>
-          <p className="text-muted-foreground">
-            Sign in to start chatting with your intelligent assistant.
+    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mb-4 flex justify-center">
+            <Image
+              src="/favicon.ico"
+              alt="CodeEx Logo"
+              width={48}
+              height={48}
+            />
+          </div>
+          <CardTitle className="text-2xl font-bold">Welcome to ALPHA AI</CardTitle>
+          <CardDescription>
+            Sign in to access your intelligent assistant
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleEmailSignIn} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="relative space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type={isPasswordVisible ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-7 h-7 w-7"
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+              >
+                {isPasswordVisible ? (
+                  <EyeOff size={16} />
+                ) : (
+                  <Eye size={16} />
+                )}
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox id="remember-me" />
+                <Label htmlFor="remember-me" className="text-sm font-normal">
+                  Remember me
+                </Label>
+              </div>
+            </div>
+
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <div className="flex gap-2 pt-2">
+              <Button type="submit" className="w-full">
+                Sign In
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full"
+                onClick={handleEmailSignUp}
+              >
+                Sign Up
+              </Button>
+            </div>
+          </form>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <Button
+            onClick={handleGoogleSignIn}
+            variant="outline"
+            className="w-full"
+          >
+            <GoogleIcon className="mr-2 h-4 w-4" />
+            Sign In with Google
+          </Button>
+        </CardContent>
+        <CardFooter className="justify-center">
+          <p className="text-xs text-muted-foreground">
+            CodeEx powered by Heoster.
           </p>
-        </div>
-
-        <form className="w-full space-y-4">
-          <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              type="email"
-              id="email"
-              placeholder="name@example.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              id="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <div className="flex gap-2">
-            <Button onClick={handleEmailSignIn} type="submit" className="w-full">
-              Sign In
-            </Button>
-            <Button
-              onClick={handleEmailSignUp}
-              type="button"
-              variant="secondary"
-              className="w-full"
-            >
-              Sign Up
-            </Button>
-          </div>
-        </form>
-
-        <div className="relative w-full">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <Button
-          onClick={handleGoogleSignIn}
-          variant="outline"
-          className="w-full"
-        >
-          <GoogleIcon className="mr-2 h-4 w-4" />
-          Sign In with Google
-        </Button>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

@@ -20,7 +20,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet';
 import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
@@ -49,6 +48,7 @@ export function ChatLayout() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [showGreeting, setShowGreeting] = useState(true);
 
   const createNewChat = useCallback(() => {
     const newChatId = crypto.randomUUID();
@@ -60,11 +60,13 @@ export function ChatLayout() {
           id: crypto.randomUUID(),
           role: 'assistant',
           content: 'How can I help you today?',
+          createdAt: new Date().toISOString(),
         },
       ],
     };
     setChats(prev => [...prev, newChat]);
     setActiveChatId(newChatId);
+    setShowGreeting(true);
   }, []);
 
   useEffect(() => {
@@ -75,8 +77,7 @@ export function ChatLayout() {
       setChats([]);
       setActiveChatId('');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, chats.length, createNewChat]);
 
   const handleSignOut = async () => {
     await signOut(auth);
@@ -151,7 +152,10 @@ export function ChatLayout() {
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
                   isActive={chat.id === activeChatId}
-                  onClick={() => setActiveChatId(chat.id)}
+                  onClick={() => {
+                    setActiveChatId(chat.id);
+                    setShowGreeting(chat.messages.length <= 1);
+                  }}
                 >
                   <span>{chat.title}</span>
                 </SidebarMenuButton>
@@ -191,9 +195,7 @@ export function ChatLayout() {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
           <Sheet>
-            <SheetTrigger asChild>
-              <SidebarTrigger className="md:hidden" />
-            </SheetTrigger>
+            <SidebarTrigger className="md:hidden" />
             <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
               <div className="flex-1 overflow-y-auto p-4">
                 <SheetHeader>
@@ -258,11 +260,20 @@ export function ChatLayout() {
           </Sheet>
           <h1 className="text-lg font-semibold">{activeChat?.title}</h1>
         </header>
-        {activeChat ? (
+
+        {showGreeting && user ? (
+          <div className="flex h-full flex-col items-center justify-center gap-2">
+            <h1 className="text-3xl font-bold">Hello, {user.displayName}!</h1>
+            <p className="text-muted-foreground">
+              How can I help you today?
+            </p>
+          </div>
+        ) : activeChat ? (
           <ChatPanel
             chat={activeChat}
             updateChat={updateChat}
             settings={settings}
+            setShowGreeting={setShowGreeting}
           />
         ) : (
           <div className="flex h-full items-center justify-center">

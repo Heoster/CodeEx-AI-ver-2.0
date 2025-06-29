@@ -2,6 +2,7 @@ export type Message = {
   id: string;
   role: 'user' | 'assistant' | 'context';
   content: string;
+  createdAt: string;
 };
 
 export type Chat = {
