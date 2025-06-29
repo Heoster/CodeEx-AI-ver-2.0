@@ -1,12 +1,18 @@
 'use client';
 
-import {signInWithPopup} from 'firebase/auth';
+import {
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import {auth, googleProvider} from '@/lib/firebase';
 import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
 import {useRouter} from 'next/navigation';
 import {useAuth} from '@/hooks/use-auth';
-import {useEffect} from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
+import {useEffect, useState} from 'react';
+import {Skeleton} from '@/components/ui/skeleton';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" {...props}>
@@ -33,12 +39,43 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 export default function LoginPage() {
   const router = useRouter();
   const {user, loading} = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSignIn = async () => {
+  const handleGoogleSignIn = async () => {
+    setError(null);
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error('Error signing in with Google: ', error);
+      setError('Failed to sign in with Google.');
+    }
+  };
+
+  const handleEmailSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (password.length < 6) {
+      setError('Password should be at least 6 characters.');
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      console.error('Error signing up with email: ', error);
+      setError(error.message);
+    }
+  };
+
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      console.error('Error signing in with email: ', error);
+      setError(error.message);
     }
   };
 
@@ -51,7 +88,7 @@ export default function LoginPage() {
   if (loading || user) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <Skeleton className="h-24 w-full max-w-sm" />
+        <Skeleton className="h-64 w-full max-w-sm" />
       </div>
     );
   }
@@ -65,8 +102,63 @@ export default function LoginPage() {
             Sign in to start chatting with your intelligent assistant.
           </p>
         </div>
-        <Button onClick={handleSignIn} variant="outline" className="w-full">
-          <GoogleIcon />
+
+        <form className="w-full space-y-4">
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              type="email"
+              id="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <div className="flex gap-2">
+            <Button onClick={handleEmailSignIn} type="submit" className="w-full">
+              Sign In
+            </Button>
+            <Button
+              onClick={handleEmailSignUp}
+              type="button"
+              variant="secondary"
+              className="w-full"
+            >
+              Sign Up
+            </Button>
+          </div>
+        </form>
+
+        <div className="relative w-full">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <Button
+          onClick={handleGoogleSignIn}
+          variant="outline"
+          className="w-full"
+        >
+          <GoogleIcon className="mr-2 h-4 w-4" />
           Sign In with Google
         </Button>
       </div>
