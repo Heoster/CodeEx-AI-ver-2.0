@@ -20,6 +20,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from '@/components/ui/sheet';
 import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
