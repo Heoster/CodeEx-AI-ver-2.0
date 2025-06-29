@@ -1,7 +1,5 @@
-/** @type {import('next').NextConfig} */Add commentMore actions
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -11,7 +9,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-@@ -18,5 +19,3 @@ const nextConfig = {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        pathname: '/**',
+      },
     ],
   },
 };
