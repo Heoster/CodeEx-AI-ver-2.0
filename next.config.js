@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */Add commentMore actions
 const nextConfig = {
 
   /* config options here */
@@ -7,15 +7,13 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },More actions
+  },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
+@@ -18,5 +19,3 @@ const nextConfig = {
     ],
   },
 };
+
+module.exports = nextConfig;
