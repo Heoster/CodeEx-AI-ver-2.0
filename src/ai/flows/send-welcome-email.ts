@@ -27,7 +27,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
   },
   async input => {
     const {email, displayName} = input;
-
+    const fromEmail = 'the.heoster@mail.com';
     const emailSubject = 'Welcome to Codeex Alpha AI! 🎉';
 
     const emailBody = `Hi ${displayName},
@@ -47,6 +47,7 @@ Warm regards,
 Team Codeex Alpha AI 🚀`;
 
     console.log('--- SIMULATING SENDING WELCOME EMAIL ---');
+    console.log(`From: ${fromEmail}`);
     console.log(`To: ${email}`);
     console.log(`Subject: ${emailSubject}`);
     console.log('Body:');
@@ -57,7 +58,7 @@ Team Codeex Alpha AI 🚀`;
     // Example (pseudo-code):
     // await emailClient.send({
     //   to: email,
-    //   from: 'welcome@codeex.ai',
+    //   from: fromEmail,
     //   subject: emailSubject,
     //   html: emailBody, // Or a templated version
     // });
