@@ -6,7 +6,6 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   getAuth,
-  getAdditionalUserInfo,
   UserCredential,
 } from 'firebase/auth';
 import {app, googleProvider} from '@/lib/firebase';
@@ -166,7 +165,11 @@ export default function LoginPage() {
     }
     const auth = getAuth(app);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       if (userCredential.user.email && userCredential.user.displayName) {
         await sendWelcomeEmail({
           email: userCredential.user.email,
@@ -203,7 +206,7 @@ export default function LoginPage() {
           displayName: newUserName.trim(),
         });
       }
-      
+
       setIsNamePromptOpen(false);
     } catch (error) {
       setError('Could not save your name. Please try again.');
