@@ -62,6 +62,11 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const getFirebaseAuthErrorMessage = (error: any): string => {
+  // Handle the specific internal assertion error first, as it may not have a standard code.
+  if (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) {
+    return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
+  }
+
   if (!error.code) {
     return 'An unknown error occurred. Please try again.';
   }
@@ -95,7 +100,6 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
 
 export default function LoginPage() {
   const router = useRouter();
-  const auth = getAuth(app);
   const {user, loading} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -116,6 +120,7 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = async () => {
     setError(null);
+    const auth = getAuth(app);
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const additionalInfo = getAdditionalUserInfo(result);
@@ -126,7 +131,6 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
-      console.error('Error signing in with Google: ', error);
       setError(getFirebaseAuthErrorMessage(error));
     }
   };
@@ -142,11 +146,11 @@ export default function LoginPage() {
       setError('Password should be at least 6 characters.');
       return;
     }
+    const auth = getAuth(app);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       // The useEffect will handle prompting for name
     } catch (error: any) {
-      console.error('Error signing up with email: ', error);
       setError(getFirebaseAuthErrorMessage(error));
       recaptchaRef.current?.reset();
       setCaptchaToken(null);
@@ -160,11 +164,11 @@ export default function LoginPage() {
       setError('Please complete the CAPTCHA before signing in.');
       return;
     }
+    const auth = getAuth(app);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // The useEffect will handle prompting for name if needed
     } catch (error: any) {
-      console.error('Error signing in with email: ', error);
       setError(getFirebaseAuthErrorMessage(error));
       recaptchaRef.current?.reset();
       setCaptchaToken(null);
@@ -176,6 +180,7 @@ export default function LoginPage() {
       setError('Please enter your name.');
       return;
     }
+    const auth = getAuth(app);
     const currentUser = auth.currentUser;
     if (!currentUser) {
       setError('An error occurred. Please try logging in again.');
@@ -195,7 +200,6 @@ export default function LoginPage() {
       
       setIsNamePromptOpen(false);
     } catch (error) {
-      console.error('Error updating profile: ', error);
       setError('Could not save your name. Please try again.');
     } finally {
       setIsSavingName(false);
