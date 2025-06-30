@@ -6,7 +6,6 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   getAuth,
-  UserCredential,
 } from 'firebase/auth';
 import {app, googleProvider} from '@/lib/firebase';
 import {Button} from '@/components/ui/button';
@@ -38,6 +37,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReCAPTCHA from 'react-google-recaptcha';
 import {sendWelcomeEmail} from '@/ai/flows/send-welcome-email';
+import {useToast} from '@/hooks/use-toast';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" {...props}>
@@ -107,6 +107,7 @@ export default function LoginPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const {toast} = useToast();
 
   // New state for name prompt
   const [isNamePromptOpen, setIsNamePromptOpen] = useState(false);
@@ -127,6 +128,10 @@ export default function LoginPage() {
         await sendWelcomeEmail({
           email: result.user.email,
           displayName: result.user.displayName,
+        });
+        toast({
+          title: 'Email "Sent"',
+          description: `A welcome email for ${result.user.email} was logged to the console.`,
         });
       }
     } catch (error: any) {
@@ -175,6 +180,10 @@ export default function LoginPage() {
           email: userCredential.user.email,
           displayName: userCredential.user.displayName,
         });
+        toast({
+          title: 'Email "Sent"',
+          description: `A welcome email for ${userCredential.user.email} was logged to the console.`,
+        });
       }
       // The useEffect will handle prompting for name if needed for new users
     } catch (error: any) {
@@ -204,6 +213,10 @@ export default function LoginPage() {
         await sendWelcomeEmail({
           email: currentUser.email,
           displayName: newUserName.trim(),
+        });
+        toast({
+          title: 'Email "Sent"',
+          description: `A welcome email for ${currentUser.email} was logged to the console.`,
         });
       }
 
