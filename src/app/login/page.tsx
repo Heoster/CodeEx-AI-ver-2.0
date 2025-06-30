@@ -7,6 +7,7 @@ import {
   updateProfile,
   getAuth,
   getAdditionalUserInfo,
+  UserCredential,
 } from 'firebase/auth';
 import {app, googleProvider} from '@/lib/firebase';
 import {Button} from '@/components/ui/button';
@@ -123,8 +124,7 @@ export default function LoginPage() {
     const auth = getAuth(app);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const additionalInfo = getAdditionalUserInfo(result);
-      if (additionalInfo?.isNewUser && result.user.email && result.user.displayName) {
+      if (result.user.email && result.user.displayName) {
         await sendWelcomeEmail({
           email: result.user.email,
           displayName: result.user.displayName,
@@ -166,8 +166,14 @@ export default function LoginPage() {
     }
     const auth = getAuth(app);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // The useEffect will handle prompting for name if needed
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (userCredential.user.email && userCredential.user.displayName) {
+        await sendWelcomeEmail({
+          email: userCredential.user.email,
+          displayName: userCredential.user.displayName,
+        });
+      }
+      // The useEffect will handle prompting for name if needed for new users
     } catch (error: any) {
       setError(getFirebaseAuthErrorMessage(error));
       recaptchaRef.current?.reset();
@@ -325,7 +331,7 @@ export default function LoginPage() {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-card px-2 text-muted-foreground">
-                    Or sign in with Google
+                    Or continue with
                   </span>
                 </div>
               </div>
