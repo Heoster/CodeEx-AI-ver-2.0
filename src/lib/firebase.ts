@@ -1,3 +1,5 @@
+'use client';
+
 import {initializeApp, getApps, getApp} from 'firebase/app';
 import {getAuth, GoogleAuthProvider} from 'firebase/auth';
 
@@ -10,11 +12,28 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-if (!firebaseConfig.apiKey) {
+// Check for missing Firebase configuration keys
+const missingConfigKeys = Object.entries(firebaseConfig)
+  .filter(([, value]) => !value)
+  .map(([key]) => key);
+
+if (missingConfigKeys.length > 0) {
+  const anemicKeyToEnvMap: {[key: string]: string} = {
+    apiKey: 'NEXT_PUBLIC_FIREBASE_API_KEY',
+    authDomain: 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
+    projectId: 'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
+    storageBucket: 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
+    messagingSenderId: 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
+    appId: 'NEXT_PUBLIC_FIREBASE_APP_ID',
+  };
+  const missingEnvVars = missingConfigKeys.map(key => anemicKeyToEnvMap[key]);
   throw new Error(
-    'Missing Firebase API Key. Please make sure to set NEXT_PUBLIC_FIREBASE_API_KEY in your .env file.'
+    `Missing Firebase configuration. Please set the following environment variables in your .env file: ${missingEnvVars.join(
+      ', '
+    )}`
   );
 }
+
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
