@@ -30,14 +30,12 @@ interface SettingsDialogProps {
   children: ReactNode;
   settings: Settings;
   onSettingsChange: (settings: Settings) => void;
-  onClearChatHistory: () => void;
 }
 
 export function SettingsDialog({
   children,
   settings,
   onSettingsChange,
-  onClearChatHistory,
 }: SettingsDialogProps) {
   const {theme, setTheme, themes} = useTheme();
   return (
@@ -204,11 +202,6 @@ export function SettingsDialog({
               </Link>
               .
             </p>
-          </div>
-          <div className="flex justify-end">
-            <Button variant="destructive" onClick={onClearChatHistory}>
-              Clear All Chat History
-            </Button>
           </div>
         </div>
       </DialogContent>

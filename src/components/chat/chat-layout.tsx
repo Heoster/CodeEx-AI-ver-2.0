@@ -15,12 +15,15 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import {type Chat, type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
 import {Button} from '@/components/ui/button';
@@ -28,6 +31,7 @@ import {
   MessageSquarePlus,
   Settings as SettingsIcon,
   LogOut,
+  Trash2,
 } from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
@@ -53,6 +57,7 @@ export function ChatLayout() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [isClearHistoryAlertOpen, setIsClearHistoryAlertOpen] = useState(false);
   const auth = getAuth();
 
   // Listen for real-time chat updates
@@ -93,21 +98,18 @@ export function ChatLayout() {
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
 
-  const clearChatHistory = async () => {
+  const handleConfirmClearHistory = async () => {
     if (!user) return;
     await deleteAllUserChats(user.uid);
     // The onSnapshot listener will automatically clear the chats from state.
     // We create a new one to not leave the user with a blank screen.
     createNewChat();
+    setIsClearHistoryAlertOpen(false);
   };
 
   const sidebarFooterContent = (
     <>
-      <SettingsDialog
-        settings={settings}
-        onSettingsChange={setSettings}
-        onClearChatHistory={clearChatHistory}
-      >
+      <SettingsDialog settings={settings} onSettingsChange={setSettings}>
         <Button variant="ghost" className="w-full justify-start">
           <SettingsIcon className="mr-2" />
           Settings
@@ -138,6 +140,15 @@ export function ChatLayout() {
           >
             <MessageSquarePlus className="mr-2" />
             New Chat
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start text-muted-foreground hover:text-destructive"
+            onClick={() => setIsClearHistoryAlertOpen(true)}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Clear History
           </Button>
         </SidebarHeader>
         <SidebarContent>
@@ -187,70 +198,7 @@ export function ChatLayout() {
       </Sidebar>
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
-          <Sheet>
-            <SidebarTrigger className="md:hidden" />
-            <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
-              <div className="flex-1 overflow-y-auto p-4">
-                <SheetHeader>
-                  <SheetTitle>ALPHA AI</SheetTitle>
-                  <SheetDescription>
-                    Your intelligent AI assistant.
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="py-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={createNewChat}
-                  >
-                    <MessageSquarePlus className="mr-2" />
-                    New Chat
-                  </Button>
-                  <nav className="mt-4 grid gap-1">
-                    {chats.map(chat => (
-                      <SidebarMenuButton
-                        key={chat.id}
-                        isActive={chat.id === activeChatId}
-                        onClick={() => setActiveChatId(chat.id)}
-                        className="justify-start"
-                      >
-                        <span>{chat.title}</span>
-                      </SidebarMenuButton>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-              <div className="mt-auto shrink-0 border-t p-2">
-                {user && (
-                  <div className="mb-2 flex items-center gap-2 border-b pb-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={user.photoURL ?? ''}
-                        alt={user.displayName ?? 'User'}
-                      />
-                      <AvatarFallback>
-                        {user.displayName?.charAt(0) ?? 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="truncate text-sm font-medium">
-                      {user.displayName}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="ml-auto"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut />
-                      <span className="sr-only">Sign Out</span>
-                    </Button>
-                  </div>
-                )}
-                {sidebarFooterContent}
-              </div>
-            </SheetContent>
-          </Sheet>
+          <SidebarTrigger className="md:hidden" />
           <h1 className="text-lg font-semibold">{activeChat?.title}</h1>
         </header>
 
@@ -266,6 +214,29 @@ export function ChatLayout() {
           </div>
         )}
       </SidebarInset>
+      <AlertDialog
+        open={isClearHistoryAlertOpen}
+        onOpenChange={setIsClearHistoryAlertOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will permanently delete all of your chat history and
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmClearHistory}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 }
