@@ -32,9 +32,13 @@ import {
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
 import {useAuth} from '@/hooks/use-auth';
-import {app} from '@/lib/firebase';
 import {getAuth, signOut} from 'firebase/auth';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+import {
+  onChatsSnapshot,
+  createNewChatInFirestore,
+  deleteAllUserChats,
+} from '@/lib/firestore';
 
 const defaultSettings: Settings = {
   model: 'auto',
@@ -49,33 +53,37 @@ export function ChatLayout() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const auth = getAuth(app);
+  const auth = getAuth();
 
-  const createNewChat = useCallback(() => {
-    const newChatId = crypto.randomUUID();
-    const newChat: Chat = {
-      id: newChatId,
-      title: 'New Chat',
-      messages: [
-        {
-          id: crypto.randomUUID(),
-          role: 'assistant',
-          content: 'How can I help you today?',
-          createdAt: new Date().toISOString(),
-        },
-      ],
-    };
-    setChats(prev => [...prev, newChat]);
+  // Listen for real-time chat updates
+  useEffect(() => {
+    if (user?.uid) {
+      const unsubscribe = onChatsSnapshot(user.uid, newChats => {
+        setChats(newChats);
+        // If there's no active chat, or the active chat was deleted, set a new one.
+        if (
+          newChats.length > 0 &&
+          (!activeChatId || !newChats.find(c => c.id === activeChatId))
+        ) {
+          setActiveChatId(newChats[0].id);
+        } else if (newChats.length === 0) {
+          setActiveChatId('');
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, [user?.uid, activeChatId]);
+
+  const createNewChat = useCallback(async () => {
+    if (!user) return;
+    const newChatId = await createNewChatInFirestore(user.uid);
     setActiveChatId(newChatId);
-  }, []);
+  }, [user]);
 
+  // Create an initial chat if none exist
   useEffect(() => {
     if (user && chats.length === 0) {
       createNewChat();
-    }
-    if (!user) {
-      setChats([]);
-      setActiveChatId('');
     }
   }, [user, chats.length, createNewChat]);
 
@@ -85,25 +93,11 @@ export function ChatLayout() {
 
   const activeChat = chats.find(chat => chat.id === activeChatId);
 
-  const updateChat = (chatId: string, messages: Chat['messages']) => {
-    setChats(prev =>
-      prev.map(c =>
-        c.id === chatId
-          ? {
-              ...c,
-              messages,
-              title:
-                c.title === 'New Chat' && messages.length > 1
-                  ? messages[1].content.substring(0, 30) + '...'
-                  : c.title,
-            }
-          : c
-      )
-    );
-  };
-
-  const clearChatHistory = () => {
-    setChats([]);
+  const clearChatHistory = async () => {
+    if (!user) return;
+    await deleteAllUserChats(user.uid);
+    // The onSnapshot listener will automatically clear the chats from state.
+    // We create a new one to not leave the user with a blank screen.
     createNewChat();
   };
 
@@ -262,8 +256,8 @@ export function ChatLayout() {
 
         {activeChat ? (
           <ChatPanel
+            key={activeChat.id}
             chat={activeChat}
-            updateChat={updateChat}
             settings={settings}
           />
         ) : (

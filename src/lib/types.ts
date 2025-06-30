@@ -1,14 +1,16 @@
 export type Message = {
   id: string;
-  role: 'user' | 'assistant' | 'context';
+  role: 'user' | 'assistant';
   content: string;
   createdAt: string;
 };
 
 export type Chat = {
   id: string;
+  userId: string;
   title: string;
-  messages: Message[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Model =
