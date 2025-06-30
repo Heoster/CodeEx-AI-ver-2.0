@@ -1,7 +1,7 @@
 'use client';
 
-import {initializeApp, getApps, getApp} from 'firebase/app';
-import {getAuth, GoogleAuthProvider} from 'firebase/auth';
+import {initializeApp, getApps, getApp, type FirebaseApp} from 'firebase/app';
+import {getAuth, GoogleAuthProvider, type Auth} from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -34,10 +34,17 @@ if (missingConfigKeys.length > 0) {
   );
 }
 
-
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
+let app: FirebaseApp;
+let auth: Auth;
+
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
+}
+
+auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 export {app, auth, googleProvider};
