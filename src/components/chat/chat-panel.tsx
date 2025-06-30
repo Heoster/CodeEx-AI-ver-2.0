@@ -60,7 +60,10 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
 
     if (settings.enableSpeech && assistantContent) {
       try {
-        const speechResponse = await getSpeechAudio(assistantContent);
+        const speechResponse = await getSpeechAudio(
+          assistantContent,
+          settings.voice
+        );
         if ('audio' in speechResponse) {
           setAudioUrl(speechResponse.audio);
         } else {

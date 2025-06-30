@@ -156,6 +156,28 @@ export function SettingsDialog({
               className="col-span-3"
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="voice" className="text-right">
+              Voice
+            </Label>
+            <Select
+              value={settings.voice}
+              onValueChange={(value: Settings['voice']) =>
+                onSettingsChange({...settings, voice: value})
+              }
+              disabled={!settings.enableSpeech}
+            >
+              <SelectTrigger id="voice" className="col-span-3">
+                <SelectValue placeholder="Select voice" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Algenib">Algenib (Female)</SelectItem>
+                <SelectItem value="Achernar">Achernar (Female)</SelectItem>
+                <SelectItem value="Enceladus">Enceladus (Male)</SelectItem>
+                <SelectItem value="Heka">Heka (Male)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <Separator />
         <div className="space-y-4 pt-4">

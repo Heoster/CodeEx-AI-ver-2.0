@@ -4,7 +4,7 @@ import {generateAnswerFromContext} from '@/ai/flows/generate-answer-from-context
 import {solveQuiz} from '@/ai/flows/solve-quizzes';
 import {summarizeInformation} from '@/ai/flows/summarize-information';
 import {textToSpeech} from '@/ai/flows/text-to-speech';
-import {type Message, type Settings, type Model} from '@/lib/types';
+import {type Message, type Settings, type Model, type Voice} from '@/lib/types';
 
 export async function generateResponse(
   messages: Message[],
@@ -70,10 +70,11 @@ export async function generateResponse(
 }
 
 export async function getSpeechAudio(
-  text: string
+  text: string,
+  voice: Voice
 ): Promise<{audio: string} | {error: string}> {
   try {
-    const response = await textToSpeech(text);
+    const response = await textToSpeech({text, voice});
     return {audio: response.audio};
   } catch (error) {
     console.error('Error generating speech audio:', error);

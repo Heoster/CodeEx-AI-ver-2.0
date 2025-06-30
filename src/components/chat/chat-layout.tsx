@@ -41,6 +41,7 @@ const defaultSettings: Settings = {
   tone: 'helpful',
   technicalLevel: 'intermediate',
   enableSpeech: true,
+  voice: 'Algenib',
 };
 
 export function ChatLayout() {
