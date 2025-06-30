@@ -1,10 +1,10 @@
-
 'use client';
 
 import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from 'firebase/auth';
 import {auth, googleProvider} from '@/lib/firebase';
 import {Button} from '@/components/ui/button';
@@ -24,6 +24,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import Image from 'next/image';
 import ReCAPTCHA from 'react-google-recaptcha';
 
@@ -89,6 +97,11 @@ export default function LoginPage() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
+  // New state for name prompt
+  const [isNamePromptOpen, setIsNamePromptOpen] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
+  const [isSavingName, setIsSavingName] = useState(false);
+
   const handleCaptchaChange = (token: string | null) => {
     setCaptchaToken(token);
     setError(null);
@@ -117,6 +130,7 @@ export default function LoginPage() {
     }
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      // The useEffect will handle prompting for name
     } catch (error: any) {
       console.error('Error signing up with email: ', error);
       setError(getFirebaseAuthErrorMessage(error));
@@ -134,6 +148,7 @@ export default function LoginPage() {
     }
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      // The useEffect will handle prompting for name if needed
     } catch (error: any) {
       console.error('Error signing in with email: ', error);
       setError(getFirebaseAuthErrorMessage(error));
@@ -142,13 +157,45 @@ export default function LoginPage() {
     }
   };
 
+  // New function to save user's display name
+  const handleSaveName = async () => {
+    if (!newUserName.trim()) {
+      setError('Please enter your name.');
+      return;
+    }
+    if (!auth.currentUser) {
+      setError('An error occurred. Please try logging in again.');
+      return;
+    }
+    setIsSavingName(true);
+    setError(null);
+    try {
+      await updateProfile(auth.currentUser, {displayName: newUserName.trim()});
+      // The useAuth hook will detect the user change, and the useEffect below will redirect.
+      setIsNamePromptOpen(false);
+    } catch (error) {
+      console.error('Error updating profile: ', error);
+      setError('Could not save your name. Please try again.');
+    } finally {
+      setIsSavingName(false);
+    }
+  };
+
   useEffect(() => {
+    // If user is loaded
     if (!loading && user) {
-      router.push('/');
+      // and has a display name, redirect to home.
+      if (user.displayName) {
+        router.push('/');
+      } else {
+        // otherwise, prompt for a name.
+        setIsNamePromptOpen(true);
+      }
     }
   }, [user, loading, router]);
 
-  if (loading || user) {
+  // Skeleton loading screen while checking auth state or redirecting
+  if (loading || (user && user.displayName)) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Skeleton className="h-64 w-full max-w-md" />
@@ -157,125 +204,162 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mb-4 flex justify-center">
-            <Image
-              src="/favicon.ico"
-              alt="CodeEx Logo"
-              width={48}
-              height={48}
-            />
-          </div>
-          <CardTitle className="text-2xl font-bold">Welcome to ALPHA AI</CardTitle>
-          <CardDescription>
-            Sign in to access your intelligent assistant
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <form onSubmit={handleEmailSignIn} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="relative space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type={isPasswordVisible ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-1 top-7 h-7 w-7"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                >
-                  {isPasswordVisible ? (
-                    <EyeOff size={16} />
-                  ) : (
-                    <Eye size={16} />
-                  )}
-                </Button>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox id="remember-me" />
-                <Label htmlFor="remember-me" className="text-sm font-normal">
-                  Remember me
-                </Label>
-              </div>
-
-              <div className="flex justify-center">
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
-                  onChange={handleCaptchaChange}
-                />
-              </div>
-
-              {error && <p className="text-sm text-destructive">{error}</p>}
-
-              <div className="flex gap-2 pt-2">
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={!captchaToken}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full"
-                  onClick={handleEmailSignUp}
-                  disabled={!captchaToken}
-                >
-                  Sign Up
-                </Button>
-              </div>
-            </form>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  Or sign in with Google
-                </span>
-              </div>
+    <>
+      <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mb-4 flex justify-center">
+              <Image
+                src="/favicon.ico"
+                alt="CodeEx Logo"
+                width={48}
+                height={48}
+              />
             </div>
+            <CardTitle className="text-2xl font-bold">
+              Welcome to ALPHA AI
+            </CardTitle>
+            <CardDescription>
+              Sign in to access your intelligent assistant
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <form onSubmit={handleEmailSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="relative space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type={isPasswordVisible ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-7 h-7 w-7"
+                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOff size={16} />
+                    ) : (
+                      <Eye size={16} />
+                    )}
+                  </Button>
+                </div>
 
-            <Button
-              onClick={handleGoogleSignIn}
-              variant="outline"
-              className="w-full"
-            >
-              <GoogleIcon className="mr-2 h-4 w-4" />
-              Sign In with Google
-            </Button>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="remember-me" />
+                  <Label htmlFor="remember-me" className="text-sm font-normal">
+                    Remember me
+                  </Label>
+                </div>
 
+                <div className="flex justify-center">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
+                    onChange={handleCaptchaChange}
+                  />
+                </div>
+
+                {error && <p className="text-sm text-destructive">{error}</p>}
+
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!captchaToken}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full"
+                    onClick={handleEmailSignUp}
+                    disabled={!captchaToken}
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </form>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">
+                    Or sign in with Google
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                onClick={handleGoogleSignIn}
+                variant="outline"
+                className="w-full"
+              >
+                <GoogleIcon className="mr-2 h-4 w-4" />
+                Sign In with Google
+              </Button>
+            </div>
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-xs text-muted-foreground">
+              CodeEx powered by Heoster.
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
+
+      <Dialog open={isNamePromptOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Welcome to ALPHA AI!</DialogTitle>
+            <DialogDescription>
+              Please enter your name. This will be displayed in your chat
+              sessions.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                placeholder="Your name"
+                value={newUserName}
+                onChange={e => setNewUserName(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    handleSaveName();
+                  }
+                }}
+              />
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
           </div>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-xs text-muted-foreground">
-            CodeEx powered by Heoster.
-          </p>
-        </CardFooter>
-      </Card>
-    </div>
+          <DialogFooter>
+            <Button onClick={handleSaveName} disabled={isSavingName}>
+              {isSavingName ? 'Saving...' : 'Save and Continue'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
