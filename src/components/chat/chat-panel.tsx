@@ -104,17 +104,20 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
 
       <div className="border-t bg-background px-4 py-2 md:py-4">
         <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
-        <p className="px-2 pt-2 text-center text-xs text-muted-foreground">
-          CodeEx powered by Heoster. Try commands like{' '}
-          <code className="rounded bg-muted px-1 py-0.5 font-semibold">
-            /solve
-          </code>{' '}
-          or{' '}
-          <code className="rounded bg-muted px-1 py-0.5 font-semibold">
-            /summarize
-          </code>
-          .
-        </p>
+        <div className="px-2 pt-2 text-center text-xs text-muted-foreground">
+          <p>
+            Try commands like{' '}
+            <code className="rounded bg-muted px-1 py-0.5 font-semibold">
+              /solve
+            </code>{' '}
+            or{' '}
+            <code className="rounded bg-muted px-1 py-0.5 font-semibold">
+              /summarize
+            </code>
+            .
+          </p>
+          <p>CodeEx powered by Heoster.</p>
+        </div>
       </div>
       {audioUrl && (
         <audio ref={audioRef} src={audioUrl} style={{display: 'none'}} />
