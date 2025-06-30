@@ -24,6 +24,7 @@ import type {Settings, Model} from '@/lib/types';
 import {Switch} from '@/components/ui/switch';
 import {Separator} from '@/components/ui/separator';
 import {useTheme} from '@/hooks/use-theme';
+import Link from 'next/link';
 
 interface SettingsDialogProps {
   children: ReactNode;
@@ -158,7 +159,7 @@ export function SettingsDialog({
         </div>
         <Separator />
         <div className="space-y-4 pt-4">
-          <div className="space-y-1 text-center">
+          <div className="space-y-2 text-center">
             <p className="text-sm text-muted-foreground">
               For support or inquiries, please email us at{' '}
               <a
@@ -167,6 +168,18 @@ export function SettingsDialog({
               >
                 the.heoster@mail.com
               </a>
+              .
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Read our{' '}
+              <Link
+                href="/privacy"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </Link>
               .
             </p>
           </div>

@@ -35,6 +35,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import Image from 'next/image';
+import Link from 'next/link';
 import ReCAPTCHA from 'react-google-recaptcha';
 import {sendWelcomeEmail} from '@/ai/flows/send-welcome-email';
 
@@ -335,7 +336,19 @@ export default function LoginPage() {
               </Button>
             </div>
           </CardContent>
-          <CardFooter className="justify-center">
+          <CardFooter className="flex-col items-center justify-center gap-2 pt-4">
+            <div className="text-center text-xs text-muted-foreground">
+              By signing in, you agree to our{' '}
+              <Link
+                href="/privacy"
+                className="underline hover:text-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </Link>
+              .
+            </div>
             <p className="text-xs text-muted-foreground">
               CodeEx powered by Heoster.
             </p>
