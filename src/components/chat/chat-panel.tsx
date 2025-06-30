@@ -7,27 +7,23 @@ import {ExamplePrompts} from './example-prompts';
 import {useState, useRef, useEffect} from 'react';
 import {generateResponse, getSpeechAudio} from '@/app/actions';
 import {useAuth} from '@/hooks/use-auth';
-import {onMessagesSnapshot, addMessageToChat} from '@/lib/firestore';
 
 interface ChatPanelProps {
   chat: Chat;
   settings: Settings;
+  messages: Message[];
+  addMessage: (
+    chatId: string,
+    message: Omit<Message, 'id' | 'createdAt'>,
+    newTitle?: string
+  ) => void;
 }
 
-export function ChatPanel({chat, settings}: ChatPanelProps) {
+export function ChatPanel({chat, settings, messages, addMessage}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {user} = useAuth();
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  // Listen for message updates
-  useEffect(() => {
-    if (chat.id) {
-      const unsubscribe = onMessagesSnapshot(chat.id, setMessages);
-      return () => unsubscribe();
-    }
-  }, [chat.id]);
 
   const handleSendMessage = async (messageContent: string) => {
     if (isLoading || !user) return;
@@ -39,20 +35,19 @@ export function ChatPanel({chat, settings}: ChatPanelProps) {
       content: messageContent,
     };
 
-    // Determine if we need to set a new title for the chat
-    const isNewChat = messages.length <= 1; // It will be 1 (initial assistant message) for a new chat
-    const newTitle = isNewChat
-      ? messageContent.substring(0, 30) + (messageContent.length > 30 ? '...' : '')
-      : undefined;
-
-    // Add user message to Firestore first. The UI will update via the listener.
-    await addMessageToChat(chat.id, newUserMessage, newTitle);
-
-    // Get all messages for context. Firestore listener is async, so we manually construct the list for the AI.
+    // Construct the message list for the AI, including the new message
     const currentMessagesForAI: Message[] = [
       ...messages,
       {...newUserMessage, id: 'temp-user', createdAt: new Date().toISOString()},
     ];
+
+    // Add user message to state. The new title is determined here.
+    const isNewChat = messages.length <= 1;
+    const newTitle = isNewChat
+      ? messageContent.substring(0, 30) +
+        (messageContent.length > 30 ? '...' : '')
+      : undefined;
+    addMessage(chat.id, newUserMessage, newTitle);
 
     const response = await generateResponse(currentMessagesForAI, settings);
 
@@ -68,8 +63,8 @@ export function ChatPanel({chat, settings}: ChatPanelProps) {
       content: assistantContent,
     };
 
-    // Add assistant message to Firestore
-    await addMessageToChat(chat.id, assistantMessage);
+    // Add assistant message to state
+    addMessage(chat.id, assistantMessage);
 
     if (settings.enableSpeech && assistantContent) {
       try {

@@ -1,6 +1,6 @@
 'use client';
 
-import {useState, useEffect, useCallback} from 'react';
+import {useState} from 'react';
 import Image from 'next/image';
 import {
   SidebarProvider,
@@ -24,7 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {type Chat, type Settings} from '@/lib/types';
+import {type Settings} from '@/lib/types';
 import {ChatPanel} from './chat-panel';
 import {Button} from '@/components/ui/button';
 import {
@@ -38,11 +38,7 @@ import {SettingsDialog} from '../settings-dialog';
 import {useAuth} from '@/hooks/use-auth';
 import {getAuth, signOut} from 'firebase/auth';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
-import {
-  onChatsSnapshot,
-  createNewChatInFirestore,
-  deleteAllUserChats,
-} from '@/lib/firestore';
+import {useChatHistory} from '@/hooks/use-chat-history';
 
 const defaultSettings: Settings = {
   model: 'auto',
@@ -54,56 +50,27 @@ const defaultSettings: Settings = {
 
 export function ChatLayout() {
   const {user} = useAuth();
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [activeChatId, setActiveChatId] = useState<string>('');
+  const {
+    chats,
+    activeChat,
+    activeChatId,
+    setActiveChatId,
+    activeChatMessages,
+    createNewChat,
+    deleteAllUserChats,
+    addMessage,
+  } = useChatHistory();
+
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [isClearHistoryAlertOpen, setIsClearHistoryAlertOpen] = useState(false);
   const auth = getAuth();
-
-  // Listen for real-time chat updates
-  useEffect(() => {
-    if (user?.uid) {
-      const unsubscribe = onChatsSnapshot(user.uid, newChats => {
-        setChats(newChats);
-        // If there's no active chat, or the active chat was deleted, set a new one.
-        if (
-          newChats.length > 0 &&
-          (!activeChatId || !newChats.find(c => c.id === activeChatId))
-        ) {
-          setActiveChatId(newChats[0].id);
-        } else if (newChats.length === 0) {
-          setActiveChatId('');
-        }
-      });
-      return () => unsubscribe();
-    }
-  }, [user?.uid, activeChatId]);
-
-  const createNewChat = useCallback(async () => {
-    if (!user) return;
-    const newChatId = await createNewChatInFirestore(user.uid);
-    setActiveChatId(newChatId);
-  }, [user]);
-
-  // Create an initial chat if none exist
-  useEffect(() => {
-    if (user && chats.length === 0) {
-      createNewChat();
-    }
-  }, [user, chats.length, createNewChat]);
 
   const handleSignOut = async () => {
     await signOut(auth);
   };
 
-  const activeChat = chats.find(chat => chat.id === activeChatId);
-
   const handleConfirmClearHistory = async () => {
-    if (!user) return;
-    await deleteAllUserChats(user.uid);
-    // The onSnapshot listener will automatically clear the chats from state.
-    // We create a new one to not leave the user with a blank screen.
-    createNewChat();
+    deleteAllUserChats();
     setIsClearHistoryAlertOpen(false);
   };
 
@@ -137,6 +104,7 @@ export function ChatLayout() {
             size="sm"
             className="w-full justify-start"
             onClick={createNewChat}
+            disabled={!user}
           >
             <MessageSquarePlus className="mr-2" />
             New Chat
@@ -146,6 +114,7 @@ export function ChatLayout() {
             size="sm"
             className="w-full justify-start text-muted-foreground hover:text-destructive"
             onClick={() => setIsClearHistoryAlertOpen(true)}
+            disabled={!user || chats.length === 0}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Clear History
@@ -207,6 +176,8 @@ export function ChatLayout() {
             key={activeChat.id}
             chat={activeChat}
             settings={settings}
+            messages={activeChatMessages}
+            addMessage={addMessage}
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -222,8 +193,8 @@ export function ChatLayout() {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will permanently delete all of your chat history and
-              cannot be undone.
+              This action will permanently delete all of your chat history from
+              this device and cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
