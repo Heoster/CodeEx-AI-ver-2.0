@@ -4,8 +4,8 @@ import {type Chat, type Settings, type Message} from '@/lib/types';
 import {ChatInput} from './chat-input';
 import {ChatMessages} from './chat-messages';
 import {ExamplePrompts} from './example-prompts';
-import {useState} from 'react';
-import {generateResponse} from '@/app/actions';
+import {useState, useRef, useEffect} from 'react';
+import {generateResponse, getSpeechAudio} from '@/app/actions';
 import {useAuth} from '@/hooks/use-auth';
 
 interface ChatPanelProps {
@@ -17,10 +17,13 @@ interface ChatPanelProps {
 export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {user} = useAuth();
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleSendMessage = async (messageContent: string) => {
     if (isLoading) return;
     setIsLoading(true);
+    setAudioUrl(null);
 
     const newUserMessage: Message = {
       id: crypto.randomUUID(),
@@ -34,25 +37,50 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
 
     const response = await generateResponse(newMessages, settings);
 
+    let assistantContent = '';
     if ('error' in response) {
+      assistantContent = response.error;
       const assistantErrorMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: response.error,
+        content: assistantContent,
         createdAt: new Date().toISOString(),
       };
       updateChat(chat.id, [...newMessages, assistantErrorMessage]);
     } else {
+      assistantContent = response.content;
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: response.content,
+        content: assistantContent,
         createdAt: new Date().toISOString(),
       };
       updateChat(chat.id, [...newMessages, assistantMessage]);
     }
+
+    if (settings.enableSpeech && assistantContent) {
+      try {
+        const speechResponse = await getSpeechAudio(assistantContent);
+        if ('audio' in speechResponse) {
+          setAudioUrl(speechResponse.audio);
+        } else {
+          console.error('Failed to generate speech:', speechResponse.error);
+        }
+      } catch (e) {
+        console.error('Exception during speech generation:', e);
+      }
+    }
+
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (audioUrl && audioRef.current) {
+      audioRef.current.play().catch(error => {
+        console.error('Error playing audio:', error);
+      });
+    }
+  }, [audioUrl]);
 
   const isNewChat = chat.messages.length <= 1;
 
@@ -88,6 +116,9 @@ export function ChatPanel({chat, settings, updateChat}: ChatPanelProps) {
           .
         </p>
       </div>
+      {audioUrl && (
+        <audio ref={audioRef} src={audioUrl} style={{display: 'none'}} />
+      )}
     </div>
   );
 }

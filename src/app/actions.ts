@@ -3,6 +3,7 @@
 import {generateAnswerFromContext} from '@/ai/flows/generate-answer-from-context';
 import {solveQuiz} from '@/ai/flows/solve-quizzes';
 import {summarizeInformation} from '@/ai/flows/summarize-information';
+import {textToSpeech} from '@/ai/flows/text-to-speech';
 import {type Message, type Settings, type Model} from '@/lib/types';
 
 export async function generateResponse(
@@ -65,5 +66,17 @@ export async function generateResponse(
   } catch (error) {
     console.error('Error generating response:', error);
     return {error: 'Sorry, I encountered an error. Please try again.'};
+  }
+}
+
+export async function getSpeechAudio(
+  text: string
+): Promise<{audio: string} | {error: string}> {
+  try {
+    const response = await textToSpeech(text);
+    return {audio: response.audio};
+  } catch (error) {
+    console.error('Error generating speech audio:', error);
+    return {error: 'Sorry, I could not generate audio for this message.'};
   }
 }
