@@ -62,8 +62,13 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const getFirebaseAuthErrorMessage = (error: any): string => {
-  // Handle the specific internal assertion error first, as it may not have a standard code.
-  if (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) {
+  // Handle the specific internal assertion error first. This error is cryptic
+  // and doesn't have a standard code, so we check the message directly.
+  // We also check the string representation for maximum robustness.
+  if (
+    (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) ||
+    String(error).includes('INTERNAL ASSERTION FAILED')
+  ) {
     return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
   }
 
