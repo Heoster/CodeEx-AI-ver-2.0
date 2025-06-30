@@ -11,7 +11,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {useRouter} from 'next/navigation';
 import {useAuth} from '@/hooks/use-auth';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Eye, EyeOff} from 'lucide-react';
 import {Checkbox} from '@/components/ui/checkbox';
@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Image from 'next/image';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" {...props}>
@@ -82,20 +83,37 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
+    setError(null);
+  };
 
   const handleGoogleSignIn = async () => {
     setError(null);
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA to sign in with Google.');
+      return;
+    }
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
       console.error('Error signing in with Google: ', error);
       setError(getFirebaseAuthErrorMessage(error));
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   };
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA before proceeding.');
+      return;
+    }
     if (password.length < 6) {
       setError('Password should be at least 6 characters.');
       return;
@@ -105,17 +123,25 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error('Error signing up with email: ', error);
       setError(getFirebaseAuthErrorMessage(error));
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA before proceeding.');
+      return;
+    }
     try {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       console.error('Error signing in with email: ', error);
       setError(getFirebaseAuthErrorMessage(error));
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     }
   };
 
@@ -197,9 +223,21 @@ export default function LoginPage() {
               </div>
             </div>
 
+            <div className="flex justify-center">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
+                onChange={handleCaptchaChange}
+              />
+            </div>
+
             {error && <p className="text-sm text-destructive">{error}</p>}
             <div className="flex gap-2 pt-2">
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={!captchaToken}
+              >
                 Sign In
               </Button>
               <Button
@@ -207,6 +245,7 @@ export default function LoginPage() {
                 variant="secondary"
                 className="w-full"
                 onClick={handleEmailSignUp}
+                disabled={!captchaToken}
               >
                 Sign Up
               </Button>
@@ -228,6 +267,7 @@ export default function LoginPage() {
             onClick={handleGoogleSignIn}
             variant="outline"
             className="w-full"
+            disabled={!captchaToken}
           >
             <GoogleIcon className="mr-2 h-4 w-4" />
             Sign In with Google
