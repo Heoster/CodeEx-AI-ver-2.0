@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   getAuth,
+  getAdditionalUserInfo,
 } from 'firebase/auth';
 import {app, googleProvider} from '@/lib/firebase';
 import {Button} from '@/components/ui/button';
@@ -35,6 +36,7 @@ import {
 } from '@/components/ui/dialog';
 import Image from 'next/image';
 import ReCAPTCHA from 'react-google-recaptcha';
+import {sendWelcomeEmail} from '@/ai/flows/send-welcome-email';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" {...props}>
@@ -80,7 +82,7 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/popup-blocked':
       return 'Sign-in failed. Please allow pop-ups for this site and try again.';
     case 'auth/unauthorized-domain':
-      return 'This domain is not authorized for authentication. Please add it to the authorized domains list in your Firebase project settings.';
+      return 'This domain is not authorized for authentication. Please contact the developer.';
     case 'auth/internal-error':
       return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
     case 'auth/firebase-app-check-token-is-invalid':
@@ -114,7 +116,14 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const additionalInfo = getAdditionalUserInfo(result);
+      if (additionalInfo?.isNewUser && result.user.email && result.user.displayName) {
+        await sendWelcomeEmail({
+          email: result.user.email,
+          displayName: result.user.displayName,
+        });
+      }
     } catch (error: any) {
       console.error('Error signing in with Google: ', error);
       setError(getFirebaseAuthErrorMessage(error));
@@ -161,21 +170,28 @@ export default function LoginPage() {
     }
   };
 
-  // New function to save user's display name
   const handleSaveName = async () => {
     if (!newUserName.trim()) {
       setError('Please enter your name.');
       return;
     }
-    if (!auth.currentUser) {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
       setError('An error occurred. Please try logging in again.');
       return;
     }
     setIsSavingName(true);
     setError(null);
     try {
-      await updateProfile(auth.currentUser, {displayName: newUserName.trim()});
-      // The useAuth hook will detect the user change, and the useEffect below will redirect.
+      await updateProfile(currentUser, {displayName: newUserName.trim()});
+
+      if (currentUser.email) {
+        await sendWelcomeEmail({
+          email: currentUser.email,
+          displayName: newUserName.trim(),
+        });
+      }
+      
       setIsNamePromptOpen(false);
     } catch (error) {
       console.error('Error updating profile: ', error);
@@ -186,19 +202,15 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
-    // If user is loaded
     if (!loading && user) {
-      // and has a display name, redirect to home.
       if (user.displayName) {
         router.push('/');
       } else {
-        // otherwise, prompt for a name.
         setIsNamePromptOpen(true);
       }
     }
   }, [user, loading, router]);
 
-  // Skeleton loading screen while checking auth state or redirecting
   if (loading || (user && user.displayName)) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
@@ -331,7 +343,7 @@ export default function LoginPage() {
         </Card>
       </div>
 
-      <Dialog open={isNamePromptOpen}>
+      <Dialog open={isNamePromptOpen} onOpenChange={setIsNamePromptOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Welcome to ALPHA AI!</DialogTitle>
