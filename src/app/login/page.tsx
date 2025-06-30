@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -70,7 +71,7 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/popup-blocked':
       return 'Sign-in failed. Please allow pop-ups for this site and try again.';
     case 'auth/unauthorized-domain':
-      return 'This domain is not authorized for authentication. Please contact the developer.';
+      return 'This domain is not authorized for authentication. Please add it to the authorized domains list in your Firebase project settings.';
     default:
       return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
@@ -93,17 +94,11 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = async () => {
     setError(null);
-    if (!captchaToken) {
-      setError('Please complete the CAPTCHA to sign in with Google.');
-      return;
-    }
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
       console.error('Error signing in with Google: ', error);
       setError(getFirebaseAuthErrorMessage(error));
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
     }
   };
 
@@ -111,7 +106,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     if (!captchaToken) {
-      setError('Please complete the CAPTCHA before proceeding.');
+      setError('Please complete the CAPTCHA before signing up.');
       return;
     }
     if (password.length < 6) {
@@ -132,7 +127,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     if (!captchaToken) {
-      setError('Please complete the CAPTCHA before proceeding.');
+      setError('Please complete the CAPTCHA before signing in.');
       return;
     }
     try {
@@ -177,101 +172,101 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleEmailSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="relative space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type={isPasswordVisible ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-7 h-7 w-7"
-                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-              >
-                {isPasswordVisible ? (
-                  <EyeOff size={16} />
-                ) : (
-                  <Eye size={16} />
-                )}
-              </Button>
+          <div className="space-y-4">
+            <Button
+              onClick={handleGoogleSignIn}
+              variant="outline"
+              className="w-full"
+            >
+              <GoogleIcon className="mr-2 h-4 w-4" />
+              Sign In with Google
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with email
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <form onSubmit={handleEmailSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="relative space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type={isPasswordVisible ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-7 h-7 w-7"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                >
+                  {isPasswordVisible ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
+                </Button>
+              </div>
+
               <div className="flex items-center space-x-2">
                 <Checkbox id="remember-me" />
                 <Label htmlFor="remember-me" className="text-sm font-normal">
                   Remember me
                 </Label>
               </div>
-            </div>
 
-            <div className="flex justify-center">
-              <ReCAPTCHA
-                ref={recaptchaRef}
-                sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
-                onChange={handleCaptchaChange}
-              />
-            </div>
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
+                  onChange={handleCaptchaChange}
+                />
+              </div>
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <div className="flex gap-2 pt-2">
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={!captchaToken}
-              >
-                Sign In
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                className="w-full"
-                onClick={handleEmailSignUp}
-                disabled={!captchaToken}
-              >
-                Sign Up
-              </Button>
-            </div>
-          </form>
+              {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
+              <div className="flex gap-2 pt-2">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!captchaToken}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full"
+                  onClick={handleEmailSignUp}
+                  disabled={!captchaToken}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </form>
           </div>
-
-          <Button
-            onClick={handleGoogleSignIn}
-            variant="outline"
-            className="w-full"
-            disabled={!captchaToken}
-          >
-            <GoogleIcon className="mr-2 h-4 w-4" />
-            Sign In with Google
-          </Button>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-xs text-muted-foreground">
