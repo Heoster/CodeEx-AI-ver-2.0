@@ -80,7 +80,7 @@ body {
 
   /* Custom Themes */
   /* Zinc */
-  .theme-zinc .dark {
+  .dark.theme-zinc {
     --primary: 240 5.2% 33.9%;
     --primary-foreground: 240 5.9% 10%;
   }
@@ -89,7 +89,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Slate */
-  .theme-slate .dark {
+  .dark.theme-slate {
     --primary: 240 4.8% 46.1%;
     --primary-foreground: 240 3.7% 15.9%;
   }
@@ -98,7 +98,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Stone */
-  .theme-stone .dark {
+  .dark.theme-stone {
     --primary: 240 5.3% 46.1%;
     --primary-foreground: 240 4.1% 19.8%;
   }
@@ -107,7 +107,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Gray */
-  .theme-gray .dark {
+  .dark.theme-gray {
     --primary: 240 4.8% 46.1%;
     --primary-foreground: 240 3.8% 18.2%;
   }
@@ -116,7 +116,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Neutral */
-  .theme-neutral .dark {
+  .dark.theme-neutral {
     --primary: 0 0% 45.1%;
     --primary-foreground: 0 0% 19.4%;
   }
@@ -125,7 +125,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Red */
-  .theme-red .dark {
+  .dark.theme-red {
     --primary: 0 72.2% 50.6%;
     --primary-foreground: 0 85.7% 97.3%;
   }
@@ -134,7 +134,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Rose */
-  .theme-rose .dark {
+  .dark.theme-rose {
     --primary: 346.8 77.2% 49.8%;
     --primary-foreground: 355.7 100% 97.3%;
   }
@@ -143,7 +143,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Orange */
-  .theme-orange .dark {
+  .dark.theme-orange {
     --primary: 24.6 95% 53.1%;
     --primary-foreground: 20 14.3% 4.1%;
   }
@@ -152,7 +152,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Green */
-  .theme-green .dark {
+  .dark.theme-green {
     --primary: 142.1 76.2% 36.3%;
     --primary-foreground: 144.9 80.4% 97.3%;
   }
@@ -161,7 +161,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Blue */
-  .theme-blue .dark {
+  .dark.theme-blue {
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
   }
@@ -170,7 +170,7 @@ body {
     --primary-foreground: 210 40% 98%;
   }
   /* Violet */
-  .theme-violet .dark {
+  .dark.theme-violet {
     --primary: 262.1 83.3% 57.8%;
     --primary-foreground: 263.4 90.9% 97.3%;
   }
