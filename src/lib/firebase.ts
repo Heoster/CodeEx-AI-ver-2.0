@@ -2,6 +2,7 @@
 
 import {initializeApp, getApps, getApp, type FirebaseApp} from 'firebase/app';
 import {GoogleAuthProvider} from 'firebase/auth';
+import {initializeAppCheck, ReCaptchaV3Provider} from 'firebase/app-check';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -36,6 +37,19 @@ if (missingConfigKeys.length > 0) {
 
 // Initialize Firebase
 const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+
+// Initialize App Check
+if (typeof window !== 'undefined') {
+  if (!process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) {
+    console.error('Missing NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY environment variable for Firebase App Check.');
+  } else {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY),
+      isTokenAutoRefreshEnabled: true,
+    });
+  }
+}
+
 
 const googleProvider = new GoogleAuthProvider();
 

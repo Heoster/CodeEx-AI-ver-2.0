@@ -83,6 +83,8 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
       return 'This domain is not authorized for authentication. Please add it to the authorized domains list in your Firebase project settings.';
     case 'auth/internal-error':
       return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
+    case 'auth/firebase-app-check-token-is-invalid':
+      return 'App Check token is invalid. This app is not configured correctly. Please contact the developer.';
     default:
       return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
