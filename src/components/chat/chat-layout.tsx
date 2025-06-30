@@ -93,11 +93,11 @@ export function ChatLayout() {
           <div className="flex items-center gap-2">
             <Image
               src="/favicon.ico"
-              alt="ALPHA AI icon"
+              alt="CODEEX AI icon"
               width={24}
               height={24}
             />
-            <h1 className="text-lg font-semibold">ALPHA AI</h1>
+            <h1 className="text-lg font-semibold">CODEEX AI</h1>
           </div>
           <Button
             variant="outline"

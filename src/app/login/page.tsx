@@ -265,7 +265,7 @@ export default function LoginPage() {
               />
             </div>
             <CardTitle className="text-2xl font-bold">
-              Welcome to ALPHA AI
+              Welcome to CODEEX AI
             </CardTitle>
             <CardDescription>
               Sign in to access your intelligent assistant
@@ -390,7 +390,7 @@ export default function LoginPage() {
       <Dialog open={isNamePromptOpen} onOpenChange={setIsNamePromptOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Welcome to ALPHA AI!</DialogTitle>
+            <DialogTitle>Welcome to CODEEX AI!</DialogTitle>
             <DialogDescription>
               Please enter your name. This will be displayed in your chat
               sessions.

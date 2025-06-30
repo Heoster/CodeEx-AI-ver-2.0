@@ -1,4 +1,4 @@
-# ALPHA AI
+# CODEEX AI
 
 This is a NextJS starter app created in Firebase Studio.
 

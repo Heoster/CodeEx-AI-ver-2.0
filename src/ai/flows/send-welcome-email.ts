@@ -28,17 +28,17 @@ const sendWelcomeEmailFlow = ai.defineFlow(
   async input => {
     const {email, displayName} = input;
     const fromEmail = 'the.heoster@mail.com';
-    const emailSubject = 'Welcome to Codeex Alpha AI! 🎉';
+    const emailSubject = 'Welcome to CODEEX AI! 🎉';
 
     const emailBody = `<div style="text-align: center; margin-bottom: 1rem;">
-  <img src="/favicon.ico" alt="ALPHA AI Logo" width="48" height="48" />
+  <img src="/favicon.ico" alt="CODEEX AI Logo" width="48" height="48" />
 </div>
 
 Hi ${displayName},
 
 Welcome aboard!
 
-We’re thrilled to have you with us at **Codeex Alpha AI**. 🎉
+We’re thrilled to have you with us at **CODEEX AI**. 🎉
 Your verification was successful, and you're now ready to experience the future of intelligent technology.
 
 At Codeex, we hold our users in the highest regard. Every feature in this app is designed with *you* in mind — a testament to our deep commitment to excellence and innovation.
@@ -48,7 +48,7 @@ This app is proudly developed by **Heoster**. Thank you for being part of our jo
 Let’s shape the future together.
 
 Warm regards,
-Team Codeex Alpha AI 🚀`;
+Team CODEEX AI 🚀`;
 
     console.log('--- SIMULATING SENDING WELCOME EMAIL ---');
     console.log(`From: ${fromEmail}`);

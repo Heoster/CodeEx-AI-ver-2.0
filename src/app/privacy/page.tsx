@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">1. Introduction</h2>
             <p className="leading-relaxed text-muted-foreground">
-              Welcome to ALPHA AI ("we," "our," "us"), developed by Heoster. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our application. By using ALPHA AI, you agree to the collection and use of information in accordance with this policy.
+              Welcome to CODEEX AI ("we," "our," "us"), developed by Heoster. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our application. By using CODEEX AI, you agree to the collection and use of information in accordance with this policy.
             </p>
           </div>
 

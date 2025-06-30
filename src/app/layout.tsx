@@ -6,7 +6,7 @@ import {AuthProvider} from '@/hooks/use-auth';
 import {CustomThemeProvider} from '@/hooks/use-theme';
 
 export const metadata: Metadata = {
-  title: 'ALPHA AI',
+  title: 'CODEEX AI',
   description: 'An intelligent AI assistant.',
 };
 
