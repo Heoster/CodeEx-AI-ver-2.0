@@ -30,7 +30,11 @@ const sendWelcomeEmailFlow = ai.defineFlow(
     const fromEmail = 'the.heoster@mail.com';
     const emailSubject = 'Welcome to Codeex Alpha AI! 🎉';
 
-    const emailBody = `Hi ${displayName},
+    const emailBody = `<div style="text-align: center; margin-bottom: 1rem;">
+  <img src="/favicon.ico" alt="ALPHA AI Logo" width="48" height="48" />
+</div>
+
+Hi ${displayName},
 
 Welcome aboard!
 
