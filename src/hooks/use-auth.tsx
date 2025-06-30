@@ -7,8 +7,8 @@ import {
   useEffect,
   type ReactNode,
 } from 'react';
-import {type User, onAuthStateChanged} from 'firebase/auth';
-import {auth} from '@/lib/firebase';
+import {type User, onAuthStateChanged, getAuth} from 'firebase/auth';
+import {app} from '@/lib/firebase';
 import {useRouter} from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -27,6 +27,7 @@ export function AuthProvider({children}: {children: ReactNode}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, user => {
       setUser(user);
       setLoading(false);

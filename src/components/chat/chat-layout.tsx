@@ -32,8 +32,8 @@ import {
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
 import {useAuth} from '@/hooks/use-auth';
-import {auth} from '@/lib/firebase';
-import {signOut} from 'firebase/auth';
+import {app} from '@/lib/firebase';
+import {getAuth, signOut} from 'firebase/auth';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 
 const defaultSettings: Settings = {
@@ -48,6 +48,7 @@ export function ChatLayout() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatId, setActiveChatId] = useState<string>('');
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const auth = getAuth(app);
 
   const createNewChat = useCallback(() => {
     const newChatId = crypto.randomUUID();
