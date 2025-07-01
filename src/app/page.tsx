@@ -70,11 +70,10 @@ export default function LandingPage() {
             </div>
             <div className="flex items-center justify-center">
               <Image
-                src="https://placehold.co/600x400.png"
+                src="/codex-ai-hero.png"
                 width={600}
                 height={400}
-                alt="AI Chat Interface"
-                data-ai-hint="ai chat interface"
+                alt="CODEEX AI Hero Image"
                 className="rounded-lg shadow-2xl"
               />
             </div>
