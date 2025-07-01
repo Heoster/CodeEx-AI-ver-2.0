@@ -79,7 +79,6 @@ export function useChatHistory() {
     if (!userId) return;
     setChats([]);
     setMessages({});
-    createNewChat();
   };
 
   const addMessage = (
