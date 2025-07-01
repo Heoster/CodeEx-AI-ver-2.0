@@ -86,7 +86,7 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/firebase-app-check-token-is-invalid':
       return "Authentication security check failed. This is often a configuration issue. Please check the following in your Firebase project: \n1) Go to App Check -> Apps and ensure your domain (e.g., localhost) is whitelisted. \n2) Confirm that the reCAPTCHA v3 Site Key in your .env file is correct for this project. \n3) Go to App Check -> Authentication and ensure enforcement is enabled.";
     default:
-      return `An authentication error occurred. Please try again later. (Error: ${'error.code'})`;
+      return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
 };
 

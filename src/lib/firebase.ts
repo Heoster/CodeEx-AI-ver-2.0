@@ -38,33 +38,21 @@ if (missingConfigKeys.length > 0) {
 // Initialize Firebase
 const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Initialize App Check - TEMPORARILY DISABLED
+// Initialize App Check
 if (typeof window !== 'undefined') {
-  // IMPORTANT: App Check has been temporarily disabled to bypass a persistent
-  // 'auth/firebase-app-check-token-is-invalid' error. This is a WORKAROUND.
-  // The root cause is likely a misconfiguration in your Firebase project settings.
-  //
-  // BEFORE DEPLOYING TO PRODUCTION, you should:
-  // 1. Resolve the Firebase project configuration issue.
-  //    - Ensure your app's domain (e.g., localhost) is whitelisted in App Check -> Apps.
-  //    - Ensure the reCAPTCHA v3 key is correct and linked to your project.
-  //    - Ensure App Check enforcement is enabled for Authentication.
-  // 2. Re-enable the App Check code block below by removing the surrounding comments.
-  console.warn(
-    'Firebase App Check is temporarily disabled for development. Please resolve Firebase project settings and re-enable before production.'
-  );
-
-  /*
   const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY;
   if (!recaptchaKey || recaptchaKey.startsWith('YOUR_')) {
     console.warn('Firebase App Check is not initialized. To enable it, set a valid NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY in your .env file. This is required for authentication to work correctly in production environments.');
   } else {
-    initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(recaptchaKey),
-      isTokenAutoRefreshEnabled: true,
-    });
+    try {
+      initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider(recaptchaKey),
+        isTokenAutoRefreshEnabled: true,
+      });
+    } catch (e) {
+      console.error("Failed to initialize App Check", e);
+    }
   }
-  */
 }
 
 
