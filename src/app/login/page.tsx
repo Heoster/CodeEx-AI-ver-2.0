@@ -84,7 +84,7 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/internal-error':
       return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
     case 'auth/firebase-app-check-token-is-invalid':
-      return 'Security check failed (App Check). This may be due to a misconfiguration. Please ensure your domain is whitelisted in Firebase and you have provided a valid reCAPTCHA v3 site key in your environment variables.';
+      return "Authentication security check failed. This is often a configuration issue. Please check the following in your Firebase project: \n1) Go to App Check -> Apps and ensure your domain (e.g., localhost) is whitelisted. \n2) Confirm that the reCAPTCHA v3 Site Key in your .env file is correct for this project. \n3) Go to App Check -> Play Integrity and ensure Authentication enforcement is enabled.";
     default:
       return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
@@ -119,6 +119,7 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
+      console.error('Authentication Error:', error);
       setError(getFirebaseAuthErrorMessage(error));
     }
   };
@@ -134,6 +135,7 @@ export default function LoginPage() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
+      console.error('Authentication Error:', error);
       setError(getFirebaseAuthErrorMessage(error));
     }
   };
@@ -159,6 +161,7 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
+      console.error('Authentication Error:', error);
       setError(getFirebaseAuthErrorMessage(error));
     }
   };
@@ -272,7 +275,7 @@ export default function LoginPage() {
                 </Button>
               </div>
 
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p className="whitespace-pre-wrap text-sm text-destructive">{error}</p>}
 
               <div className="flex gap-2 pt-2">
                 <Button type="submit" className="w-full">
