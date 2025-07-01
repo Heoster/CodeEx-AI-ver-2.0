@@ -100,7 +100,7 @@ export function ChatLayout() {
             <h1 className="text-lg font-semibold">CODEEX AI</h1>
           </div>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             className="w-full justify-start"
             onClick={createNewChat}
