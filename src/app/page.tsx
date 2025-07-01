@@ -19,6 +19,9 @@ export default function LandingPage() {
             <Link href="#features" className="text-sm font-medium text-slate-300 hover:text-white">
               Features
             </Link>
+            <Link href="/pricing" className="text-sm font-medium text-slate-300 hover:text-white">
+              Pricing
+            </Link>
             <Link href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white">
               Testimonials
             </Link>
@@ -142,25 +145,25 @@ export default function LandingPage() {
             <div className="space-y-4">
               <h4 className="font-semibold">Product</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-slate-400 hover:text-white">Features</Link></li>
-                <li><Link href="#" className="text-slate-400 hover:text-white">Pricing</Link></li>
-                <li><Link href="#" className="text-slate-400 hover:text-white">Integrations</Link></li>
+                <li><Link href="#features" className="text-slate-400 hover:text-white">Features</Link></li>
+                <li><Link href="/pricing" className="text-slate-400 hover:text-white">Pricing</Link></li>
+                <li><Link href="/integrations" className="text-slate-400 hover:text-white">Integrations</Link></li>
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="font-semibold">Company</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-slate-400 hover:text-white">About Us</Link></li>
-                <li><Link href="#" className="text-slate-400 hover:text-white">Careers</Link></li>
+                <li><Link href="/about" className="text-slate-400 hover:text-white">About Us</Link></li>
+                <li><Link href="/careers" className="text-slate-400 hover:text-white">Careers</Link></li>
                 <li><Link href="/privacy" className="text-slate-400 hover:text-white">Privacy Policy</Link></li>
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="font-semibold">Resources</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="#" className="text-slate-400 hover:text-white">Blog</Link></li>
-                <li><Link href="#" className="text-slate-400 hover:text-white">Documentation</Link></li>
-                <li><Link href="#" className="text-slate-400 hover:text-white">Support</Link></li>
+                <li><Link href="/blog" className="text-slate-400 hover:text-white">Blog</Link></li>
+                <li><Link href="/documentation" className="text-slate-400 hover:text-white">Documentation</Link></li>
+                <li><Link href="/support" className="text-slate-400 hover:text-white">Support</Link></li>
               </ul>
             </div>
             <div className="space-y-4">
