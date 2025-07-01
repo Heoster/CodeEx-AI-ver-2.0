@@ -59,9 +59,14 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
   }
 
+  if (error.code === 'auth/firebase-app-check-token-is-invalid') {
+    return "Authentication security check failed. This is often a configuration issue. Please check the following in your Firebase project: \n1) Go to App Check -> Apps and ensure your domain (e.g., localhost) is whitelisted. \n2) Confirm that the reCAPTCHA v3 Site Key in your .env file is correct for this project. \n3) Go to App Check -> Authentication and ensure enforcement is enabled.";
+  }
+  
   if (!error.code) {
     return 'An unknown error occurred. Please try again.';
   }
+  
   switch (error.code) {
     case 'auth/invalid-credential':
     case 'auth/user-not-found':
@@ -83,8 +88,6 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
       return 'This domain is not authorized for authentication. Please contact the developer.';
     case 'auth/internal-error':
       return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
-    case 'auth/firebase-app-check-token-is-invalid':
-      return "Authentication security check failed. This is often a configuration issue. Please check the following in your Firebase project: \n1) Go to App Check -> Apps and ensure your domain (e.g., localhost) is whitelisted. \n2) Confirm that the reCAPTCHA v3 Site Key in your .env file is correct for this project. \n3) Go to App Check -> Authentication and ensure enforcement is enabled.";
     default:
       return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
@@ -119,6 +122,11 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
+      // Don't show an error if the user simply closes the sign-in popup.
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.log('Sign-in cancelled by user.');
+        return;
+      }
       console.error('Authentication Error:', error);
       setError(getFirebaseAuthErrorMessage(error));
     }
