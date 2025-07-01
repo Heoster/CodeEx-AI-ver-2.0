@@ -19,15 +19,23 @@ interface ChatPanelProps {
   ) => void;
 }
 
-export function ChatPanel({chat, settings, messages, addMessage}: ChatPanelProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export function ChatPanel({
+  chat,
+  settings,
+  messages,
+  addMessage,
+}: ChatPanelProps) {
+  const [isLoadingFromAI, setIsLoadingFromAI] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const {user} = useAuth();
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  const isLoading = isLoadingFromAI || isSpeaking;
+
   const handleSendMessage = async (messageContent: string) => {
     if (isLoading || !user) return;
-    setIsLoading(true);
+    setIsLoadingFromAI(true);
     setAudioUrl(null);
 
     const newUserMessage: Omit<Message, 'id' | 'createdAt'> = {
@@ -35,13 +43,11 @@ export function ChatPanel({chat, settings, messages, addMessage}: ChatPanelProps
       content: messageContent,
     };
 
-    // Construct the message list for the AI, including the new message
     const currentMessagesForAI: Message[] = [
       ...messages,
       {...newUserMessage, id: 'temp-user', createdAt: new Date().toISOString()},
     ];
 
-    // Add user message to state. The new title is determined here.
     const isNewChat = messages.length <= 1;
     const newTitle = isNewChat
       ? messageContent.substring(0, 30) +
@@ -63,11 +69,12 @@ export function ChatPanel({chat, settings, messages, addMessage}: ChatPanelProps
       content: assistantContent,
     };
 
-    // Add assistant message to state
     addMessage(chat.id, assistantMessage);
+    setIsLoadingFromAI(false);
 
     if (settings.enableSpeech && assistantContent) {
       try {
+        setIsSpeaking(true);
         const speechResponse = await getSpeechAudio(
           assistantContent,
           settings.voice
@@ -76,20 +83,31 @@ export function ChatPanel({chat, settings, messages, addMessage}: ChatPanelProps
           setAudioUrl(speechResponse.audio);
         } else {
           console.error('Failed to generate speech:', speechResponse.error);
+          setIsSpeaking(false);
         }
       } catch (e) {
         console.error('Exception during speech generation:', e);
+        setIsSpeaking(false);
       }
     }
-
-    setIsLoading(false);
   };
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
-      audioRef.current.play().catch(error => {
+      const audioElement = audioRef.current;
+      audioElement.play().catch(error => {
         console.error('Error playing audio:', error);
+        setIsSpeaking(false);
       });
+
+      const handleAudioEnd = () => {
+        setIsSpeaking(false);
+      };
+
+      audioElement.addEventListener('ended', handleAudioEnd);
+      return () => {
+        audioElement.removeEventListener('ended', handleAudioEnd);
+      };
     }
   }, [audioUrl]);
 
@@ -106,7 +124,7 @@ export function ChatPanel({chat, settings, messages, addMessage}: ChatPanelProps
     <div className="flex h-[calc(100svh-3.5rem)] flex-col">
       <ChatMessages
         messages={messages}
-        isLoading={isLoading}
+        isLoading={isLoadingFromAI}
         className="flex-1"
         header={greetingHeader}
       />

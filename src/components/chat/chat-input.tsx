@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {useEffect, useRef, useState} from 'react';
+import {cn} from '@/lib/utils';
 
 const chatSchema = z.object({
   message: z.string().min(1, 'Message cannot be empty.'),
@@ -34,6 +35,7 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
     },
   });
 
+  const [isVoiceChatActive, setIsVoiceChatActive] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -88,35 +90,46 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
 
     recognition.onresult = event => {
       const transcript = event.results[0][0].transcript;
-      onSendMessage(transcript);
-      setIsListening(false);
+      if (transcript) {
+        onSendMessage(transcript);
+      }
     };
 
     recognition.onerror = event => {
-      if (event.error !== 'no-speech') {
+      if (event.error !== 'no-speech' && event.error !== 'aborted') {
         console.error('Speech recognition error:', event.error);
       }
       setIsListening(false);
     };
 
-    recognition.onend = () => setIsListening(false);
+    recognition.onend = () => {
+      setIsListening(false);
+    };
 
     recognitionRef.current = recognition;
 
     return () => {
-      recognitionRef.current?.stop();
+      recognitionRef.current?.abort();
       if (audioContextRef.current?.state !== 'closed') {
         audioContextRef.current?.close();
       }
     };
   }, [onSendMessage]);
 
-  const handleVoiceButtonClick = () => {
-    if (isListening) {
-      recognitionRef.current?.stop();
-    } else {
-      recognitionRef.current?.start();
+  useEffect(() => {
+    if (isVoiceChatActive && !isLoading && !isListening) {
+      try {
+        recognitionRef.current?.start();
+      } catch (e) {
+        console.warn('Speech recognition already active.', e);
+      }
+    } else if (!isVoiceChatActive || isLoading) {
+      recognitionRef.current?.abort();
     }
+  }, [isVoiceChatActive, isLoading, isListening]);
+
+  const handleVoiceButtonClick = () => {
+    setIsVoiceChatActive(prev => !prev);
   };
 
   const onSubmit: SubmitHandler<ChatFormValues> = data => {
@@ -144,11 +157,15 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
             <FormItem className="flex-1">
               <FormControl>
                 <Textarea
-                  placeholder="Ask me anything..."
+                  placeholder={
+                    isVoiceChatActive
+                      ? 'Voice chat is active...'
+                      : 'Ask me anything...'
+                  }
                   rows={1}
                   className="max-h-36 resize-none pr-24"
                   onKeyDown={handleKeyDown}
-                  disabled={isLoading}
+                  disabled={isLoading || isVoiceChatActive}
                   {...field}
                 />
               </FormControl>
@@ -159,21 +176,24 @@ export function ChatInput({onSendMessage, isLoading}: ChatInputProps) {
         <Button
           type="button"
           size="icon"
-          variant={isListening ? 'destructive' : 'default'}
-          className="absolute right-12 top-1 h-8 w-8"
-          disabled={isLoading || !recognitionRef.current}
+          variant={isVoiceChatActive ? 'destructive' : 'default'}
+          className={cn(
+            'absolute right-12 top-1 h-8 w-8',
+            isListening && 'animate-pulse'
+          )}
+          disabled={!recognitionRef.current}
           onClick={handleVoiceButtonClick}
         >
           <Mic size={16} />
           <span className="sr-only">
-            {isListening ? 'Stop listening' : 'Start voice input'}
+            {isVoiceChatActive ? 'Stop voice chat' : 'Start voice chat'}
           </span>
         </Button>
         <Button
           type="submit"
           size="icon"
           className="absolute right-1 top-1 h-8 w-8"
-          disabled={isLoading || !form.formState.isValid}
+          disabled={isLoading || !form.formState.isValid || isVoiceChatActive}
         >
           <Send size={16} />
           <span className="sr-only">Send</span>
