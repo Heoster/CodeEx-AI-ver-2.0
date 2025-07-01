@@ -13,7 +13,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {useRouter} from 'next/navigation';
 import {useAuth} from '@/hooks/use-auth';
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useState} from 'react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Eye, EyeOff} from 'lucide-react';
 import {
@@ -26,7 +26,6 @@ import {
 } from '@/components/ui/dialog';
 import Image from 'next/image';
 import Link from 'next/link';
-import ReCAPTCHA from 'react-google-recaptcha';
 import {sendWelcomeEmail} from '@/ai/flows/send-welcome-email';
 import {useToast} from '@/hooks/use-toast';
 
@@ -98,18 +97,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const {toast} = useToast();
 
   const [isNamePromptOpen, setIsNamePromptOpen] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [isSavingName, setIsSavingName] = useState(false);
-
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token);
-    setError(null);
-  };
 
   const handleGoogleSignIn = async () => {
     setError(null);
@@ -134,10 +126,6 @@ export default function LoginPage() {
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!captchaToken) {
-      setError('Please complete the CAPTCHA before signing up.');
-      return;
-    }
     if (password.length < 6) {
       setError('Password should be at least 6 characters.');
       return;
@@ -147,18 +135,12 @@ export default function LoginPage() {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       setError(getFirebaseAuthErrorMessage(error));
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
     }
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!captchaToken) {
-      setError('Please complete the CAPTCHA before signing in.');
-      return;
-    }
     const auth = getAuth(app);
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -178,8 +160,6 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       setError(getFirebaseAuthErrorMessage(error));
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
     }
   };
 
@@ -291,22 +271,11 @@ export default function LoginPage() {
                   )}
                 </Button>
               </div>
-              <div className="flex justify-center">
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
-                  onChange={handleCaptchaChange}
-                />
-              </div>
 
               {error && <p className="text-sm text-destructive">{error}</p>}
 
               <div className="flex gap-2 pt-2">
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={!captchaToken}
-                >
+                <Button type="submit" className="w-full">
                   Sign In
                 </Button>
                 <Button
@@ -314,7 +283,6 @@ export default function LoginPage() {
                   variant="secondary"
                   className="w-full"
                   onClick={handleEmailSignUp}
-                  disabled={!captchaToken}
                 >
                   Sign Up
                 </Button>
