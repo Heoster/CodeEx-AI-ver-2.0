@@ -40,11 +40,12 @@ const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : get
 
 // Initialize App Check
 if (typeof window !== 'undefined') {
-  if (!process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) {
-    console.error('Missing NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY environment variable for Firebase App Check. Note: This should be a reCAPTCHA v3 key, which is different from the v2 key used for the visible CAPTCHA on the login page.');
+  const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY;
+  if (!recaptchaKey || recaptchaKey.startsWith('YOUR_')) {
+    console.warn('Firebase App Check is not initialized. To enable it, set a valid NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY in your .env file. This is required for authentication to work correctly in production environments.');
   } else {
     initializeAppCheck(app, {
-      provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY),
+      provider: new ReCaptchaV3Provider(recaptchaKey),
       isTokenAutoRefreshEnabled: true,
     });
   }
