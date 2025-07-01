@@ -16,15 +16,6 @@ import {useAuth} from '@/hooks/use-auth';
 import {useEffect, useState, useRef} from 'react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Eye, EyeOff} from 'lucide-react';
-import {Checkbox} from '@/components/ui/checkbox';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -62,9 +53,6 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const getFirebaseAuthErrorMessage = (error: any): string => {
-  // Handle the specific internal assertion error first. This error is cryptic
-  // and doesn't have a standard code, so we check the message directly.
-  // We also check the string representation for maximum robustness.
   if (
     (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) ||
     String(error).includes('INTERNAL ASSERTION FAILED')
@@ -114,7 +102,6 @@ export default function LoginPage() {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const {toast} = useToast();
 
-  // New state for name prompt
   const [isNamePromptOpen, setIsNamePromptOpen] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [isSavingName, setIsSavingName] = useState(false);
@@ -158,7 +145,6 @@ export default function LoginPage() {
     const auth = getAuth(app);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      // The useEffect will handle prompting for name
     } catch (error: any) {
       setError(getFirebaseAuthErrorMessage(error));
       recaptchaRef.current?.reset();
@@ -190,7 +176,6 @@ export default function LoginPage() {
           description: `A welcome email for ${userCredential.user.email} was logged to the console.`,
         });
       }
-      // The useEffect will handle prompting for name if needed for new users
     } catch (error: any) {
       setError(getFirebaseAuthErrorMessage(error));
       recaptchaRef.current?.reset();
@@ -253,28 +238,26 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mb-4 flex justify-center">
-              <Image
-                src="/favicon.ico"
-                alt="CodeEx Logo"
-                width={48}
-                height={48}
-              />
+      <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
+        <div className="flex items-center justify-center py-12">
+          <div className="mx-auto grid w-[350px] gap-6">
+            <div className="grid gap-2 text-center">
+              <div className="lg:hidden mb-4 flex justify-center">
+                <Image
+                  src="/favicon.ico"
+                  alt="CodeEx Logo"
+                  width={48}
+                  height={48}
+                />
+              </div>
+              <h1 className="text-3xl font-bold">Sign In</h1>
+              <p className="text-muted-foreground">
+                Enter your information to sign in to your account
+              </p>
             </div>
-            <CardTitle className="text-2xl font-bold">
-              Welcome to CODEEX AI
-            </CardTitle>
-            <CardDescription>
-              Sign in to access your intelligent assistant
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+            <div className="grid gap-4">
               <form onSubmit={handleEmailSignIn} className="space-y-4">
-                <div className="space-y-2">
+                <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
@@ -285,7 +268,7 @@ export default function LoginPage() {
                     required
                   />
                 </div>
-                <div className="relative space-y-2">
+                <div className="relative grid gap-2">
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
@@ -309,14 +292,6 @@ export default function LoginPage() {
                     )}
                   </Button>
                 </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="remember-me" />
-                  <Label htmlFor="remember-me" className="text-sm font-normal">
-                    Remember me
-                  </Label>
-                </div>
-
                 <div className="flex justify-center">
                   <ReCAPTCHA
                     ref={recaptchaRef}
@@ -326,13 +301,9 @@ export default function LoginPage() {
                 </div>
 
                 {error && <p className="text-sm text-destructive">{error}</p>}
-
+                
                 <div className="flex gap-2 pt-2">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={!captchaToken}
-                  >
+                  <Button type="submit" className="w-full" disabled={!captchaToken}>
                     Sign In
                   </Button>
                   <Button
@@ -351,12 +322,11 @@ export default function LoginPage() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
+                  <span className="bg-background px-2 text-muted-foreground">
                     Or continue with
                   </span>
                 </div>
               </div>
-
               <Button
                 onClick={handleGoogleSignIn}
                 variant="outline"
@@ -366,9 +336,7 @@ export default function LoginPage() {
                 Sign In with Google
               </Button>
             </div>
-          </CardContent>
-          <CardFooter className="flex-col items-center justify-center gap-2 pt-4">
-            <div className="text-center text-xs text-muted-foreground">
+            <div className="mt-4 text-center text-sm">
               By signing in, you agree to our{' '}
               <Link
                 href="/privacy"
@@ -380,13 +348,22 @@ export default function LoginPage() {
               </Link>
               .
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-center text-xs text-muted-foreground">
               CodeEx powered by Heoster.
             </p>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
+        <div className="hidden bg-muted lg:block">
+          <Image
+            src="https://placehold.co/1200x800.png"
+            data-ai-hint="abstract technology"
+            alt="Image"
+            width="1920"
+            height="1080"
+            className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          />
+        </div>
       </div>
-
       <Dialog open={isNamePromptOpen} onOpenChange={setIsNamePromptOpen}>
         <DialogContent>
           <DialogHeader>
