@@ -238,130 +238,122 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-        <div className="flex items-center justify-center py-12">
-          <div className="mx-auto grid w-full max-w-md gap-6 px-4 md:px-0">
-            <div className="grid gap-2 text-center">
-              <div className="lg:hidden mb-4 flex justify-center">
-                <Image
-                  src="/favicon.ico"
-                  alt="CodeEx Logo"
-                  width={48}
-                  height={48}
-                />
-              </div>
-              <h1 className="text-3xl font-bold">Sign In</h1>
-              <p className="text-muted-foreground">
-                Enter your information to sign in to your account
-              </p>
+      <div className="flex min-h-screen w-full items-center justify-center bg-background p-4">
+        <div className="mx-auto grid w-full max-w-md gap-6 rounded-lg border bg-card p-6 shadow-sm">
+          <div className="grid gap-2 text-center">
+            <div className="mb-4 flex justify-center">
+              <Image
+                src="/favicon.ico"
+                alt="CODEEX AI Logo"
+                width={48}
+                height={48}
+              />
             </div>
-            <div className="grid gap-4">
-              <form onSubmit={handleEmailSignIn} className="space-y-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="relative grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type={isPasswordVisible ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-1 top-7 h-7 w-7"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                  >
-                    {isPasswordVisible ? (
-                      <EyeOff size={16} />
-                    ) : (
-                      <Eye size={16} />
-                    )}
-                  </Button>
-                </div>
-                <div className="flex justify-center">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
-                    onChange={handleCaptchaChange}
-                  />
-                </div>
-
-                {error && <p className="text-sm text-destructive">{error}</p>}
-                
-                <div className="flex gap-2 pt-2">
-                  <Button type="submit" className="w-full" disabled={!captchaToken}>
-                    Sign In
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="w-full"
-                    onClick={handleEmailSignUp}
-                    disabled={!captchaToken}
-                  >
-                    Sign Up
-                  </Button>
-                </div>
-              </form>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
-                </div>
-              </div>
-              <Button
-                onClick={handleGoogleSignIn}
-                variant="outline"
-                className="w-full"
-              >
-                <GoogleIcon className="mr-2 h-4 w-4" />
-                Sign In with Google
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              By signing in, you agree to our{' '}
-              <Link
-                href="/privacy"
-                className="underline hover:text-primary"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Privacy Policy
-              </Link>
-              .
-            </div>
-            <p className="text-center text-xs text-muted-foreground">
-              CodeEx powered by Heoster.
+            <h1 className="text-3xl font-bold">Sign In</h1>
+            <p className="text-muted-foreground">
+              Enter your information to sign in to your account
             </p>
           </div>
-        </div>
-        <div className="hidden bg-muted lg:block">
-          <Image
-            src="https://placehold.co/1200x800.png"
-            data-ai-hint="abstract technology"
-            alt="Image"
-            width="1920"
-            height="1080"
-            className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-          />
+          <div className="grid gap-4">
+            <form onSubmit={handleEmailSignIn} className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="relative grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type={isPasswordVisible ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-7 h-7 w-7"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                >
+                  {isPasswordVisible ? (
+                    <EyeOff size={16} />
+                  ) : (
+                    <Eye size={16} />
+                  )}
+                </Button>
+              </div>
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey="6LfjdXIrAAAAAMI25ZP5Mfx8d0mAT3bw25V1gSPD"
+                  onChange={handleCaptchaChange}
+                />
+              </div>
+
+              {error && <p className="text-sm text-destructive">{error}</p>}
+
+              <div className="flex gap-2 pt-2">
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={!captchaToken}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full"
+                  onClick={handleEmailSignUp}
+                  disabled={!captchaToken}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </form>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <Button
+              onClick={handleGoogleSignIn}
+              variant="outline"
+              className="w-full"
+            >
+              <GoogleIcon className="mr-2 h-4 w-4" />
+              Sign In with Google
+            </Button>
+          </div>
+          <div className="mt-4 text-center text-sm">
+            By signing in, you agree to our{' '}
+            <Link
+              href="/privacy"
+              className="underline hover:text-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            CodeEx powered by Heoster.
+          </p>
         </div>
       </div>
       <Dialog open={isNamePromptOpen} onOpenChange={setIsNamePromptOpen}>
