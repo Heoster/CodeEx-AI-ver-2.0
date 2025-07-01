@@ -31,6 +31,12 @@ export function ChatPanel({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // Use a ref to ensure the latest settings are always available inside callbacks
+  const settingsRef = useRef(settings);
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
+
   const isLoading = isLoadingFromAI || isSpeaking;
 
   const handleSendMessage = useCallback(async (messageContent: string) => {
@@ -55,7 +61,7 @@ export function ChatPanel({
       : undefined;
     addMessage(chat.id, newUserMessage, newTitle);
 
-    const response = await generateResponse(currentMessagesForAI, settings);
+    const response = await generateResponse(currentMessagesForAI, settingsRef.current);
 
     let assistantContent = '';
     if ('error' in response) {
@@ -72,12 +78,12 @@ export function ChatPanel({
     addMessage(chat.id, assistantMessage);
     setIsLoadingFromAI(false);
 
-    if (settings.enableSpeech && assistantContent) {
+    if (settingsRef.current.enableSpeech && assistantContent) {
       try {
         setIsSpeaking(true);
         const speechResponse = await getSpeechAudio(
           assistantContent,
-          settings.voice
+          settingsRef.current.voice
         );
         if ('audio' in speechResponse) {
           setAudioUrl(speechResponse.audio);
@@ -90,7 +96,7 @@ export function ChatPanel({
         setIsSpeaking(false);
       }
     }
-  }, [isLoading, user, messages, addMessage, chat.id, settings]);
+  }, [isLoading, user, messages, addMessage, chat.id]);
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
