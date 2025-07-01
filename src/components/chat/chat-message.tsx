@@ -13,24 +13,6 @@ interface ChatMessageProps {
   message: Message;
 }
 
-const CodeExIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M10 9.5 8 12l2 2.5" />
-    <path d="m14 9.5 2 2.5-2 2.5" />
-    <rect width="18" height="18" x="3" y="3" rx="2" />
-  </svg>
-);
-
-
 export function ChatMessage({message}: ChatMessageProps) {
   const {user} = useAuth();
   const [isMounted, setIsMounted] = useState(false);
@@ -66,9 +48,12 @@ export function ChatMessage({message}: ChatMessageProps) {
               )}
             >
               {isAssistant ? (
-                <AvatarFallback className="bg-primary text-primary-foreground">
-                  <CodeExIcon size={20} />
-                </AvatarFallback>
+                <>
+                  <AvatarImage src="/favicon.ico" alt="CODEEX AI" />
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    C
+                  </AvatarFallback>
+                </>
               ) : (
                 <>
                   <AvatarImage

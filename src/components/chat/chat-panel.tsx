@@ -4,7 +4,7 @@ import {type Chat, type Settings, type Message} from '@/lib/types';
 import {ChatInput} from './chat-input';
 import {ChatMessages} from './chat-messages';
 import {ExamplePrompts} from './example-prompts';
-import {useState, useRef, useEffect} from 'react';
+import {useState, useRef, useEffect, useCallback} from 'react';
 import {generateResponse, getSpeechAudio} from '@/app/actions';
 import {useAuth} from '@/hooks/use-auth';
 
@@ -33,7 +33,7 @@ export function ChatPanel({
 
   const isLoading = isLoadingFromAI || isSpeaking;
 
-  const handleSendMessage = async (messageContent: string) => {
+  const handleSendMessage = useCallback(async (messageContent: string) => {
     if (isLoading || !user) return;
     setIsLoadingFromAI(true);
     setAudioUrl(null);
@@ -90,7 +90,7 @@ export function ChatPanel({
         setIsSpeaking(false);
       }
     }
-  };
+  }, [isLoading, user, messages, addMessage, chat.id, settings]);
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
