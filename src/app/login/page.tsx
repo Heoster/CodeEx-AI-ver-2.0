@@ -221,7 +221,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (!loading && user) {
       if (user.displayName) {
-        router.push('/');
+        router.push('/chat');
       } else {
         setIsNamePromptOpen(true);
       }

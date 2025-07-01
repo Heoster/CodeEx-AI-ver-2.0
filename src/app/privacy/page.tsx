@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
             <Link href="/" className="flex items-center gap-2 text-lg font-semibold hover:underline">
               <ArrowLeft className="h-5 w-5" />
-              <span>Back to App</span>
+              <span>Back to Home</span>
             </Link>
           <h1 className="flex-1 text-center text-xl font-bold">Privacy Policy</h1>
         </div>
