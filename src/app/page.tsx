@@ -19,9 +19,6 @@ export default function LandingPage() {
             <Link href="#features" className="text-sm font-medium text-slate-300 hover:text-white">
               Features
             </Link>
-            <Link href="#metrics" className="text-sm font-medium text-slate-300 hover:text-white">
-              Metrics
-            </Link>
             <Link href="#testimonials" className="text-sm font-medium text-slate-300 hover:text-white">
               Testimonials
             </Link>
@@ -77,29 +74,6 @@ export default function LandingPage() {
                 data-ai-hint="ai chat interface"
                 className="rounded-lg shadow-2xl"
               />
-            </div>
-          </div>
-        </section>
-
-        {/* Metrics Section */}
-        <section id="metrics" className="bg-slate-950 py-16 md:py-24">
-          <div className="container mx-auto max-w-5xl px-4 md:px-6">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-              <div className="rounded-lg border border-slate-800 bg-slate-900 p-6 text-center">
-                <h3 className="text-5xl font-bold text-blue-400">181%</h3>
-                <p className="mt-2 text-slate-400">Return on Investment</p>
-                <p className="mt-1 text-xs text-slate-500">Based on customer-reported data</p>
-              </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900 p-6 text-center">
-                <h3 className="text-5xl font-bold text-blue-400">60%</h3>
-                <p className="mt-2 text-slate-400">Faster Development Cycles</p>
-                 <p className="mt-1 text-xs text-slate-500">Compared to traditional methods</p>
-              </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900 p-6 text-center">
-                <h3 className="text-5xl font-bold text-blue-400">50M+</h3>
-                <p className="mt-2 text-slate-400">Interactions per month</p>
-                 <p className="mt-1 text-xs text-slate-500">Across our entire platform</p>
-              </div>
             </div>
           </div>
         </section>
