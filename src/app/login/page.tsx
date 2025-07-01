@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dialog';
 import Image from 'next/image';
 import Link from 'next/link';
-import {sendWelcomeEmail} from '@/ai/flows/send-welcome-email';
+import {triggerWelcomeEmail} from '@/app/actions';
 import {useToast} from '@/hooks/use-toast';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -86,7 +86,7 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/firebase-app-check-token-is-invalid':
       return "Authentication security check failed. This is often a configuration issue. Please check the following in your Firebase project: \n1) Go to App Check -> Apps and ensure your domain (e.g., localhost) is whitelisted. \n2) Confirm that the reCAPTCHA v3 Site Key in your .env file is correct for this project. \n3) Go to App Check -> Authentication and ensure enforcement is enabled.";
     default:
-      return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
+      return `An authentication error occurred. Please try again later. (Error: ${'error.code'})`;
   }
 };
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       if (result.user.email && result.user.displayName) {
-        await sendWelcomeEmail({
+        await triggerWelcomeEmail({
           email: result.user.email,
           displayName: result.user.displayName,
         });
@@ -151,7 +151,7 @@ export default function LoginPage() {
         password
       );
       if (userCredential.user.email && userCredential.user.displayName) {
-        await sendWelcomeEmail({
+        await triggerWelcomeEmail({
           email: userCredential.user.email,
           displayName: userCredential.user.displayName,
         });
@@ -183,7 +183,7 @@ export default function LoginPage() {
       await updateProfile(currentUser, {displayName: newUserName.trim()});
 
       if (currentUser.email) {
-        await sendWelcomeEmail({
+        await triggerWelcomeEmail({
           email: currentUser.email,
           displayName: newUserName.trim(),
         });

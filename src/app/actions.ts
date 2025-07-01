@@ -5,6 +5,11 @@ import {solveQuiz} from '@/ai/flows/solve-quizzes';
 import {summarizeInformation} from '@/ai/flows/summarize-information';
 import {textToSpeech} from '@/ai/flows/text-to-speech';
 import {type Message, type Settings, type Model, type Voice} from '@/lib/types';
+import {sendWelcomeEmail, type WelcomeEmailInput} from '@/ai/flows/send-welcome-email';
+
+export async function triggerWelcomeEmail(input: WelcomeEmailInput): Promise<void> {
+  await sendWelcomeEmail(input);
+}
 
 export async function generateResponse(
   messages: Message[],
