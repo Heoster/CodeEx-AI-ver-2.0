@@ -162,7 +162,7 @@ export default function LandingPage() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/blog" className="text-slate-400 hover:text-white">Blog</Link></li>
                 <li><Link href="/documentation" className="text-slate-400 hover:text-white">Documentation</Link></li>
-                <li><Link href="/support" className="text-slate-400 hover:text-white">Support</Link></li>
+                <li><Link href="/contact" className="text-slate-400 hover:text-white">Contact</Link></li>
               </ul>
             </div>
             <div className="space-y-4">
