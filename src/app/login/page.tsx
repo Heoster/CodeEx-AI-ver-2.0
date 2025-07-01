@@ -240,7 +240,7 @@ export default function LoginPage() {
     <>
       <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
         <div className="flex items-center justify-center py-12">
-          <div className="mx-auto grid w-[350px] gap-6">
+          <div className="mx-auto grid w-full max-w-md gap-6 px-4 md:px-0">
             <div className="grid gap-2 text-center">
               <div className="lg:hidden mb-4 flex justify-center">
                 <Image
