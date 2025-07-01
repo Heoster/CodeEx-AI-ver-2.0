@@ -41,7 +41,7 @@ const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : get
 // Initialize App Check
 if (typeof window !== 'undefined') {
   if (!process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) {
-    console.error('Missing NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY environment variable for Firebase App Check.');
+    console.error('Missing NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY environment variable for Firebase App Check. Note: This should be a reCAPTCHA v3 key, which is different from the v2 key used for the visible CAPTCHA on the login page.');
   } else {
     initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY),
