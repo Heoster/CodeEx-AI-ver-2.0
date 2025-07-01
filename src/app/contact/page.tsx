@@ -51,9 +51,10 @@ export default function ContactPage() {
       })
       .catch((error) => {
         console.error('Failed to send email:', error);
+        const errorMessage = error.text || 'Failed to send message. Please check your EmailJS service/template IDs and CORS settings in your EmailJS account.';
         toast({
           title: 'Error',
-          description: 'Failed to send message. Please try again later.',
+          description: errorMessage,
           variant: 'destructive',
         });
       })
