@@ -6,6 +6,8 @@ import {
   ScanLine,
   Terminal,
   Mic,
+  Library,
+  History,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,6 +22,22 @@ const features = [
       'Engage in natural, context-aware dialogues. Our AI remembers your conversation history and adapts its tone and technical level based on your preferences.',
     imageSrc: 'https://placehold.co/600x400.png',
     imageHint: 'AI chat conversation',
+  },
+  {
+    icon: <Library />,
+    title: 'Multi-Chat Management',
+    description:
+      'Organize your thoughts. Create and manage multiple chat sessions simultaneously, keeping your different projects and topics neatly separated.',
+    imageSrc: 'https://placehold.co/600x400.png',
+    imageHint: 'multiple tabs browser',
+  },
+  {
+    icon: <History />,
+    title: 'Persistent Chat History',
+    description:
+      'Never lose a thought. Your conversations are automatically saved to your device, allowing you to pick up right where you left off, anytime.',
+    imageSrc: 'https://placehold.co/600x400.png',
+    imageHint: 'notebook journal',
   },
   {
     icon: <ScanLine />,
@@ -157,7 +175,7 @@ export default function AiAgentPlatformPage() {
                 showcasing real-world AI capabilities you can use right now.
               </p>
             </div>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
               {features.map((feature, index) => (
                 <div key={index} className="flex flex-col gap-4">
                   <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border">
