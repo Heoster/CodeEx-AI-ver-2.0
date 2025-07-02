@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -52,15 +53,21 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const getFirebaseAuthErrorMessage = (error: any): string => {
-  if (
-    (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) ||
-    String(error).includes('INTERNAL ASSERTION FAILED')
-  ) {
-    return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
+  const appCheckDebugSteps = "\nThis can be caused by a Firebase App Check configuration issue. Please verify the following in your Firebase project:\n1. The reCAPTCHA v3 Site Key in your .env file (NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) is correct.\n2. Your domain (e.g., localhost) is whitelisted in App Check -> Apps.\n3. If enforcement is on for Authentication, ensure App Check is initializing correctly.";
+
+  // Specific App Check error
+  if (error.code === 'auth/firebase-app-check-token-is-invalid') {
+    return `Authentication security check failed. ${appCheckDebugSteps}`;
   }
 
-  if (error.code === 'auth/firebase-app-check-token-is-invalid') {
-    return "Authentication security check failed. This is often a configuration issue. Please check the following in your Firebase project: \n1) Go to App Check -> Apps and ensure your domain (e.g., localhost) is whitelisted. \n2) Confirm that the reCAPTCHA v3 Site Key in your .env file is correct for this project. \n3) Go to App Check -> Authentication and ensure enforcement is enabled.";
+  // Generic errors that can be caused by App Check
+  if (
+    (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) ||
+    String(error).includes('INTERNAL ASSERTION FAILED') ||
+    error.code === 'auth/internal-error' ||
+    error.code === 'auth/network-request-failed'
+  ) {
+    return `An internal authentication error occurred. ${appCheckDebugSteps}`;
   }
   
   if (!error.code) {
@@ -81,13 +88,12 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/operation-not-allowed':
       return 'Email/password accounts are not enabled. Please contact support.';
     case 'auth/popup-closed-by-user':
-      return 'Sign-in cancelled. The sign-in window was closed.';
+    case 'auth/cancelled-popup-request':
+      return ''; // Return an empty string to signify that this should be ignored.
     case 'auth/popup-blocked':
       return 'Sign-in failed. Please allow pop-ups for this site and try again.';
     case 'auth/unauthorized-domain':
       return 'This domain is not authorized for authentication. Please contact the developer.';
-    case 'auth/internal-error':
-      return 'An internal authentication error occurred. This may be a temporary issue. Please try again in a few moments.';
     default:
       return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
   }
@@ -106,6 +112,17 @@ export default function LoginPage() {
   const [newUserName, setNewUserName] = useState('');
   const [isSavingName, setIsSavingName] = useState(false);
 
+  const handleAuthError = (error: any) => {
+    console.error('Authentication Error:', error);
+    const errorMessage = getFirebaseAuthErrorMessage(error);
+    if (errorMessage) {
+      setError(errorMessage);
+    } else {
+      // If the error message is empty, it's an ignored error (like popup closed)
+      setError(null);
+    }
+  }
+
   const handleGoogleSignIn = async () => {
     setError(null);
     const auth = getAuth(app);
@@ -122,13 +139,7 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
-      // Don't show an error if the user simply closes the sign-in popup or cancels the request.
-      if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-        console.log('Sign-in cancelled by user.');
-        return;
-      }
-      console.error('Authentication Error:', error);
-      setError(getFirebaseAuthErrorMessage(error));
+      handleAuthError(error);
     }
   };
 
@@ -143,8 +154,7 @@ export default function LoginPage() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
-      console.error('Authentication Error:', error);
-      setError(getFirebaseAuthErrorMessage(error));
+      handleAuthError(error);
     }
   };
 
@@ -169,8 +179,7 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
-      console.error('Authentication Error:', error);
-      setError(getFirebaseAuthErrorMessage(error));
+      handleAuthError(error);
     }
   };
 
