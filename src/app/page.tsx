@@ -9,6 +9,7 @@ import {
   Library,
   History,
   Shield,
+  Search,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -55,6 +56,14 @@ const features = [
       'Take control with powerful slash commands. Instantly get answers with `/solve` or get concise summaries of long texts with `/summarize`.',
     imageSrc: 'https://placehold.co/600x400.png',
     imageHint: 'command line interface',
+  },
+  {
+    icon: <Search />,
+    title: 'Real-Time Web Search',
+    description:
+      'Get up-to-the-minute answers. Use the `/search` command to have the AI browse the web and provide grounded responses with citations.',
+    imageSrc: 'https://placehold.co/600x400.png',
+    imageHint: 'web search results',
   },
   {
     icon: <Mic />,
