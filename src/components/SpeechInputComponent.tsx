@@ -7,17 +7,19 @@ import { useVoiceCommands } from '@/hooks/use-voice-commands';
 const SpeechInputComponent = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const recognitionRef = useRef(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const { processVoiceCommand } = useVoiceCommands();
 
   useEffect(() => {
-    if (!('webkitSpeechRecognition' in window)) {
+    const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    
+    if (!SpeechRecognitionAPI) {
       console.error("Web Speech API is not supported by this browser.");
       return;
     }
 
-    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const recognition: SpeechRecognition = new SpeechRecognitionAPI();
+    recognitionRef.current = recognition;
 
     recognition.continuous = false;
     recognition.interimResults = false;
@@ -29,7 +31,7 @@ const SpeechInputComponent = () => {
       console.log('Voice recognition started.');
     };
 
-    recognition.onresult = (event) => { // This line is crucial for correct syntax
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const currentTranscript = event.results[0][0].transcript;
       setTranscript(currentTranscript);
       setIsListening(false);
@@ -38,7 +40,7 @@ const SpeechInputComponent = () => {
       processVoiceCommand(currentTranscript);
     };
 
-    recognition.onerror = (event) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
       setIsListening(false);
     };
@@ -48,25 +50,19 @@ const SpeechInputComponent = () => {
       console.log('Voice recognition ended.');
     };
 
-    recognitionRef.current = recognition;
-
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      recognitionRef.current?.stop();
     };
   }, [processVoiceCommand]);
 
   const startListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.start();
-    }
+    recognitionRef.current?.start();
   };
 
+
+
   const stopListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-    }
+    recognitionRef.current?.stop();
   };
 
   return (
