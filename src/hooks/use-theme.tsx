@@ -39,7 +39,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function CustomThemeProvider({children}: {children: React.ReactNode}) {
-  const [theme, setTheme] = useLocalStorage<Theme>('color-theme', 'zinc');
+  const [theme, setTheme] = useLocalStorage<Theme>('color-theme', 'green');
 
   useEffect(() => {
     // Remove all theme classes
