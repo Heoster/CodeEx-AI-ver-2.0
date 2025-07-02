@@ -6,6 +6,7 @@ import {summarizeInformation} from '@/ai/flows/summarize-information';
 import {textToSpeech} from '@/ai/flows/text-to-speech';
 import {type Message, type Settings, type Model, type Voice} from '@/lib/types';
 import {sendWelcomeEmail, type WelcomeEmailInput} from '@/ai/flows/send-welcome-email';
+import {solveImageEquation, type SolveImageEquationInput, type SolveImageEquationOutput} from '@/ai/flows/solve-image-equation';
 
 export async function triggerWelcomeEmail(input: WelcomeEmailInput): Promise<void> {
   await sendWelcomeEmail(input);
@@ -84,5 +85,17 @@ export async function getSpeechAudio(
   } catch (error) {
     console.error('Error generating speech audio:', error);
     return {error: 'Sorry, I could not generate audio for this message.'};
+  }
+}
+
+export async function solveEquationFromImage(
+  input: SolveImageEquationInput
+): Promise<SolveImageEquationOutput | {error: string}> {
+  try {
+    const response = await solveImageEquation(input);
+    return response;
+  } catch (error) {
+    console.error('Error solving equation from image:', error);
+    return {error: 'Sorry, I encountered an error analyzing the image. The model may not be able to read the equation.'};
   }
 }

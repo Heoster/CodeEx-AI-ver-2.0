@@ -2,6 +2,7 @@
 
 import {useState} from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   SidebarProvider,
   Sidebar,
@@ -32,6 +33,7 @@ import {
   Settings as SettingsIcon,
   LogOut,
   Trash2,
+  Calculator,
 } from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
@@ -122,6 +124,14 @@ export function ChatLayout() {
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/visual-math">
+                  <Calculator />
+                  <span>Visual Math Solver</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             {chats.map(chat => (
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
