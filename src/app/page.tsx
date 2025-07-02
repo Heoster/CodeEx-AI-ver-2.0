@@ -2,10 +2,10 @@
 
 import {
   ArrowRight,
-  Code,
-  LayoutGrid,
   MessageSquare,
-  Users,
+  ScanLine,
+  Terminal,
+  Mic,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,35 +15,35 @@ import { Card, CardContent } from '@/components/ui/card';
 const features = [
   {
     icon: <MessageSquare />,
-    title: 'Advanced Chat Interface',
+    title: 'Dynamic AI Conversations',
     description:
-      'Engage users with a dynamic and responsive chat UI, complete with voice commands and customizable settings.',
+      'Engage in natural, context-aware dialogues. Our AI remembers your conversation history and adapts its tone and technical level based on your preferences.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'chat interface',
+    imageHint: 'AI chat conversation',
   },
   {
-    icon: <Code />,
-    title: 'Powerful Genkit Flows',
+    icon: <ScanLine />,
+    title: 'Visual Problem Solver',
     description:
-      'Define complex AI logic with server-side Genkit flows for everything from data generation to tool use.',
+      'Go beyond text. Upload an image of a handwritten math equation, and our AI will recognize, solve, and provide a step-by-step solution.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'code editor',
+    imageHint: 'math equation chalkboard',
   },
   {
-    icon: <LayoutGrid />,
-    title: 'Multimodal Capabilities',
+    icon: <Terminal />,
+    title: 'Integrated Command System',
     description:
-      'Go beyond text. Let users interact by uploading images for analysis, like solving handwritten equations.',
+      'Take control with powerful slash commands. Instantly get answers with `/solve` or get concise summaries of long texts with `/summarize`.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'image analysis',
+    imageHint: 'command line interface',
   },
   {
-    icon: <Users />,
-    title: 'Secure User Authentication',
+    icon: <Mic />,
+    title: 'Voice-Enabled Interaction',
     description:
-      'Integrated with Firebase Auth to provide secure, scalable, and easy-to-manage user authentication.',
+      'Interact hands-free with full voice support. Use your microphone to talk to the AI and enable speech output to hear its responses aloud.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'authentication login',
+    imageHint: 'sound waves',
   },
 ];
 
@@ -54,7 +54,12 @@ export default function AiAgentPlatformPage() {
       <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/favicon.ico" alt="CODEEX AI Logo" width={28} height={28} />
+            <Image
+              src="/favicon.ico"
+              alt="CODEEX AI Logo"
+              width={28}
+              height={28}
+            />
             <span className="text-xl font-bold text-white">CODEEX AI</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
@@ -103,22 +108,20 @@ export default function AiAgentPlatformPage() {
             className="absolute inset-0 bg-background"
             style={{
               backgroundImage:
-                'linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)',
-              backgroundSize: '2rem 2rem',
-              maskImage:
-                'radial-gradient(ellipse at center, white 20%, transparent 60%)',
+                'radial-gradient(ellipse 80% 50% at 50% -20%,rgba(120,119,198,0.3), transparent), radial-gradient(ellipse 80% 50% at 50% 120%,rgba(39, 108, 223, 0.3), transparent)',
+              animation: 'aurora 4s linear infinite',
             }}
           ></div>
           <div className="container relative mx-auto max-w-7xl px-4 text-center">
             <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-7xl">
-              The Complete
+              Explore the Power of
               <br />
-              AI Agent Platform
+              Conversational AI
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-neutral-400">
-              Build, deploy, and manage AI agents at scale. Leverage our
-              powerful tools and infrastructure to create next-generation
-              applications.
+              Engage in intelligent conversations, solve complex problems, and
+              experience the future of AI interaction, built on Next.js and
+              Genkit.
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Link href="/login">
@@ -126,7 +129,7 @@ export default function AiAgentPlatformPage() {
                   size="lg"
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Start Building <ArrowRight className="ml-2" />
+                  Start Chatting Now <ArrowRight className="ml-2" />
                 </Button>
               </Link>
               <Link href="/documentation">
@@ -145,13 +148,13 @@ export default function AiAgentPlatformPage() {
         {/* Features Section */}
         <section id="features" className="bg-background py-16 md:py-24">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
-            <div className="mb-12">
+            <div className="mb-12 text-center">
               <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-                From problem to production-ready in record time
+                A Hands-On AI Experience
               </h2>
-              <p className="mt-4 max-w-3xl text-lg text-neutral-400">
-                A comprehensive suite of tools to handle any AI development
-                challenge.
+              <p className="mt-4 max-w-3xl mx-auto text-lg text-neutral-400">
+                This isn't just a demo. It's a fully-functional application
+                showcasing real-world AI capabilities you can use right now.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2">
@@ -166,9 +169,14 @@ export default function AiAgentPlatformPage() {
                       data-ai-hint={feature.imageHint}
                     />
                   </div>
-                  <h3 className="text-lg font-semibold text-white">
-                    {feature.title}
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-lg font-semibold text-white">
+                      {feature.title}
+                    </h3>
+                  </div>
                   <p className="text-sm text-neutral-400">
                     {feature.description}
                   </p>
@@ -178,144 +186,23 @@ export default function AiAgentPlatformPage() {
           </div>
         </section>
 
-        {/* Engine Section */}
-        <section className="relative overflow-hidden border-y border-white/10 py-20 text-center">
-          <h1 className="text-8xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white to-neutral-500 md:text-9xl">
-            Engine
-          </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-lg text-neutral-400">
-            Our core engine is built for performance and scale, allowing you to
-            run complex agents with minimal latency.
-          </p>
-        </section>
-
-        {/* By Developers Section */}
-        <section className="bg-background py-16 md:py-24">
-          <div className="container mx-auto max-w-7xl px-4 md:px-6">
-            <div className="mb-12">
-              <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-                By developers, for developers.
-              </h2>
-              <p className="mt-4 max-w-3xl text-lg text-neutral-400">
-                We provide the building blocks you love, so you can focus on
-                creating.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
-              <Card className="border-purple-500/50 bg-[#1e1b2e] p-6 lg:col-span-1">
-                <CardContent className="flex flex-col gap-4 p-0">
-                  <h3 className="font-semibold text-white">
-                    Seamless Integration
-                  </h3>
-                  <p className="text-sm text-neutral-400">
-                    Works with the tools and frameworks you already use,
-                    including Next.js, React, and Tailwind CSS.
-                  </p>
-                  <div className="aspect-video w-full rounded-md border border-white/10 bg-black/30 p-4">
-                    <Image
-                      src="https://placehold.co/400x200.png"
-                      data-ai-hint="code snippet"
-                      alt="code"
-                      width={400}
-                      height={200}
-                      className="rounded"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="border-teal-500/50 bg-[#112528] p-6 lg:col-span-2">
-                <CardContent className="flex flex-col gap-4 p-0">
-                  <h3 className="font-semibold text-white">
-                    Extensible & Customizable
-                  </h3>
-                  <p className="text-sm text-neutral-400">
-                    Easily extend functionality with custom tools and fine-tune
-                    models to fit your specific needs.
-                  </p>
-                  <div className="aspect-video w-full rounded-md border border-white/10 bg-black/30 p-4">
-                    <Image
-                      src="https://placehold.co/600x300.png"
-                      data-ai-hint="dashboard settings"
-                      alt="dashboard"
-                      width={600}
-                      height={300}
-                      className="rounded"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Stats and Testimonials Section */}
-        <section className="border-y border-white/10 bg-neutral-900/70 py-16 md:py-24">
-          <div className="container mx-auto max-w-7xl px-4 md:px-6">
-            <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
-              <div className="space-y-4">
-                <p className="font-semibold text-primary">
-                  Trusted by businesses and startups
-                </p>
-                <h2 className="text-3xl font-bold text-white">
-                  Building the future of AI, together.
-                </h2>
-                <p className="text-neutral-400">
-                  Our platform powers thousands of applications, from
-                  small-scale projects to enterprise-level solutions.
-                </p>
-                <div className="flex gap-8 pt-4">
-                  <div>
-                    <p className="text-4xl font-bold text-white">48M+</p>
-                    <p className="text-neutral-400">API Calls Monthly</p>
-                  </div>
-                  <div>
-                    <p className="text-4xl font-bold text-white">181K+</p>
-                    <p className="text-neutral-400">Active Developers</p>
-                  </div>
-                </div>
-              </div>
-              <Card className="border-blue-500/50 bg-background p-6">
-                <CardContent className="p-0">
-                  <p className="text-lg text-white">
-                    "This is the most comprehensive and developer-friendly AI
-                    platform I've ever used. We were able to ship our agent in a
-                    fraction of the time."
-                  </p>
-                  <div className="mt-4 flex items-center gap-4">
-                    <Image
-                      src="https://placehold.co/40x40.png"
-                      data-ai-hint="person avatar"
-                      alt="User avatar"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                    <div>
-                      <p className="font-semibold text-white">Jane Doe</p>
-                      <p className="text-sm text-neutral-400">
-                        Lead Engineer, TechCorp
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
         {/* Final CTA */}
-        <section className="bg-background py-20 text-center">
+        <section className="border-t border-white/10 bg-background py-20 text-center">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-              Join the largest AI building community.
+              Ready to Dive In?
             </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-400">
+              Create an account to save your chat history and start exploring
+              all the features.
+            </p>
             <div className="mt-8">
               <Link href="/login">
                 <Button
                   size="lg"
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Build better with CODEEX AI{' '}
+                  Get Started with CODEEX AI{' '}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -330,7 +217,12 @@ export default function AiAgentPlatformPage() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2">
-                <Image src="/favicon.ico" alt="CODEEX AI Logo" width={28} height={28} />
+                <Image
+                  src="/favicon.ico"
+                  alt="CODEEX AI Logo"
+                  width={28}
+                  height={28}
+                />
                 <span className="text-xl font-bold text-white">CODEEX AI</span>
               </Link>
             </div>
