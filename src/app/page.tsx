@@ -2,7 +2,6 @@
 
 import {
   ArrowRight,
-  Bot,
   Code,
   LayoutGrid,
   MessageSquare,
@@ -55,7 +54,7 @@ export default function AiAgentPlatformPage() {
       <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Bot className="h-7 w-7 text-primary" />
+            <Image src="/favicon.ico" alt="CODEEX AI Logo" width={28} height={28} />
             <span className="text-xl font-bold text-white">CODEEX AI</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
@@ -331,7 +330,7 @@ export default function AiAgentPlatformPage() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2">
-                <Bot className="h-7 w-7 text-primary" />
+                <Image src="/favicon.ico" alt="CODEEX AI Logo" width={28} height={28} />
                 <span className="text-xl font-bold text-white">CODEEX AI</span>
               </Link>
             </div>
