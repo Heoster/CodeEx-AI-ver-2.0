@@ -122,8 +122,8 @@ export default function LoginPage() {
         });
       }
     } catch (error: any) {
-      // Don't show an error if the user simply closes the sign-in popup.
-      if (error.code === 'auth/popup-closed-by-user') {
+      // Don't show an error if the user simply closes the sign-in popup or cancels the request.
+      if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
         console.log('Sign-in cancelled by user.');
         return;
       }
