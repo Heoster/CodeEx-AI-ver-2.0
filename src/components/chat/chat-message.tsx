@@ -8,6 +8,8 @@ import {type Message} from '@/lib/types';
 import {useAuth} from '@/hooks/use-auth';
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from '@/components/ui/tooltip';
 import {formatDistanceToNow} from 'date-fns';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ChatMessageProps {
   message: Message;
@@ -75,10 +77,17 @@ export function ChatMessage({message}: ChatMessageProps) {
                 'relative max-w-[80%] space-y-2 rounded-lg px-4 py-3',
                 isAssistant
                   ? 'bg-muted'
-                  : 'bg-primary text-primary-foreground'
+                  : 'bg-primary text-primary-foreground',
+                isAssistant ? 'text-foreground' : 'text-primary-foreground'
               )}
             >
-              <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+              <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-0 prose-a:text-primary hover:prose-a:underline">
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+                  a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" />,
+                }}>
+                  {message.content}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         </TooltipTrigger>

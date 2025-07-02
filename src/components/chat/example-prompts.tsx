@@ -1,5 +1,5 @@
 import {Card, CardContent} from '@/components/ui/card';
-import {Code, Calculator, Lightbulb, FileText} from 'lucide-react';
+import {Code, Calculator, Search, FileText} from 'lucide-react';
 
 interface ExamplePromptsProps {
   onSendMessage: (message: string) => void;
@@ -7,8 +7,8 @@ interface ExamplePromptsProps {
 
 const prompts = [
   {
-    icon: <Lightbulb size={18} />,
-    text: 'Suggest some names for a new coffee shop',
+    icon: <Search size={18} />,
+    text: '/search who won the last F1 race?',
   },
   {
     icon: <Code size={18} />,

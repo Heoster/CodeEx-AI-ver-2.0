@@ -56,6 +56,17 @@ export default function DocumentationPage() {
               <p><strong>Example:</strong> <code className="font-mono rounded bg-muted px-1 py-0.5">/summarize Photosynthesis is a process used by plants and other organisms to convert light energy into chemical energy...</code></p>
             </div>
           </div>
+
+          <div className="space-y-4 rounded-lg border bg-card p-6">
+            <h3 className="text-2xl font-semibold">Web Search with Citations</h3>
+            <p className="text-muted-foreground">
+              Get up-to-date answers from the web. Use the <code className="font-mono rounded bg-muted px-1 py-0.5">/search</code> command to have the AI find real-time information and cite its sources.
+            </p>
+            <div className="rounded-md bg-muted p-4 text-sm space-y-2">
+              <p><strong>Command:</strong> <code className="font-mono rounded bg-muted px-1 py-0.5">/search [your question]</code></p>
+              <p><strong>Example:</strong> <code className="font-mono rounded bg-muted px-1 py-0.5">/search Who won the last F1 race?</code></p>
+            </div>
+          </div>
           
           <div className="space-y-4 rounded-lg border bg-card p-6">
             <h3 className="text-2xl font-semibold">Voice Commands & Speech Output</h3>

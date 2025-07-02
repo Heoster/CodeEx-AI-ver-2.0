@@ -9,3 +9,4 @@ import '@/ai/flows/generate-answer-from-context.ts';
 import '@/ai/flows/send-welcome-email.ts';
 import '@/ai/flows/text-to-speech.ts';
 import '@/ai/flows/solve-image-equation.ts';
+import '@/ai/flows/web-search.ts';
