@@ -23,7 +23,7 @@ import type {ReactNode} from 'react';
 import type {Settings, Model} from '@/lib/types';
 import {Switch} from '@/components/ui/switch';
 import {Separator} from '@/components/ui/separator';
-import {useTheme} from '@/hooks/use-theme';
+import {useTheme} from 'next-themes';
 import Link from 'next/link';
 
 interface SettingsDialogProps {
@@ -37,7 +37,7 @@ export function SettingsDialog({
   settings,
   onSettingsChange,
 }: SettingsDialogProps) {
-  const {theme, setTheme, themes} = useTheme();
+  const {theme, setTheme} = useTheme();
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -133,11 +133,9 @@ export function SettingsDialog({
                 <SelectValue placeholder="Select theme" />
               </SelectTrigger>
               <SelectContent>
-                {themes.map(t => (
-                  <SelectItem key={t} value={t}>
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
-                  </SelectItem>
-                ))}
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
+                  <SelectItem value="system">System</SelectItem>
               </SelectContent>
             </Select>
           </div>

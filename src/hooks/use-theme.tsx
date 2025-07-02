@@ -1,34 +1,13 @@
 'use client';
 
-import {createContext, useContext, useEffect} from 'react';
-import {useLocalStorage} from './use-local-storage';
+// This custom theme provider is no longer needed.
+// Theme management is now handled by the `next-themes` package,
+// configured in `src/app/layout.tsx` and `src/components/theme-provider.tsx`.
+// You can safely delete this file.
 
-type Theme =
-  | 'zinc'
-  | 'slate'
-  | 'stone'
-  | 'gray'
-  | 'neutral'
-  | 'red'
-  | 'rose'
-  | 'orange'
-  | 'green'
-  | 'blue'
-  | 'violet';
+import {createContext, useContext} from 'react';
 
-const themes: Theme[] = [
-  'zinc',
-  'slate',
-  'stone',
-  'gray',
-  'neutral',
-  'red',
-  'rose',
-  'orange',
-  'green',
-  'blue',
-  'violet',
-];
+type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
   theme: Theme;
@@ -39,19 +18,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function CustomThemeProvider({children}: {children: React.ReactNode}) {
-  const [theme, setTheme] = useLocalStorage<Theme>('color-theme', 'blue');
-
-  useEffect(() => {
-    // Remove all theme classes
-    themes.forEach(t => {
-      document.documentElement.classList.remove(`theme-${t}`);
-    });
-    // Add the current theme class
-    document.documentElement.classList.add(`theme-${theme}`);
-  }, [theme]);
-
+  // This is a placeholder now. `next-themes` handles the state.
+  const value: ThemeContextType = {
+    theme: 'dark',
+    setTheme: () => {},
+    themes: ['light', 'dark'],
+  };
   return (
-    <ThemeContext.Provider value={{theme, setTheme, themes}}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
@@ -60,7 +34,7 @@ export function CustomThemeProvider({children}: {children: React.ReactNode}) {
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a CustomThemeProvider');
+    throw new Error('useTheme must be used within a ThemeProvider from next-themes');
   }
   return context;
 };

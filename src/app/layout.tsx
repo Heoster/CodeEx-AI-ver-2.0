@@ -4,7 +4,6 @@ import 'katex/dist/katex.min.css';
 import {ThemeProvider} from '@/components/theme-provider';
 import {Toaster} from '@/components/ui/toaster';
 import {AuthProvider} from '@/hooks/use-auth';
-import {CustomThemeProvider} from '@/hooks/use-theme';
 
 export const metadata: Metadata = {
   title: 'CODEEX AI',
@@ -32,8 +31,13 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <CustomThemeProvider>{children}</CustomThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
             <Toaster />
           </ThemeProvider>
         </AuthProvider>
