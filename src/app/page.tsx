@@ -8,6 +8,7 @@ import {
   Mic,
   Library,
   History,
+  Shield,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -62,6 +63,14 @@ const features = [
       'Interact hands-free with full voice support. Use your microphone to talk to the AI and enable speech output to hear its responses aloud.',
     imageSrc: 'https://placehold.co/600x400.png',
     imageHint: 'sound waves',
+  },
+  {
+    icon: <Shield />,
+    title: 'Secure Authentication',
+    description:
+      'Leverage Firebase for secure and reliable user authentication, supporting both email/password and Google sign-in methods.',
+    imageSrc: 'https://placehold.co/600x400.png',
+    imageHint: 'firebase authentication',
   },
 ];
 
