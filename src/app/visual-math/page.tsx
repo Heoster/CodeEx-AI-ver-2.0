@@ -132,6 +132,11 @@ export default function VisualMathPage() {
                   <div>
                     <h3 className="mb-2 font-semibold">Recognized Equation:</h3>
                     {solution.isSolvable ? (
+                        /**
+                         * The `BlockMath` component from `react-katex` is used to render mathematical equations.
+                         * It takes a string of LaTeX as input and displays it as a formatted math block.
+                         * This is used to show the user the equation that was recognized from the image.
+                         */
                         <BlockMath math={solution.recognizedEquation} />
                     ) : (
                         <p className="text-muted-foreground">Could not recognize a valid equation.</p>
@@ -140,6 +145,11 @@ export default function VisualMathPage() {
                   <div>
                     <h3 className="mb-2 font-semibold">Step-by-step Solution:</h3>
                     <div className="overflow-x-auto p-2 rounded-md bg-muted">
+                        {/**
+                         * The `BlockMath` component from `react-katex` is used to render mathematical equations.
+                         * It takes a string of LaTeX as input and displays it as a formatted math block.
+                         * This is used to show the user the step-by-step solution to the equation.
+                         */}
                         <BlockMath math={solution.solutionSteps} />
                     </div>
                   </div>

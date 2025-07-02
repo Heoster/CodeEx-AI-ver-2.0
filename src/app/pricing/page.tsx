@@ -27,12 +27,12 @@ export default function PricingPage() {
           <div className="space-y-4 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Flexible Plans for Teams of All Sizes</h2>
             <p className="text-lg text-muted-foreground">
-              Choose the plan that's right for you. All plans come with a 14-day free trial.
+              Choose the plan that's right for you. All plans come with a 365-day free trial.
             </p>
             <div className="flex items-center justify-center space-x-2 pt-4">
                 <Label htmlFor="billing-cycle">Monthly</Label>
                 <Switch id="billing-cycle" checked={isAnnual} onCheckedChange={setIsAnnual} aria-label="Toggle billing cycle" />
-                <Label htmlFor="billing-cycle">Annual (Save 20%)</Label>
+                <Label htmlFor="billing-cycle">Annual (Save 100%)</Label>
             </div>
           </div>
 
@@ -42,7 +42,7 @@ export default function PricingPage() {
                 <CardHeader>
                     <CardTitle>Free</CardTitle>
                     <CardDescription>For individuals and small projects getting started.</CardDescription>
-                    <div className="text-4xl font-bold">$0<span className="text-base font-normal text-muted-foreground">/month</span></div>
+                    <div className="text-4xl font-bold">FREE<span className="text-base font-normal text-muted-foreground">/month</span></div>
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4">
                     <ul className="space-y-2 text-sm">
@@ -61,7 +61,7 @@ export default function PricingPage() {
                 <CardHeader>
                     <CardTitle>Pro</CardTitle>
                     <CardDescription>For growing teams that need more power and support.</CardDescription>
-                     <div className="text-4xl font-bold">${isAnnual ? 79*0.8 : 79}<span className="text-base font-normal text-muted-foreground">/month</span></div>
+                     <div className="text-4xl font-bold">FREE<span className="text-base font-normal text-muted-foreground">/month</span></div>
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4">
                     <ul className="space-y-2 text-sm">
