@@ -34,6 +34,7 @@ import {
   LogOut,
   Trash2,
   Calculator,
+  FileText,
 } from 'lucide-react';
 import {ThemeToggle} from '../theme-toggle';
 import {SettingsDialog} from '../settings-dialog';
@@ -129,6 +130,14 @@ export function ChatLayout() {
                 <Link href="/visual-math">
                   <Calculator />
                   <span>Visual Math Solver</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link href="/pdf-analyzer">
+                  <FileText />
+                  <span>PDF Analyzer</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

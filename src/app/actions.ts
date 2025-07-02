@@ -8,6 +8,7 @@ import {type Message, type Settings, type Model, type Voice} from '@/lib/types';
 import {sendWelcomeEmail, type WelcomeEmailInput} from '@/ai/flows/send-welcome-email';
 import {solveImageEquation, type SolveImageEquationInput, type SolveImageEquationOutput} from '@/ai/flows/solve-image-equation';
 import {searchTheWeb, type WebSearchOutput} from '@/ai/flows/web-search';
+import {analyzePdf, type AnalyzePdfInput, type AnalyzePdfOutput} from '@/ai/flows/analyze-pdf';
 
 async function handleGenkitError(error: any): Promise<{ error: string }> {
   console.error('Genkit Action Error:', error);
@@ -171,6 +172,17 @@ export async function solveEquationFromImage(
 ): Promise<SolveImageEquationOutput | {error: string}> {
   try {
     const response = await solveImageEquation(input);
+    return response;
+  } catch (error) {
+    return handleGenkitError(error);
+  }
+}
+
+export async function analyzeDocumentFromPdf(
+  input: AnalyzePdfInput
+): Promise<AnalyzePdfOutput | {error: string}> {
+  try {
+    const response = await analyzePdf(input);
     return response;
   } catch (error) {
     return handleGenkitError(error);
