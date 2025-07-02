@@ -8,8 +8,26 @@ import {type Message, type Settings, type Model, type Voice} from '@/lib/types';
 import {sendWelcomeEmail, type WelcomeEmailInput} from '@/ai/flows/send-welcome-email';
 import {solveImageEquation, type SolveImageEquationInput, type SolveImageEquationOutput} from '@/ai/flows/solve-image-equation';
 
+async function handleGenkitError(error: any): Promise<{ error: string }> {
+  console.error('Genkit Action Error:', error);
+  const errorMessage = error.message || String(error);
+
+  if (errorMessage.includes('API key')) {
+    return {
+      error: 'API Authentication Error: The GOOGLE_API_KEY is missing or invalid. Please ensure it is correctly set in your .env file and that the Google AI services are enabled in your Google Cloud project.',
+    };
+  }
+  
+  return {error: `An unexpected API error occurred: ${errorMessage}`};
+}
+
+
 export async function triggerWelcomeEmail(input: WelcomeEmailInput): Promise<void> {
-  await sendWelcomeEmail(input);
+  try {
+    await sendWelcomeEmail(input);
+  } catch (error) {
+    console.error('Error triggering welcome email:', error);
+  }
 }
 
 export async function generateResponse(
@@ -24,8 +42,6 @@ export async function generateResponse(
   const isSummarizeRequest = lastUserMessage.startsWith('/summarize');
 
   if (model === 'auto') {
-    // For complex tasks like solving quizzes or summarizing, use the more powerful model.
-    // For general chat, use the faster, more cost-effective model.
     chosenModel =
       isSolveRequest || isSummarizeRequest
         ? 'gemini-1.5-pro'
@@ -70,8 +86,7 @@ export async function generateResponse(
       return {role: 'assistant', content: response.answer};
     }
   } catch (error) {
-    console.error('Error generating response:', error);
-    return {error: 'Sorry, I encountered an error. Please try again.'};
+    return handleGenkitError(error);
   }
 }
 
@@ -83,8 +98,7 @@ export async function getSpeechAudio(
     const response = await textToSpeech({text, voice});
     return {audio: response.audio};
   } catch (error) {
-    console.error('Error generating speech audio:', error);
-    return {error: 'Sorry, I could not generate audio for this message.'};
+    return handleGenkitError(error);
   }
 }
 
@@ -95,7 +109,6 @@ export async function solveEquationFromImage(
     const response = await solveImageEquation(input);
     return response;
   } catch (error) {
-    console.error('Error solving equation from image:', error);
-    return {error: 'Sorry, I encountered an error analyzing the image. The model may not be able to read the equation.'};
+    return handleGenkitError(error);
   }
 }
