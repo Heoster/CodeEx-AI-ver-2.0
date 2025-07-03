@@ -14,7 +14,6 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 
 const features = [
   {
@@ -23,7 +22,7 @@ const features = [
     description:
       'Engage in natural, context-aware dialogues. Our AI remembers your conversation history and adapts its tone and technical level based on your preferences.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'AI chat conversation',
+    imageHint: 'chat interface',
   },
   {
     icon: <Library />,
@@ -31,7 +30,7 @@ const features = [
     description:
       'Organize your thoughts. Create and manage multiple chat sessions simultaneously, keeping your different projects and topics neatly separated.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'multiple tabs browser',
+    imageHint: 'chat list',
   },
   {
     icon: <History />,
@@ -39,7 +38,7 @@ const features = [
     description:
       'Never lose a thought. Your conversations are automatically saved to your device, allowing you to pick up right where you left off, anytime.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'notebook journal',
+    imageHint: 'history clock',
   },
   {
     icon: <ScanLine />,
@@ -47,7 +46,7 @@ const features = [
     description:
       'Go beyond text. Upload an image of a handwritten math equation, and our AI will recognize, solve, and provide a step-by-step solution.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'math equation chalkboard',
+    imageHint: 'math equation',
   },
   {
     icon: <Terminal />,
@@ -55,7 +54,7 @@ const features = [
     description:
       'Take control with powerful slash commands. Instantly get answers with `/solve` or get concise summaries of long texts with `/summarize`.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'command line interface',
+    imageHint: 'command line',
   },
   {
     icon: <Search />,
@@ -63,7 +62,7 @@ const features = [
     description:
       'Get up-to-the-minute answers. Use the `/search` command to have the AI browse the web and provide grounded responses with citations.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'web search results',
+    imageHint: 'web search',
   },
   {
     icon: <Mic />,
@@ -71,7 +70,7 @@ const features = [
     description:
       'Interact hands-free with full voice support. Use your microphone to talk to the AI and enable speech output to hear its responses aloud.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'sound waves',
+    imageHint: 'microphone soundwave',
   },
   {
     icon: <Shield />,
@@ -79,7 +78,7 @@ const features = [
     description:
       'Leverage Firebase for secure and reliable user authentication, supporting both email/password and Google sign-in methods.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'firebase authentication',
+    imageHint: 'secure login',
   },
 ];
 
