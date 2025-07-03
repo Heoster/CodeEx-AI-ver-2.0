@@ -38,7 +38,7 @@ const features = [
     description:
       'Never lose a thought. Your conversations are automatically saved to your device, allowing you to pick up right where you left off, anytime.',
     imageSrc: 'https://placehold.co/600x400.png',
-    imageHint: 'history clock',
+    imageHint: 'cloud database',
   },
   {
     icon: <ScanLine />,
