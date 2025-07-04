@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import 'katex/dist/katex.min.css';
 import {ThemeProvider} from '@/components/theme-provider';
@@ -8,6 +8,20 @@ import {AuthProvider} from '@/hooks/use-auth';
 export const metadata: Metadata = {
   title: 'CODEEX AI',
   description: 'An intelligent AI assistant.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'CODEEX AI',
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/icons/icon-192x192.png',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#020817',
 };
 
 export default function RootLayout({
