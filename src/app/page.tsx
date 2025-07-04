@@ -84,9 +84,9 @@ const features = [
 
 export default function AiAgentPlatformPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-neutral-300">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2">
             <Image
@@ -95,24 +95,24 @@ export default function AiAgentPlatformPage() {
               width={28}
               height={28}
             />
-            <span className="text-xl font-bold text-white">CODEEX AI</span>
+            <span className="text-xl font-bold text-foreground">CODEEX AI</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             <Link
               href="/pricing"
-              className="text-sm font-medium text-neutral-300 hover:text-white"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Pricing
             </Link>
             <Link
               href="/documentation"
-              className="text-sm font-medium text-neutral-300 hover:text-white"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Docs
             </Link>
             <Link
               href="/blog"
-              className="text-sm font-medium text-neutral-300 hover:text-white"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               Blog
             </Link>
@@ -121,7 +121,6 @@ export default function AiAgentPlatformPage() {
             <Link href="/login">
               <Button
                 variant="outline"
-                className="border-neutral-700 bg-transparent text-white hover:bg-neutral-800 hover:text-white"
               >
                 Sign In
               </Button>
@@ -138,7 +137,7 @@ export default function AiAgentPlatformPage() {
       {/* Main Content */}
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden border-b border-white/10 py-20 md:py-32">
+        <section className="relative overflow-hidden border-b border-border py-20 md:py-32">
           <div
             className="absolute inset-0 bg-background"
             style={{
@@ -148,12 +147,12 @@ export default function AiAgentPlatformPage() {
             }}
           ></div>
           <div className="container relative mx-auto max-w-7xl px-4 text-center">
-            <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-7xl">
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl lg:text-7xl">
               Explore the Power of
               <br />
               Conversational AI
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-neutral-400">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
               Engage in intelligent conversations, solve complex problems, and
               experience the future of AI interaction, built on Next.js and
               Genkit.
@@ -171,7 +170,6 @@ export default function AiAgentPlatformPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-neutral-700 bg-transparent text-white hover:bg-neutral-800 hover:text-white"
                 >
                   Read Docs
                 </Button>
@@ -184,10 +182,10 @@ export default function AiAgentPlatformPage() {
         <section id="features" className="bg-background py-16 md:py-24">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
             <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                 A Hands-On AI Experience
               </h2>
-              <p className="mt-4 max-w-3xl mx-auto text-lg text-neutral-400">
+              <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
                 This isn't just a demo. It's a fully-functional application
                 showcasing real-world AI capabilities you can use right now.
               </p>
@@ -208,11 +206,11 @@ export default function AiAgentPlatformPage() {
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       {feature.icon}
                     </div>
-                    <h3 className="text-lg font-semibold text-white">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {feature.title}
                     </h3>
                   </div>
-                  <p className="text-sm text-neutral-400">
+                  <p className="text-sm text-muted-foreground">
                     {feature.description}
                   </p>
                 </div>
@@ -222,12 +220,12 @@ export default function AiAgentPlatformPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="border-t border-white/10 bg-background py-20 text-center">
+        <section className="border-t border-border bg-background py-20 text-center">
           <div className="container mx-auto max-w-7xl px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
               Ready to Dive In?
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-400">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
               Create an account to save your chat history and start exploring
               all the features.
             </p>
@@ -247,7 +245,7 @@ export default function AiAgentPlatformPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-background">
+      <footer className="border-t border-border bg-background">
         <div className="container mx-auto max-w-7xl px-4 py-12 md:px-6">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2 md:col-span-1">
@@ -258,16 +256,16 @@ export default function AiAgentPlatformPage() {
                   width={28}
                   height={28}
                 />
-                <span className="text-xl font-bold text-white">CODEEX AI</span>
+                <span className="text-xl font-bold text-foreground">CODEEX AI</span>
               </Link>
             </div>
             <div className="space-y-4">
-              <h4 className="font-semibold text-white">Product</h4>
+              <h4 className="font-semibold text-foreground">Product</h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
                     href="/#features"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Features
                   </Link>
@@ -275,7 +273,7 @@ export default function AiAgentPlatformPage() {
                 <li>
                   <Link
                     href="/pricing"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Pricing
                   </Link>
@@ -283,7 +281,7 @@ export default function AiAgentPlatformPage() {
                 <li>
                   <Link
                     href="/about"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     About
                   </Link>
@@ -291,12 +289,12 @@ export default function AiAgentPlatformPage() {
               </ul>
             </div>
             <div className="space-y-4">
-              <h4 className="font-semibold text-white">Resources</h4>
+              <h4 className="font-semibold text-foreground">Resources</h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
                     href="/blog"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Blog
                   </Link>
@@ -304,7 +302,7 @@ export default function AiAgentPlatformPage() {
                 <li>
                   <Link
                     href="/documentation"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Documentation
                   </Link>
@@ -312,7 +310,7 @@ export default function AiAgentPlatformPage() {
                 <li>
                   <Link
                     href="/contact"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Contact
                   </Link>
@@ -320,12 +318,12 @@ export default function AiAgentPlatformPage() {
               </ul>
             </div>
             <div className="space-y-4">
-              <h4 className="font-semibold text-white">Company</h4>
+              <h4 className="font-semibold text-foreground">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
                     href="/careers"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Careers
                   </Link>
@@ -333,7 +331,7 @@ export default function AiAgentPlatformPage() {
                 <li>
                   <Link
                     href="/privacy"
-                    className="text-neutral-400 hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Privacy Policy
                   </Link>
@@ -341,22 +339,22 @@ export default function AiAgentPlatformPage() {
               </ul>
             </div>
             <div className="space-y-4">
-              <h4 className="font-semibold text-white">Connect</h4>
+              <h4 className="font-semibold text-foreground">Connect</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="#" className="text-neutral-400 hover:text-white">
+                  <Link href="#" className="text-muted-foreground hover:text-foreground">
                     Twitter
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-neutral-400 hover:text-white">
+                  <Link href="#" className="text-muted-foreground hover:text-foreground">
                     LinkedIn
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
-          <div className="mt-8 border-t border-white/10 pt-8 text-center text-sm text-neutral-500">
+          <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} CODEEX AI. All rights reserved.
           </div>
         </div>
