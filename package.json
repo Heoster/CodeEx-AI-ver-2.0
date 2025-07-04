@@ -30,7 +30,7 @@
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-select": "^1.2.2",
     "@radix-ui/react-separator": "^1.0.3",
-    "@radix-ui/react-sheet": "^1.0.4",
+    "@radix-ui/react-sheet": "latest",
     "@radix-ui/react-sidebar": "^1.1.1",
     "@radix-ui/react-skeleton": "^1.0.3",
     "@radix-ui/react-slider": "^1.1.2",
