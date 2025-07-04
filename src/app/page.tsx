@@ -154,8 +154,7 @@ export default function AiAgentPlatformPage() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
               Engage in intelligent conversations, solve complex problems, and
-              experience the future of AI interaction, built on Next.js and
-              Genkit.
+              experience the future of AI interaction, built by HEOSTEr only for you.
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Link href="/login">
@@ -342,13 +341,13 @@ export default function AiAgentPlatformPage() {
               <h4 className="font-semibold text-foreground">Connect</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    Twitter
+                  <Link href="https://github.com/Heoster" className="text-muted-foreground hover:text-foreground">
+                    Github
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-muted-foreground hover:text-foreground">
-                    LinkedIn
+                  <Link href="https://www.instagram.com/codex._.heoster/" className="text-muted-foreground hover:text-foreground">
+                    Instagram
                   </Link>
                 </li>
               </ul>
