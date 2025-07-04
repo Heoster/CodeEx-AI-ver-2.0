@@ -154,7 +154,7 @@ export default function AiAgentPlatformPage() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
               Engage in intelligent conversations, solve complex problems, and
-              experience the future of AI interaction, built by HEOSTEr only for you.
+              experience the future of AI interaction, built by HEOSTER only for you.
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Link href="/login">

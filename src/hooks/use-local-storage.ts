@@ -1,62 +1,64 @@
 'use client';
 
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 
 // A custom hook for persisting state to local storage.
 export function useLocalStorage<T>(key: string, initialValue: T) {
-  // State to store our value.
-  // Pass an initial state function to `useState` so logic is only executed once on the client.
-  const [storedValue, setStoredValue] = useState<T>(() => {
+  const readValue = useCallback((): T => {
+    // Prevent build errors "ReferenceError: window is not defined"
     if (typeof window === 'undefined') {
       return initialValue;
     }
+
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
-      return initialValue;
-    }
-  });
-
-  // The custom setter function that updates both the state and local storage.
-  const setValue = (value: T | ((val: T) => T)) => {
-    // We use the functional update form of `useState`'s setter to avoid stale state issues.
-    setStoredValue(currentValue => {
-      try {
-        const valueToStore =
-          value instanceof Function ? value(currentValue) : value;
-        // Save to local storage
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        }
-        return valueToStore;
-      } catch (error) {
-        console.error(error);
-        return currentValue; // Return previous state in case of an error
-      }
-    });
-  };
-
-  // This effect listens for changes to the `key` (e.g., user logs in/out)
-  // and re-initializes the state from local storage.
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    try {
-      const item = window.localStorage.getItem(key);
-      // Update state with the value from the new key, or the initial value if none exists.
+      // An empty string is not valid JSON, so we treat it as if the key doesn't exist.
       if (item) {
-        setStoredValue(JSON.parse(item));
-      } else {
-        setStoredValue(initialValue);
+        return JSON.parse(item) as T;
       }
     } catch (error) {
-      console.error(error);
-      setStoredValue(initialValue);
+      // If parsing fails, the stored data is likely corrupted.
+      // Log the error and remove the invalid item from storage.
+      console.warn(`Error reading localStorage key “${key}”:`, error);
+      window.localStorage.removeItem(key);
     }
-  }, [key]);
+
+    // Return initialValue if no item was found or if parsing failed.
+    return initialValue;
+  }, [initialValue, key]);
+
+  // State to store our value
+  const [storedValue, setStoredValue] = useState<T>(readValue);
+
+  // Custom setter function that updates state and persists to localStorage
+  const setValue = useCallback(
+    (value: T | ((val: T) => T)) => {
+      // Prevent build errors
+      if (typeof window === 'undefined') {
+        console.warn(
+          `Tried setting localStorage key “${key}” even though no window was present.`
+        );
+        return;
+      }
+
+      try {
+        // Allow value to be a function so we have same API as useState
+        const newValue = value instanceof Function ? value(storedValue) : value;
+        // Save to local storage
+        window.localStorage.setItem(key, JSON.stringify(newValue));
+        // Save state
+        setStoredValue(newValue);
+      } catch (error) {
+        console.warn(`Error setting localStorage key “${key}”:`, error);
+      }
+    },
+    [key, storedValue]
+  );
+
+  // This effect re-reads from localStorage when the key changes (e.g. on login/logout)
+  useEffect(() => {
+    setStoredValue(readValue());
+  }, [key, readValue]);
 
   return [storedValue, setValue] as const;
 }
