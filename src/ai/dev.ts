@@ -11,3 +11,4 @@ import '@/ai/flows/text-to-speech.ts';
 import '@/ai/flows/solve-image-equation.ts';
 import '@/ai/flows/web-search.ts';
 import '@/ai/flows/analyze-pdf.ts';
+import '@/ai/flows/process-user-message.ts';

@@ -28,3 +28,38 @@ export type Settings = {
   enableSpeech: boolean;
   voice: Voice;
 };
+
+// Types for Genkit flows
+export interface ProcessUserMessageInput {
+  message: string;
+  history: Message[];
+  settings: Settings;
+}
+
+export interface TextToSpeechInput {
+  text: string;
+  voice: Voice;
+}
+
+export interface TextToSpeechOutput {
+  audio: string;
+}
+
+export interface SolveImageEquationInput {
+  photoDataUri: string;
+}
+
+export interface SolveImageEquationOutput {
+  recognizedEquation: string;
+  solutionSteps: string;
+  isSolvable: boolean;
+}
+
+export interface AnalyzePdfInput {
+  pdfDataUri: string;
+  question: string;
+}
+
+export interface AnalyzePdfOutput {
+  answer: string;
+}
