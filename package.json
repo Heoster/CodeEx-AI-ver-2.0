@@ -41,8 +41,10 @@
     "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "autoprefixer": "10.4.15",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
+    "emailjs-com": "^3.2.0",
     "eslint": "8.48.0",
     "eslint-config-next": "14.2.4",
     "eslint-config-prettier": "^9.0.0",
@@ -70,8 +72,7 @@
     "typescript": "5.2.2",
     "vaul": "^0.8.0",
     "zod": "^3.22.4",
-    "zustand": "^4.4.6",
-    "emailjs-com": "^3.2.0"
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@ducanh2912/next-pwa": "^10.2.7",
