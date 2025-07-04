@@ -42,17 +42,16 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       }
 
       try {
-        // Allow value to be a function so we have same API as useState
-        const newValue = value instanceof Function ? value(storedValue) : value;
-        // Save to local storage
-        window.localStorage.setItem(key, JSON.stringify(newValue));
-        // Save state
-        setStoredValue(newValue);
+        setStoredValue(prevValue => {
+            const newValue = value instanceof Function ? value(prevValue) : value;
+            window.localStorage.setItem(key, JSON.stringify(newValue));
+            return newValue;
+        });
       } catch (error) {
         console.warn(`Error setting localStorage key “${key}”:`, error);
       }
     },
-    [key, storedValue]
+    [key]
   );
 
   // This effect re-reads from localStorage when the key changes (e.g. on login/logout)
