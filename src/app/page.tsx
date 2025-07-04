@@ -77,7 +77,7 @@ const features = [
     title: 'Secure Authentication',
     description:
       'Leverage Firebase for secure and reliable user authentication, supporting both email/password and Google sign-in methods.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/security.png',
     imageHint: 'secure login shield',
   },
 ];
