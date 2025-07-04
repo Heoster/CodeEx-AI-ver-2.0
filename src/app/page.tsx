@@ -29,7 +29,7 @@ const features = [
     title: 'Multi-Chat Management',
     description:
       'Organize your thoughts. Create and manage multiple chat sessions simultaneously, keeping your different projects and topics neatly separated.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/Multi-Chat.png',
     imageHint: 'project management dashboard',
   },
   {
@@ -37,7 +37,7 @@ const features = [
     title: 'Persistent Chat History',
     description:
       'Never lose a thought. Your conversations are automatically saved to your device, allowing you to pick up right where you left off, anytime.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/Hist.png',
     imageHint: 'cloud storage sync',
   },
   {
@@ -45,7 +45,7 @@ const features = [
     title: 'Visual Problem Solver',
     description:
       'Go beyond text. Upload an image of a handwritten math equation, and our AI will recognize, solve, and provide a step-by-step solution.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/an.png',
     imageHint: 'math equation blackboard',
   },
   {
@@ -53,7 +53,7 @@ const features = [
     title: 'Integrated Command System',
     description:
       'Take control with powerful slash commands. Instantly get answers with `/solve` or get concise summaries of long texts with `/summarize`.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/com.png',
     imageHint: 'code terminal screen',
   },
   {
@@ -61,7 +61,7 @@ const features = [
     title: 'Real-Time Web Search',
     description:
       'Get up-to-the-minute answers. Use the `/search` command to have the AI browse the web and provide grounded responses with citations.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/search.png',
     imageHint: 'search engine results',
   },
   {
@@ -69,7 +69,7 @@ const features = [
     title: 'Voice-Enabled Interaction',
     description:
       'Interact hands-free with full voice support. Use your microphone to talk to the AI and enable speech output to hear its responses aloud.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/web.png',
     imageHint: 'soundwave interface',
   },
   {
