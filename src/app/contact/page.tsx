@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import emailjs from 'emailjs-com';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,8 +13,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 const SERVICE_ID = 'service_g6zgjpd';
 const TEMPLATE_ID = 'template_tjri68k';
-// Ensure you have this in your .env file: NEXT_PUBLIC_EMAILJS_USER_ID='YOUR_USER_ID'
+// Ensure you have these in your .env file: NEXT_PUBLIC_EMAILJS_USER_ID='YOUR_USER_ID'
 const USER_ID = process.env.NEXT_PUBLIC_EMAILJS_USER_ID || '';
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY || '';
 
 export default function ContactPage() {
   const { toast } = useToast();
@@ -24,6 +25,22 @@ export default function ContactPage() {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRecaptchaReady, setIsRecaptchaReady] = useState(false);
+
+  useEffect(() => {
+    // The reCAPTCHA script is loaded asynchronously by Firebase App Check.
+    // We poll for it to be ready before enabling the form submission.
+    const interval = setInterval(() => {
+        if ((window as any).grecaptcha && (window as any).grecaptcha.ready) {
+            (window as any).grecaptcha.ready(() => {
+                setIsRecaptchaReady(true);
+            });
+            clearInterval(interval);
+        }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,36 +48,65 @@ export default function ContactPage() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!USER_ID) {
+
+    if (!USER_ID || !RECAPTCHA_SITE_KEY) {
       toast({
         title: 'Configuration Error',
-        description: 'EmailJS User ID is not set. Please add NEXT_PUBLIC_EMAILJS_USER_ID to your .env file.',
+        description: 'This form is not configured correctly. Please contact support.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    if (!isRecaptchaReady) {
+      toast({
+        title: 'Security Check Not Ready',
+        description: 'Please wait a moment for the security check to load and try again.',
         variant: 'destructive',
       });
       return;
     }
 
     setIsSubmitting(true);
-    emailjs.send(SERVICE_ID, TEMPLATE_ID, formData, USER_ID)
-      .then(() => {
+    
+    (window as any).grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit_contact' }).then((token: string) => {
+        // In a real application, this token would be sent to a backend for verification.
+        // Since EmailJS is a client-side service, we pass the token along.
+        // This provides a baseline level of bot protection.
+        const templateParams = {
+            ...formData,
+            'g-recaptcha-response': token,
+        };
+
+        emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID)
+          .then(() => {
+            toast({
+              title: 'Success!',
+              description: 'Your message has been sent successfully.',
+            });
+            setFormData({ user_name: '', user_email: '', message: '' });
+          })
+          .catch((error) => {
+            console.error('Failed to send email:', error);
+            const errorMessage = error.text || 'Failed to send message. Please check your EmailJS service/template IDs and CORS settings in your EmailJS account.';
+            toast({
+              title: 'Error',
+              description: errorMessage,
+              variant: 'destructive',
+            });
+          })
+          .finally(() => {
+            setIsSubmitting(false);
+          });
+    }).catch((error: any) => {
+        console.error("reCAPTCHA Error:", error);
         toast({
-          title: 'Success!',
-          description: 'Your message has been sent successfully.',
+            title: 'Security Check Failed',
+            description: 'Could not complete the reCAPTCHA challenge. Please refresh and try again.',
+            variant: 'destructive',
         });
-        setFormData({ user_name: '', user_email: '', message: '' });
-      })
-      .catch((error) => {
-        console.error('Failed to send email:', error);
-        const errorMessage = error.text || 'Failed to send message. Please check your EmailJS service/template IDs and CORS settings in your EmailJS account.';
-        toast({
-          title: 'Error',
-          description: errorMessage,
-          variant: 'destructive',
-        });
-      })
-      .finally(() => {
         setIsSubmitting(false);
-      });
+    });
   };
 
   return (
@@ -120,7 +166,7 @@ export default function ContactPage() {
                   rows={6}
                 />
               </div>
-              <Button type="submit" disabled={isSubmitting} className="w-full">
+              <Button type="submit" disabled={isSubmitting || !isRecaptchaReady} className="w-full">
                 {isSubmitting ? 'Sending...' : 'Send Review'}
               </Button>
             </form>

@@ -21,7 +21,7 @@ const features = [
     title: 'Dynamic AI Conversations',
     description:
       'Engage in natural, context-aware dialogues. Our AI remembers your conversation history and adapts its tone and technical level based on your preferences.',
-    imageSrc: 'https://placehold.co/600x400.png',
+    imageSrc: '/eng.png',
     imageHint: 'chat bubbles interface',
   },
   {
