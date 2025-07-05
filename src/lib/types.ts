@@ -32,7 +32,12 @@ export type Settings = {
 // Types for Genkit flows
 export interface ProcessUserMessageInput {
   message: string;
-  history: Message[];
+  // Use a simpler history type that only includes what the AI needs.
+  // This prevents schema validation errors from extra fields like id or createdAt.
+  history: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
   settings: Settings;
 }
 

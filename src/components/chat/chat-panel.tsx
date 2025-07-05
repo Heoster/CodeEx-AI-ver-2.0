@@ -56,14 +56,11 @@ export function ChatPanel({
         newTitle
       );
 
+      // We map the full message history to the simplified format expected by the AI flow.
+      // This ensures we only send the `role` and `content`, preventing validation errors.
       const updatedHistory = [
-        ...messages,
-        {
-          id: 'temp',
-          role: 'user' as const,
-          content: messageContent,
-          createdAt: new Date().toISOString(),
-        },
+        ...messages.map(({role, content}) => ({role, content})),
+        {role: 'user' as const, content: messageContent},
       ];
 
       const response = await generateResponse({
@@ -126,10 +123,8 @@ export function ChatPanel({
     }
   }, [audioUrl]);
 
-  const isNewChat = messages.length <= 1;
-
   const greetingHeader =
-    isNewChat && user ? (
+    messages.length <= 1 && user ? (
       <div className="mb-8 flex flex-col items-center justify-center gap-2 text-center">
         <h1 className="text-3xl font-bold">Hello, {user.displayName}!</h1>
       </div>
@@ -144,7 +139,7 @@ export function ChatPanel({
         header={greetingHeader}
       />
 
-      {isNewChat && (
+      {messages.length <= 1 && (
         <ExamplePrompts onSendMessage={handleSendMessage} />
       )}
 

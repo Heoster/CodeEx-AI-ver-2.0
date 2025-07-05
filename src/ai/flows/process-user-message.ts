@@ -10,20 +10,20 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import {generateAnswerFromContext} from './generate-answer-from-context';
-import type {Message, Settings} from '@/lib/types';
+import type {ProcessUserMessageInput} from '@/lib/types';
 import {solveQuiz} from './solve-quizzes';
 import {summarizeInformation} from './summarize-information';
 import {searchTheWeb} from './web-search';
 
+// This Zod schema now matches the simplified history structure defined in lib/types.ts.
+// It only validates `role` and `content`, making the data contract stricter and more reliable.
 const ProcessUserMessageInputSchema = z.object({
   message: z.string().describe('The latest message from the user.'),
   history: z
     .array(
       z.object({
-        id: z.string(),
         role: z.enum(['user', 'assistant']),
         content: z.string(),
-        createdAt: z.string(),
       })
     )
     .describe('The conversation history.'),
@@ -41,10 +41,6 @@ const ProcessUserMessageInputSchema = z.object({
     voice: z.enum(['Algenib', 'Enceladus', 'Achernar', 'Heka']),
   }),
 });
-
-export type ProcessUserMessageInput = z.infer<
-  typeof ProcessUserMessageInputSchema
->;
 
 const ProcessUserMessageOutputSchema = z.object({
   answer: z.string().describe('The generated response to the user message.'),
@@ -69,7 +65,7 @@ const processUserMessageFlow = ai.defineFlow(
   async ({message, history, settings}) => {
     // If the model is set to 'auto', provide a sensible default.
     // 'gemini-1.5-flash' is a good balance of speed and capability for general chat.
-    // Passing `undefined` will cause an error.
+    // The AI service requires an explicit model name; it cannot be 'auto' or undefined.
     const model =
       settings.model === 'auto' ? 'gemini-1.5-flash' : settings.model;
 
@@ -87,22 +83,15 @@ const processUserMessageFlow = ai.defineFlow(
 
     if (message.startsWith('/search ')) {
       const query = message.substring(8);
-      // The web search flow uses its own model, so we don't pass one here.
+      // The web search flow uses its own model with specific tools, so we don't pass one here.
       const {answer} = await searchTheWeb({query});
       return {answer};
     }
 
     // Default conversational response.
-    // We explicitly map the history to ensure it only contains `role` and `content`,
-    // which is what the `generateAnswerFromContext` flow expects. This prevents
-    // schema validation errors caused by extra fields like `id` and `createdAt`.
-    const conversationHistory = history.map(({role, content}) => ({
-      role,
-      content,
-    }));
-
+    // The history is now sent from the client in the correct format, so no mapping is needed here.
     const {answer} = await generateAnswerFromContext({
-      messages: conversationHistory,
+      messages: history,
       tone: settings.tone,
       technicalLevel: settings.technicalLevel,
       model: model,
