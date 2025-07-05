@@ -21,6 +21,14 @@ import type {
 async function handleGenkitError(error: unknown): Promise<{error: string}> {
   const message = error instanceof Error ? error.message : String(error);
   console.error('Genkit flow failed:', error);
+
+  // Check for the specific API key error from Google AI and provide a helpful message.
+  if (message.includes('API key') || message.includes('API_KEY')) {
+    return {
+      error: `AI processing failed. Your Google AI API key is missing. Please create a key in Google AI Studio and add it to the GOOGLE_API_KEY variable in your .env file.`,
+    };
+  }
+
   return {error: `AI processing failed: ${message}`};
 }
 
@@ -75,7 +83,7 @@ export async function triggerWelcomeEmail(input: {
 }): Promise<void | {error: string}> {
   try {
     await sendWelcomeEmail(input);
-  } catch (error) {
+  } catch (error)
     return handleGenkitError(error);
   }
 }
