@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -377,7 +378,8 @@ export default function AiAgentPlatformPage() {
             </div>
           </div>
           <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} CODEEX AI. All rights reserved.
+            <p>&copy; {new Date().getFullYear()} CODEEX AI. All rights reserved.</p>
+            <p className="mt-1">CodeEx powered by Heoster.</p>
           </div>
         </div>
       </footer>
