@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ArrowRight,
   MessageSquare,
@@ -12,6 +14,9 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
 
 const features = [
   {
@@ -81,6 +86,26 @@ const features = [
 ];
 
 export default function AiAgentPlatformPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    // We can only check localStorage on the client, and we should wait for auth to be ready.
+    if (typeof window === 'undefined' || loading) {
+      return;
+    }
+
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+
+    if (user && hasVisitedBefore) {
+      // If the user is logged in and has visited before, redirect to the chat page.
+      router.push('/chat');
+    } else if (!hasVisitedBefore) {
+      // On the very first visit, set the flag so next time they'll be redirected.
+      localStorage.setItem('hasVisitedBefore', 'true');
+    }
+  }, [user, loading, router]);
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Header */}
