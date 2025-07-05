@@ -1,3 +1,4 @@
+
 'use client';
 
 import {useState, useEffect} from 'react';
@@ -76,9 +77,8 @@ export function ChatMessage({message}: ChatMessageProps) {
               className={cn(
                 'relative max-w-[80%] space-y-2 rounded-lg px-4 py-3',
                 isAssistant
-                  ? 'bg-muted'
-                  : 'bg-primary text-primary-foreground',
-                isAssistant ? 'text-foreground' : 'text-primary-foreground'
+                  ? 'bg-muted text-foreground'
+                  : 'bg-secondary text-secondary-foreground'
               )}
             >
               <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-0 prose-a:text-primary hover:prose-a:underline">
