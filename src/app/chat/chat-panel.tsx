@@ -56,9 +56,20 @@ export function ChatPanel({
         newTitle
       );
 
+      // The history needs to include the new message for the AI context.
+      const updatedHistory = [
+        ...messages,
+        {
+          id: 'temp',
+          role: 'user' as const,
+          content: messageContent,
+          createdAt: new Date().toISOString(),
+        },
+      ];
+
       const response = await generateResponse({
         message: messageContent,
-        history: messages,
+        history: updatedHistory,
         settings: settingsRef.current,
       });
 

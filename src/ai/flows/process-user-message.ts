@@ -9,14 +9,12 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {
-  summarizeInformation,
-  solveQuiz,
-  webSearch,
-} from '@/ai/genkit';
 import {Message as GenkitMessage} from '@genkit-ai/ai';
 import {generateAnswerFromContext} from './generate-answer-from-context';
 import type {Message, Settings} from '@/lib/types';
+import {solveQuiz} from './solve-quizzes';
+import {summarizeInformation} from './summarize-information';
+import {searchTheWeb} from './web-search';
 
 const ProcessUserMessageInputSchema = z.object({
   message: z.string().describe('The latest message from the user.'),
@@ -87,20 +85,16 @@ const processUserMessageFlow = ai.defineFlow(
 
     if (message.startsWith('/search ')) {
       const query = message.substring(8);
-      const {answer} = await webSearch({query});
+      const {answer} = await searchTheWeb({query});
       return {answer};
     }
 
     // Default conversational response
+    // The `history` object from the client already contains the latest user message.
     const currentMessagesForAI: GenkitMessage[] = history.map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       content: [{text: msg.content}],
     }));
-
-    currentMessagesForAI.push({
-      role: 'user',
-      content: [{text: message}],
-    });
 
     const {answer} = await generateAnswerFromContext({
       messages: currentMessagesForAI,
