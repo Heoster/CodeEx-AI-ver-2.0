@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -125,22 +125,24 @@ export function ChatLayout() {
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/visual-math">
-                  <Calculator />
-                  <span>Visual Math Solver</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/pdf-analyzer">
-                  <FileText />
-                  <span>PDF Analyzer</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            <div>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/visual-math">
+                    <Calculator />
+                    <span>Visual Math Solver</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/pdf-analyzer">
+                    <FileText />
+                    <span>PDF Analyzer</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </div>
             {chats.map(chat => (
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton
@@ -181,7 +183,7 @@ export function ChatLayout() {
               </Button>
             </div>
           )}
-          {sidebarFooterContent}
+          <div>{sidebarFooterContent}</div>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>

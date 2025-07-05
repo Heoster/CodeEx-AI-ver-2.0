@@ -31,7 +31,6 @@ export function ChatPanel({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Use a ref to ensure the latest settings are always available inside callbacks
   const settingsRef = useRef(settings);
   useEffect(() => {
     settingsRef.current = settings;
@@ -39,64 +38,74 @@ export function ChatPanel({
 
   const isLoading = isLoadingFromAI || isSpeaking;
 
-  const handleSendMessage = useCallback(async (messageContent: string) => {
-    if (isLoading || !user) return;
-    setIsLoadingFromAI(true);
-    setAudioUrl(null);
+  const handleSendMessage = useCallback(
+    async (messageContent: string) => {
+      if (isLoading || !user) return;
+      setIsLoadingFromAI(true);
+      setAudioUrl(null);
 
-    const newUserMessage: Omit<Message, 'id' | 'createdAt'> = {
-      role: 'user',
-      content: messageContent,
-    };
+      const isNewChat = messages.length <= 1;
+      const newTitle = isNewChat
+        ? messageContent.substring(0, 30) +
+          (messageContent.length > 30 ? '...' : '')
+        : undefined;
 
-    const currentMessagesForAI: Message[] = [
-      ...messages,
-      {...newUserMessage, id: 'temp-user', createdAt: new Date().toISOString()},
-    ];
+      addMessage(
+        chat.id,
+        {role: 'user', content: messageContent},
+        newTitle
+      );
 
-    const isNewChat = messages.length <= 1;
-    const newTitle = isNewChat
-      ? messageContent.substring(0, 30) +
-        (messageContent.length > 30 ? '...' : '')
-      : undefined;
-    addMessage(chat.id, newUserMessage, newTitle);
+      const updatedHistory = [
+        ...messages,
+        {
+          id: 'temp',
+          role: 'user' as const,
+          content: messageContent,
+          createdAt: new Date().toISOString(),
+        },
+      ];
 
-    const response = await generateResponse(currentMessagesForAI, settingsRef.current);
+      const response = await generateResponse({
+        message: messageContent,
+        history: updatedHistory,
+        settings: settingsRef.current,
+      });
 
-    let assistantContent = '';
-    if ('error' in response) {
-      assistantContent = response.error;
-    } else {
-      assistantContent = response.content;
-    }
+      let assistantContent = '';
+      if ('error' in response) {
+        assistantContent = response.error;
+      } else {
+        assistantContent = response.content;
+      }
 
-    const assistantMessage: Omit<Message, 'id' | 'createdAt'> = {
-      role: 'assistant',
-      content: assistantContent,
-    };
+      addMessage(chat.id, {role: 'assistant', content: assistantContent});
+      setIsLoadingFromAI(false);
 
-    addMessage(chat.id, assistantMessage);
-    setIsLoadingFromAI(false);
-
-    if (settingsRef.current.enableSpeech && assistantContent) {
-      try {
-        setIsSpeaking(true);
-        const speechResponse = await getSpeechAudio(
-          assistantContent,
-          settingsRef.current.voice
-        );
-        if ('audio' in speechResponse) {
-          setAudioUrl(speechResponse.audio);
-        } else {
-          console.error('Failed to generate speech:', speechResponse.error);
+      if (settingsRef.current.enableSpeech && assistantContent) {
+        try {
+          setIsSpeaking(true);
+          const speechResponse = await getSpeechAudio(
+            assistantContent,
+            settingsRef.current.voice
+          );
+          if ('audio' in speechResponse) {
+            setAudioUrl(speechResponse.audio);
+          } else {
+            console.error(
+              'Failed to generate speech:',
+              speechResponse.error
+            );
+            setIsSpeaking(false);
+          }
+        } catch (e) {
+          console.error('Exception during speech generation:', e);
           setIsSpeaking(false);
         }
-      } catch (e) {
-        console.error('Exception during speech generation:', e);
-        setIsSpeaking(false);
       }
-    }
-  }, [isLoading, user, messages, addMessage, chat.id]);
+    },
+    [isLoading, user, messages, addMessage, chat.id]
+  );
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
@@ -135,7 +144,9 @@ export function ChatPanel({
         header={greetingHeader}
       />
 
-      {isNewChat && <ExamplePrompts onSendMessage={handleSendMessage} />}
+      {isNewChat && (
+        <ExamplePrompts onSendMessage={handleSendMessage} />
+      )}
 
       <div className="border-t bg-background px-4 py-2 md:py-4">
         <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
