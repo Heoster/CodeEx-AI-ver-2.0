@@ -52,29 +52,35 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const getFirebaseAuthErrorMessage = (error: any): string => {
+const getFirebaseAuthErrorMessage = (error: unknown): string => {
   const appCheckDebugSteps = "\nThis can be caused by a Firebase App Check configuration issue. Please verify the following in your Firebase project:\n1. The reCAPTCHA v3 Site Key in your .env file (NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) is correct.\n2. Your domain (e.g., localhost) is whitelisted in App Check -> Apps.\n3. If enforcement is on for Authentication, ensure App Check is initializing correctly.";
 
+  if (typeof error !== 'object' || error === null) {
+    return 'An unknown error occurred. Please try again.';
+  }
+
+  const err = error as { code?: string; message?: string };
+
   // Specific App Check error
-  if (error.code === 'auth/firebase-app-check-token-is-invalid') {
+  if (err.code === 'auth/firebase-app-check-token-is-invalid') {
     return `Authentication security check failed. ${appCheckDebugSteps}`;
   }
 
   // Generic errors that can be caused by App Check
   if (
-    (error.message && error.message.includes('INTERNAL ASSERTION FAILED')) ||
+    (err.message && err.message.includes('INTERNAL ASSERTION FAILED')) ||
     String(error).includes('INTERNAL ASSERTION FAILED') ||
-    error.code === 'auth/internal-error' ||
-    error.code === 'auth/network-request-failed'
+    err.code === 'auth/internal-error' ||
+    err.code === 'auth/network-request-failed'
   ) {
     return `An internal authentication error occurred. ${appCheckDebugSteps}`;
   }
   
-  if (!error.code) {
+  if (!err.code) {
     return 'An unknown error occurred. Please try again.';
   }
   
-  switch (error.code) {
+  switch (err.code) {
     case 'auth/invalid-credential':
     case 'auth/user-not-found':
     case 'auth/wrong-password':
@@ -95,7 +101,7 @@ const getFirebaseAuthErrorMessage = (error: any): string => {
     case 'auth/unauthorized-domain':
       return 'This domain is not authorized for authentication. Please contact the developer.';
     default:
-      return `An authentication error occurred. Please try again later. (Error: ${error.code})`;
+      return `An authentication error occurred. Please try again later. (Error: ${err.code})`;
   }
 };
 
@@ -112,7 +118,7 @@ export default function LoginPage() {
   const [newUserName, setNewUserName] = useState('');
   const [isSavingName, setIsSavingName] = useState(false);
 
-  const handleAuthError = (error: any) => {
+  const handleAuthError = (error: unknown) => {
     console.error('Authentication Error:', error);
     const errorMessage = getFirebaseAuthErrorMessage(error);
     if (errorMessage) {
@@ -138,7 +144,7 @@ export default function LoginPage() {
           description: `A welcome email for ${result.user.email} was logged to the console.`,
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleAuthError(error);
     }
   };
@@ -153,7 +159,7 @@ export default function LoginPage() {
     const auth = getAuth(app);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleAuthError(error);
     }
   };
@@ -178,7 +184,7 @@ export default function LoginPage() {
           description: `A welcome email for ${userCredential.user.email} was logged to the console.`,
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleAuthError(error);
     }
   };
@@ -211,7 +217,7 @@ export default function LoginPage() {
       }
 
       setIsNamePromptOpen(false);
-    } catch (error) {
+    } catch (_error) {
       setError('Could not save your name. Please try again.');
     } finally {
       setIsSavingName(false);

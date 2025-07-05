@@ -67,9 +67,12 @@ export default function ContactPage() {
         });
         setFormData({ user_name: '', user_email: '', message: '' });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Failed to send email:', error);
-        const errorMessage = error.text || 'Failed to send message. Please ensure your App Check and EmailJS configurations are correct.';
+        const errorMessage =
+          typeof error === 'object' && error !== null && 'text' in error
+            ? (error as { text: string }).text
+            : 'Failed to send message. Please ensure your App Check and EmailJS configurations are correct.';
         toast({
           title: 'Error',
           description: errorMessage,
