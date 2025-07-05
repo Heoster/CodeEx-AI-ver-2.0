@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import 'katex/dist/katex.min.css';
@@ -17,6 +18,9 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
     apple: '/icons/icon-192x192.png',
+  },
+  verification: {
+    google: 'RY6Rmrn0nrzaZO8QXaazCfjsnLoEBKT8-oJxBc_l_9U',
   },
 };
 
