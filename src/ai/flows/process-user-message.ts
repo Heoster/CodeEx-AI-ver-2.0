@@ -95,6 +95,7 @@ const processUserMessageFlow = ai.defineFlow(
     const {answer} = await generateAnswerFromContext({
       messages: history,
       ...settings,
+      model: model, // Pass the corrected model value, which can be undefined
     });
 
     return {answer};
