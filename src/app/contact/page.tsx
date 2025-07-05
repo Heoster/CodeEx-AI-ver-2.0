@@ -14,9 +14,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { getAppCheck, getToken } from "firebase/app-check";
 import { app } from '@/lib/firebase';
 
-const SERVICE_ID = 'service_g6zgjpd';
-const TEMPLATE_ID = 'template_tjri68k';
-// Ensure you have these in your .env file: NEXT_PUBLIC_EMAILJS_USER_ID='YOUR_USER_ID'
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '';
 const USER_ID = process.env.NEXT_PUBLIC_EMAILJS_USER_ID || '';
 
 export default function ContactPage() {
@@ -35,10 +34,10 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!USER_ID) {
+    if (!USER_ID || !SERVICE_ID || !TEMPLATE_ID) {
       toast({
         title: 'Configuration Error',
-        description: 'This form is not configured correctly. Please contact support.',
+        description: 'The contact form is not configured. Please set the required EmailJS environment variables.',
         variant: 'destructive',
       });
       return;

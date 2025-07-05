@@ -99,7 +99,7 @@ const getFirebaseAuthErrorMessage = (error: unknown): string => {
     case 'auth/popup-blocked':
       return 'Sign-in failed. Please allow pop-ups for this site and try again.';
     case 'auth/unauthorized-domain':
-      return 'This domain is not authorized for authentication. Please contact the developer.';
+      return 'This domain is not authorized for authentication. Please go to your Firebase project -> Authentication -> Settings -> Authorized domains, and add your domain (e.g., localhost).';
     default:
       return `An authentication error occurred. Please try again later. (Error: ${err.code})`;
   }
