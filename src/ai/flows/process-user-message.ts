@@ -67,9 +67,11 @@ const processUserMessageFlow = ai.defineFlow(
     outputSchema: ProcessUserMessageOutputSchema,
   },
   async ({message, history, settings}) => {
-    // If the model is set to 'auto', pass `undefined` to the underlying flows.
-    // Genkit will then use the default model for the provider.
-    const model = settings.model === 'auto' ? undefined : settings.model;
+    // If the model is set to 'auto', provide a sensible default.
+    // 'gemini-1.5-flash' is a good balance of speed and capability for general chat.
+    // Passing `undefined` will cause an error.
+    const model =
+      settings.model === 'auto' ? 'gemini-1.5-flash' : settings.model;
 
     if (message.startsWith('/solve ')) {
       const question = message.substring(7);
@@ -85,6 +87,7 @@ const processUserMessageFlow = ai.defineFlow(
 
     if (message.startsWith('/search ')) {
       const query = message.substring(8);
+      // The web search flow uses its own model, so we don't pass one here.
       const {answer} = await searchTheWeb({query});
       return {answer};
     }
@@ -93,8 +96,13 @@ const processUserMessageFlow = ai.defineFlow(
     // We explicitly map the history to ensure it only contains `role` and `content`,
     // which is what the `generateAnswerFromContext` flow expects. This prevents
     // schema validation errors caused by extra fields like `id` and `createdAt`.
+    const conversationHistory = history.map(({role, content}) => ({
+      role,
+      content,
+    }));
+
     const {answer} = await generateAnswerFromContext({
-      messages: history.map(m => ({role: m.role, content: m.content})),
+      messages: conversationHistory,
       tone: settings.tone,
       technicalLevel: settings.technicalLevel,
       model: model,
