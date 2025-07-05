@@ -19,7 +19,7 @@ const blogPosts = [
   {
     title: 'Building Scalable AI Applications with Next.js and Genkit',
     description: 'Discover how we leverage the power of Next.js for our frontend and Genkit for our AI backend to build a responsive, scalable, and intelligent application. A deep dive into our architecture.',
-    imageSrc: 'https://placehold.co/800x400.png',
+    imageSrc: 'https://images.unsplash.com/photo-1562813733-b31f71025d54?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     imageHint: 'code on screen',
     author: 'John Smith',
     date: 'June 28, 2025',
