@@ -10,7 +10,7 @@ const blogPosts = [
   {
     title: 'The Future of Conversational AI: Trends to Watch',
     description: 'Generative AI is evolving at an unprecedented pace. In this post, we explore the key trends that will shape the future of conversational AI, from hyper-personalization to multi-modal interactions.',
-    imageSrc: 'https://placehold.co/800x400.png',
+    imageSrc: 'https://plus.unsplash.com/premium_photo-1678566153919-86c4ba4216f1?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     imageHint: 'futuristic AI interface',
     author: 'Jane Doe',
     date: 'July 5, 2025',
