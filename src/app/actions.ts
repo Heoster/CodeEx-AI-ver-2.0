@@ -83,7 +83,7 @@ export async function triggerWelcomeEmail(input: {
 }): Promise<void | {error: string}> {
   try {
     await sendWelcomeEmail(input);
-  } catch (error)
+  } catch (error) {
     return handleGenkitError(error);
   }
 }
