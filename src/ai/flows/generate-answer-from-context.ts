@@ -49,16 +49,18 @@ const generateAnswerFromContextFlow = ai.defineFlow(
     outputSchema: GenerateAnswerFromContextOutputSchema,
   },
   async input => {
+    // Destructure for clarity and to ensure we only use what the schema defines.
+    const {messages, tone, technicalLevel, model} = input;
+
     // The Gemini API prefers the 'user' and 'model' roles.
-    // The 'system' role can be used for instructions.
     const systemInstruction = `You are an AI assistant. Your response should have a ${
-      input.tone || 'helpful'
+      tone || 'helpful'
     } tone and be at a ${
-      input.technicalLevel || 'intermediate'
+      technicalLevel || 'intermediate'
     } technical level. Please answer concisely and helpfully.`;
 
     // Map roles: 'assistant' -> 'model'
-    const history: GenkitMessage[] = input.messages.map(msg => ({
+    const history: GenkitMessage[] = messages.map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       content: [{text: msg.content}],
     }));
@@ -70,7 +72,7 @@ const generateAnswerFromContextFlow = ai.defineFlow(
     }
 
     const {output} = await ai.generate({
-      model: input.model,
+      model: model, // Use the destructured, schema-validated model
       prompt: lastMessage.content,
       history: history,
       system: systemInstruction,

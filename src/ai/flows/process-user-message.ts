@@ -67,15 +67,16 @@ const processUserMessageFlow = ai.defineFlow(
     outputSchema: ProcessUserMessageOutputSchema,
   },
   async ({message, history, settings}) => {
-    const model =
-      settings.model === 'auto' ? undefined : settings.model;
+    // If the model is set to 'auto', pass `undefined` to the underlying flows.
+    // Genkit will then use the default model for the provider.
+    const model = settings.model === 'auto' ? undefined : settings.model;
 
     if (message.startsWith('/solve ')) {
       const question = message.substring(7);
       const {solution} = await solveQuiz({quiz: question, model});
       return {answer: solution};
     }
-    
+
     if (message.startsWith('/summarize ')) {
       const text = message.substring(11);
       const {summary} = await summarizeInformation({text, model});
@@ -88,14 +89,15 @@ const processUserMessageFlow = ai.defineFlow(
       return {answer};
     }
 
-    // Default conversational response
-    // The `history` object from the client already contains the latest user message.
-    // We pass it directly to the next flow, which will handle mapping it to the format
-    // expected by the AI provider.
+    // Default conversational response.
+    // We explicitly map the history to ensure it only contains `role` and `content`,
+    // which is what the `generateAnswerFromContext` flow expects. This prevents
+    // schema validation errors caused by extra fields like `id` and `createdAt`.
     const {answer} = await generateAnswerFromContext({
-      messages: history,
-      ...settings,
-      model: model, // Pass the corrected model value, which can be undefined
+      messages: history.map(m => ({role: m.role, content: m.content})),
+      tone: settings.tone,
+      technicalLevel: settings.technicalLevel,
+      model: model,
     });
 
     return {answer};
