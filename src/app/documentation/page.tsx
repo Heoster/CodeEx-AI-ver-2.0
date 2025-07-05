@@ -1,3 +1,4 @@
+
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -64,6 +65,26 @@ export default function DocumentationPage() {
               <p><strong>Command:</strong> <code className="font-mono rounded bg-muted px-1 py-0.5">/search [your question]</code></p>
               <p><strong>Example:</strong> <code className="font-mono rounded bg-muted px-1 py-0.5">/search Who won the last F1 race?</code></p>
             </div>
+          </div>
+
+           <div className="space-y-4 rounded-lg border bg-card p-6">
+            <h3 className="text-2xl font-semibold">Visual Math Solver</h3>
+            <p className="text-muted-foreground">
+              Solve complex handwritten math equations with ease. Simply upload an image of an equation, and our AI will provide a step-by-step solution in clear LaTeX format.
+            </p>
+             <div className="rounded-md bg-muted p-4 text-sm space-y-2">
+               <p><strong>To use:</strong> Navigate to the <Link href="/visual-math" className="font-medium text-primary hover:underline">Visual Math Solver</Link> page from the sidebar, upload your image, and click 'Solve with AI'.</p>
+             </div>
+          </div>
+
+          <div className="space-y-4 rounded-lg border bg-card p-6">
+            <h3 className="text-2xl font-semibold">PDF Document Analyzer</h3>
+            <p className="text-muted-foreground">
+             Extract insights from your documents effortlessly. Upload a PDF file, ask a question about its content, and receive a concise, AI-generated answer based on the document's information.
+            </p>
+             <div className="rounded-md bg-muted p-4 text-sm space-y-2">
+               <p><strong>To use:</strong> Go to the <Link href="/pdf-analyzer" className="font-medium text-primary hover:underline">PDF Analyzer</Link> page from the sidebar, upload your document, type your question, and click 'Analyze with AI'.</p>
+             </div>
           </div>
           
           <div className="space-y-4 rounded-lg border bg-card p-6">
