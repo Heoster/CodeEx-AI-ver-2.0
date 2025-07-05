@@ -9,7 +9,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {Message as GenkitMessage} from '@genkit-ai/ai';
 import {generateAnswerFromContext} from './generate-answer-from-context';
 import type {Message, Settings} from '@/lib/types';
 import {solveQuiz} from './solve-quizzes';
@@ -91,13 +90,10 @@ const processUserMessageFlow = ai.defineFlow(
 
     // Default conversational response
     // The `history` object from the client already contains the latest user message.
-    const currentMessagesForAI: GenkitMessage[] = history.map(msg => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      content: [{text: msg.content}],
-    }));
-
+    // We pass it directly to the next flow, which will handle mapping it to the format
+    // expected by the AI provider.
     const {answer} = await generateAnswerFromContext({
-      messages: currentMessagesForAI,
+      messages: history,
       ...settings,
     });
 
