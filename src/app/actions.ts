@@ -15,7 +15,7 @@ import type {
   TextToSpeechOutput,
 } from '@/lib/types';
 
-async function handleGenkitError(error: unknown): Promise<{error: string}> {
+function handleGenkitError(error: unknown): {error: string} {
   const message = error instanceof Error ? error.message : String(error);
   console.error('Genkit flow failed:', error);
 
