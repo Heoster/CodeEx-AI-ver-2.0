@@ -15,9 +15,15 @@ const withPWA = require('@ducanh2912/next-pwa').default({
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: [
+      '@genkit-ai/ai',
       '@genkit-ai/googleai',
       '@genkit-ai/core',
+      'genkit',
+      'zod-to-json-schema',
+      '@opentelemetry/api',
+      '@opentelemetry/sdk-trace-base',
       '@opentelemetry/instrumentation',
+      '@opentelemetry/resources',
       '@opentelemetry/sdk-node',
     ],
   },
