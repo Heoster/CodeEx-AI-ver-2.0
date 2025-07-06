@@ -57,15 +57,11 @@ export function ChatPanel({
         newTitle
       );
 
-      // The history needs to include the new message for the AI context.
+      // We map the full message history to the simplified format expected by the AI flow.
+      // This ensures we only send the `role` and `content`, preventing validation errors.
       const updatedHistory = [
-        ...messages,
-        {
-          id: 'temp',
-          role: 'user' as const,
-          content: messageContent,
-          createdAt: new Date().toISOString(),
-        },
+        ...messages.map(({role, content}) => ({role, content})),
+        {role: 'user' as const, content: messageContent},
       ];
 
       const response = await generateResponse({

@@ -59,7 +59,7 @@ export async function solveEquationFromImage(
   input: SolveImageEquationInput
 ): Promise<SolveImageEquationOutput | {error: string}> {
   try {
-    const response = await solveEquationFromImage(input);
+    const response = await solveImageEquation(input);
     return response;
   } catch (error) {
     return handleGenkitError(error);
