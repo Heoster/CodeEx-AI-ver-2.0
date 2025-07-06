@@ -11,8 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAppCheck, getToken } from "firebase/app-check";
-import { app } from '@/lib/firebase';
+import { getToken } from "firebase/app-check";
+import { app, appCheckInstance } from '@/lib/firebase';
 
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '';
@@ -46,12 +46,11 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-        const appCheck = getAppCheck(app);
-        if (!appCheck) {
+        if (!appCheckInstance) {
           throw new Error('App Check not initialized. Is NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY set?');
         }
         // Get the App Check token. This request is protected by App Check.
-        const { token } = await getToken(appCheck, /* forceRefresh= */ false);
+        const { token } = await getToken(appCheckInstance, /* forceRefresh= */ false);
 
         // This provides a baseline level of bot protection. For a fully secure implementation,
         // you would send this token to your own backend for verification. EmailJS is a client-side
