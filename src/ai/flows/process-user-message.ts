@@ -63,11 +63,13 @@ const processUserMessageFlow = ai.defineFlow(
     outputSchema: ProcessUserMessageOutputSchema,
   },
   async ({message, history, settings}) => {
-    // If the model is set to 'auto', provide a sensible default.
-    // 'gemini-1.5-flash' is a good balance of speed and capability for general chat.
-    // The AI service requires an explicit model name; it cannot be 'auto' or undefined.
+    // The AI service requires an explicit, prefixed model name.
+    // This logic ensures the 'auto' setting defaults to a capable model
+    // and all other models are correctly prefixed for the Genkit/Google AI provider.
     const model =
-      settings.model === 'auto' ? 'gemini-1.5-flash' : settings.model;
+      settings.model === 'auto'
+        ? 'googleai/gemini-1.5-flash'
+        : `googleai/${settings.model}`;
 
     if (message.startsWith('/solve ')) {
       const question = message.substring(7);
