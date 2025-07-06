@@ -42,6 +42,7 @@ import {useAuth} from '@/hooks/use-auth';
 import {getAuth, signOut} from 'firebase/auth';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 import {useChatHistory} from '@/hooks/use-chat-history';
+import { InstallPWAButton } from '../install-pwa-button';
 
 const defaultSettings: Settings = {
   model: 'auto',
@@ -122,6 +123,11 @@ export function ChatLayout() {
             <Trash2 className="mr-2 h-4 w-4" />
             Clear History
           </Button>
+          <InstallPWAButton
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start"
+          />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>

@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
+import { InstallPWAButton } from '@/components/install-pwa-button';
 
 const features = [
   {
@@ -142,6 +143,7 @@ export default function AiAgentPlatformPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
+            <InstallPWAButton variant="outline" />
             <Link href="/login">
               <Button
                 variant="outline"
