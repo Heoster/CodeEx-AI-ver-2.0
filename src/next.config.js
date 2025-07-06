@@ -1,4 +1,3 @@
-
 const withPWA = require('@ducanh2912/next-pwa').default({
   dest: 'public',
   cacheOnFrontEndNav: true,
@@ -13,6 +12,9 @@ const withPWA = require('@ducanh2912/next-pwa').default({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ['@genkit-ai/googleai', '@opentelemetry/instrumentation'],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
