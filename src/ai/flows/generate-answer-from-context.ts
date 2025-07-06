@@ -71,17 +71,13 @@ const generateAnswerFromContextFlow = ai.defineFlow(
       throw new Error('The last message must be from the user.');
     }
 
-    const {output} = await ai.generate({
-      model: model, // Use the destructured, schema-validated model
+    const response = await ai.generate({
+      model: model,
       prompt: lastMessage.content,
       history: history,
       system: systemInstruction,
-      output: {
-        format: 'json',
-        schema: GenerateAnswerFromContextOutputSchema,
-      },
     });
 
-    return output!;
+    return {answer: response.text};
   }
 );
