@@ -143,7 +143,6 @@ export default function AiAgentPlatformPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <InstallPWAButton variant="outline" />
             <Link href="/login">
               <Button
                 variant="outline"
