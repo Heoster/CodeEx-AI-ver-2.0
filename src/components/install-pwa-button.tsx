@@ -41,7 +41,7 @@ export function InstallPWAButton(props: ButtonProps) {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       clearTimeout(timer);
     };
-  }, [installPrompt]);
+  }, []);
 
   const handleInstallClick = useCallback(async () => {
     if (installPrompt) {
