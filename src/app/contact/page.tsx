@@ -47,6 +47,9 @@ export default function ContactPage() {
 
     try {
         const appCheck = getAppCheck(app);
+        if (!appCheck) {
+          throw new Error('App Check not initialized. Is NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY set?');
+        }
         // Get the App Check token. This request is protected by App Check.
         const { token } = await getToken(appCheck, /* forceRefresh= */ false);
 
@@ -68,10 +71,14 @@ export default function ContactPage() {
 
     } catch (error: unknown) {
         console.error('Failed to send email:', error);
-        const errorMessage =
-          typeof error === 'object' && error !== null && 'text' in error
-            ? (error as { text: string }).text
-            : 'Failed to send message. Please ensure your App Check and EmailJS configurations are correct.';
+        let errorMessage = 'Failed to send message. Please try again later.';
+
+        if (String(error).includes('app-check')) {
+          errorMessage = 'Could not verify your request. Please ensure Firebase App Check is configured correctly with a valid reCAPTCHA key in your .env file.';
+        } else if (typeof error === 'object' && error !== null && 'text' in error) {
+          errorMessage = (error as { text: string }).text
+        }
+        
         toast({
           title: 'Error',
           description: errorMessage,

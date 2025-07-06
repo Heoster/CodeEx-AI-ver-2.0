@@ -53,7 +53,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const getFirebaseAuthErrorMessage = (error: unknown): string => {
-  const appCheckDebugSteps = "\nThis can be caused by a Firebase App Check configuration issue. Please verify the following in your Firebase project:\n1. The reCAPTCHA v3 Site Key in your .env file (NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) is correct.\n2. Your domain (e.g., localhost) is whitelisted in App Check -> Apps.\n3. If enforcement is on for Authentication, ensure App Check is initializing correctly.";
+  const appCheckDebugSteps = "\n\nThis is often caused by a Firebase App Check configuration issue. Please verify the following:\n1. The reCAPTCHA v3 Site Key in your .env file (NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY) is correct and not a placeholder.\n2. Your domain (e.g., localhost) is whitelisted in your Firebase project: App Check -> Apps.\n3. If App Check enforcement is enabled for Authentication, ensure it's initializing correctly.";
 
   if (typeof error !== 'object' || error === null) {
     return 'An unknown error occurred. Please try again.';
@@ -61,23 +61,18 @@ const getFirebaseAuthErrorMessage = (error: unknown): string => {
 
   const err = error as { code?: string; message?: string };
 
-  // Specific App Check error
-  if (err.code === 'auth/firebase-app-check-token-is-invalid') {
-    return `Authentication security check failed. ${appCheckDebugSteps}`;
-  }
-
-  // Generic errors that can be caused by App Check
+  // Prioritize App Check related errors as they are common and cryptic.
   if (
     (err.message && err.message.includes('INTERNAL ASSERTION FAILED')) ||
     String(error).includes('INTERNAL ASSERTION FAILED') ||
-    err.code === 'auth/internal-error' ||
-    err.code === 'auth/network-request-failed'
+    err.code === 'auth/firebase-app-check-token-is-invalid' ||
+    err.code === 'auth/network-request-failed' 
   ) {
-    return `An internal authentication error occurred. ${appCheckDebugSteps}`;
+    return `Authentication failed due to a security policy misconfiguration. ${appCheckDebugSteps}`;
   }
   
   if (!err.code) {
-    return 'An unknown error occurred. Please try again.';
+    return `An unknown authentication error occurred. ${appCheckDebugSteps}`;
   }
   
   switch (err.code) {
