@@ -17,6 +17,12 @@ export function InstallPWAButton(props: ButtonProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Hide button if the app is already installed.
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsVisible(false);
+      return;
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e as BeforeInstallPromptEvent);
@@ -42,6 +48,7 @@ export function InstallPWAButton(props: ButtonProps) {
       await installPrompt.prompt();
       const { outcome } = await installPrompt.userChoice;
       if (outcome === 'accepted') {
+        setIsVisible(false); // Hide button after successful installation
         setInstallPrompt(null); // The prompt is one-time use.
       }
     } else {
